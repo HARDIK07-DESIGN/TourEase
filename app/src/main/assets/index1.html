@@ -522,6 +522,11 @@
       box-shadow: 0 2px 6px rgba(26, 115, 232, 0.25);
     }
 
+    #btnLandingTrackSubmit,
+    #btnPublicTrackSubmit {
+      width: auto !important;
+    }
+
     .m3-button-primary:hover {
       background: var(--primary-hover);
     }
@@ -2794,9 +2799,9 @@
 
       <div style="margin-bottom: 14px;">
         <label class="m3-label" style="font-size: 11px;">ENTER OR PASTE TRACKING CODE (e.g. CAB-5627)</label>
-        <div style="display: flex; gap: 8px; width: 100%; box-sizing: border-box;">
-          <input type="text" id="publicTrackCodeInput" class="m3-text-input" placeholder="e.g. CAB-5627 or TRK-4821" style="width: 100%; min-width: 180px; height: 46px; padding: 0 14px; font-size: 15px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; box-sizing: border-box; background: #FFFFFF; border: 1.5px solid #CBD5E1; border-radius: 10px; flex: 1; margin-bottom: 0;">
-          <button type="button" class="m3-button-primary" id="btnPublicTrackSubmit" style="height: 46px; padding: 0 18px; font-size: 13px; font-weight: 700; white-space: nowrap; flex-shrink: 0;">Track on Map</button>
+        <div style="display: flex; gap: 8px; width: 100%; box-sizing: border-box; align-items: center;">
+          <input type="text" id="publicTrackCodeInput" class="m3-text-input" placeholder="e.g. CAB-5627 or TRK-4821" style="flex: 1 1 0%; min-width: 0; height: 44px; padding: 0 12px; font-size: 13.5px; font-weight: 600; font-family: monospace; letter-spacing: 0.05em; text-transform: uppercase; box-sizing: border-box; background: #FFFFFF; border: 1.5px solid #CBD5E1; border-radius: 8px; margin-bottom: 0;">
+          <button type="button" class="m3-button-primary" id="btnPublicTrackSubmit" style="height: 44px; padding: 0 16px; font-size: 13px; font-weight: 700; white-space: nowrap; flex-shrink: 0; border-radius: 8px;">Track on Map</button>
         </div>
         <div id="travelerActiveTrackingPills" style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px;"></div>
       </div>
