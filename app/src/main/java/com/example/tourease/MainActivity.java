@@ -19,12 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private long backPressedTime = 0;
     private Toast exitToast;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // Configure auto-hiding status bar with swipe-to-show transient behavior
-        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+    private void hideSystemStatusBar() {
         WindowInsetsControllerCompat controller = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
         if (controller != null) {
             controller.setAppearanceLightStatusBars(true);
@@ -32,6 +27,15 @@ public class MainActivity extends AppCompatActivity {
             controller.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
             controller.hide(WindowInsetsCompat.Type.statusBars());
         }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Configure auto-hiding status bar with swipe-to-show transient behavior
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+        hideSystemStatusBar();
 
         setContentView(R.layout.activity_main);
 
@@ -126,18 +130,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Load live Render deployment target (with fallback to bundled assets on error)
-        webView.loadUrl("https://tourease-zocf.onrender.com/index1.html");
+        // Load bundled offline-first asset (connected to live Render backend for APIs)
+        webView.loadUrl("file:///android_asset/index1.html");
     }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            WindowInsetsControllerCompat controller = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
-            if (controller != null) {
-                controller.hide(WindowInsetsCompat.Type.statusBars());
-            }
+            hideSystemStatusBar();
         }
     }
 

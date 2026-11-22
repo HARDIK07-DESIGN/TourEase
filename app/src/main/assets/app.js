@@ -1387,6 +1387,129 @@
       });
     }
 
+    function renderBudgetTiersHtml(options, activeTierKey = 'exact_budget') {
+      if (!options || !options.exact_budget) return '';
+      const tiers = [
+        { key: 'under_budget', label: 'Under Budget', opt: options.under_budget },
+        { key: 'exact_budget', label: 'Exact Budget', opt: options.exact_budget },
+        { key: 'smart_upgrade', label: 'Smart Upgrade', opt: options.smart_upgrade }
+      ].filter(t => !!t.opt);
+
+      return `
+        <div class="budget-tiers-container aura-card" style="background: #FFFFFF; border: 1px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 14px;">
+          <div style="font-size: 10px; font-weight: 800; color: #1A73E8; letter-spacing: 0.6px; text-transform: uppercase; margin-bottom: 4px;">CALIBRATED BUDGET TIERS</div>
+          <h4 style="font-size: 15px; font-weight: 800; color: #0F172A; margin: 0 0 10px 0;">Select Your Plan Tier</h4>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px;">
+            ${tiers.map(t => {
+              const isActive = t.key === activeTierKey;
+              const bg = isActive ? '#EFF6FF' : '#F8FAFC';
+              const border = isActive ? '#1A73E8' : '#E2E8F0';
+              const textColor = isActive ? '#1D4ED8' : '#1E293B';
+              const priceText = `₹${(t.opt.total_cost || 0).toLocaleString('en-IN')}`;
+              const note = t.key === 'under_budget' && t.opt.savings
+                ? `Save ₹${t.opt.savings.toLocaleString('en-IN')}`
+                : (t.key === 'smart_upgrade' ? 'VIP Perks Included' : 'Target Budget');
+              return `
+                <div class="budget-tier-tab-card" data-tier-key="${t.key}" style="border: 2px solid ${border}; background: ${bg}; border-radius: 10px; padding: 10px 6px; text-align: center; cursor: pointer; transition: all 0.15s ease;">
+                  <div style="font-size: 10.5px; font-weight: 800; color: ${textColor}; text-transform: uppercase;">${t.label}</div>
+                  <div style="font-size: 14.5px; font-weight: 800; color: #0F172A; margin: 3px 0;">${priceText}</div>
+                  <div style="font-size: 9.5px; font-weight: 700; color: ${isActive ? '#059669' : '#64748B'};">${note}</div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+          ${options[activeTierKey]?.upgrade_perks && options[activeTierKey].upgrade_perks.length > 0 ? `
+            <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 8px; padding: 8px 10px; font-size: 11.5px; color: #166534;">
+              <strong style="display: block; margin-bottom: 4px;">✨ Included Smart Upgrades:</strong>
+              <ul style="margin: 0; padding-left: 16px;">
+                ${options[activeTierKey].upgrade_perks.map(p => `<li>${p}</li>`).join('')}
+              </ul>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    function renderCategorizedPins(tier) {
+      if (!map || !tier) return;
+      clearSightseeingMarkers();
+
+      const categories = [
+        { type: 'sightseeing', color: '#059669', icon: '🏛️', label: 'Sightseeing', items: tier.destination_spots || [] },
+        { type: 'en_route', color: '#1A73E8', icon: '🛣️', label: 'En-Route', items: tier.en_route_spots || [] },
+        { type: 'dining', color: '#D97706', icon: '🍽️', label: 'Dining', items: tier.restaurants || [] },
+        { type: 'hotel', color: '#4F46E5', icon: '🏨', label: 'Hotel', items: tier.hotels || [] }
+      ];
+
+      const bounds = new mapboxgl.LngLatBounds();
+
+      categories.forEach(cat => {
+        cat.items.forEach((item, idx) => {
+          const lat = parseFloat(item.lat);
+          const lng = parseFloat(item.lng);
+          if (isNaN(lat) || isNaN(lng)) return;
+
+          const el = document.createElement('div');
+          el.className = `categorized-pin pin-cat-${cat.type}`;
+          el.innerHTML = `
+            <div style="cursor: pointer; display: flex; flex-direction: column; align-items: center; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.25)); transition: transform 0.15s ease;" onmouseover="this.style.transform='scale(1.12)'" onmouseout="this.style.transform='scale(1)'">
+              <div style="background: ${cat.color}; color: #FFFFFF; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; border: 2.5px solid #FFFFFF; box-shadow: 0 1px 4px rgba(0,0,0,0.3); z-index: 2;">
+                ${cat.icon}
+              </div>
+              <div style="background: #FFFFFF; color: #0F172A; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 10px; border: 1px solid #CBD5E1; box-shadow: 0 1px 3px rgba(0,0,0,0.12); margin-top: 2px; white-space: nowrap; max-width: 120px; overflow: hidden; text-overflow: ellipsis; pointer-events: none;">
+                ${item.name}
+              </div>
+            </div>
+          `;
+
+          const popup = new mapboxgl.Popup({ offset: 20, closeButton: true }).setHTML(`
+            <div style="padding: 6px; max-width: 220px; font-family: -apple-system, sans-serif;">
+              <div style="font-size: 10px; font-weight: 800; color: ${cat.color}; text-transform: uppercase;">${cat.label.toUpperCase()}</div>
+              <div style="font-size: 13.5px; font-weight: 800; color: #0F172A; margin: 3px 0 4px 0;">${item.name}</div>
+              ${item.cuisine ? `<div style="font-size: 11px; color: #64748B;">🍴 ${item.cuisine} • ${item.price_tier || ''}</div>` : ''}
+              ${item.rating ? `<div style="font-size: 11px; color: #D97706; font-weight: 700;">★ ${item.rating}</div>` : ''}
+              ${item.best_time ? `<div style="font-size: 11px; color: #475569;">⏰ ${item.best_time}</div>` : ''}
+              ${item.entry_fee ? `<div style="font-size: 11px; color: #16A34A; font-weight: 700;">🎟️ ${item.entry_fee}</div>` : ''}
+              <p style="font-size: 11.5px; color: #334155; line-height: 1.4; margin: 4px 0 0 0;">${item.short_note || item.description || ''}</p>
+            </div>
+          `);
+
+          const marker = new mapboxgl.Marker({ element: el })
+            .setLngLat([lng, lat])
+            .setPopup(popup)
+            .addTo(map);
+
+          currentSightseeingMarkers.push(marker);
+          bounds.extend([lng, lat]);
+        });
+      });
+
+      if (!bounds.isEmpty()) {
+        map.fitBounds(bounds, { padding: 60, maxZoom: 13, duration: 1200 });
+      }
+    }
+
+    function wireBudgetTiersEvents(container, options, destCity) {
+      if (!container || !options) return;
+      container.querySelectorAll('.budget-tier-tab-card').forEach(tab => {
+        tab.addEventListener('click', () => {
+          const tierKey = tab.getAttribute('data-tier-key');
+          const tier = options[tierKey];
+          if (!tier) return;
+          container.innerHTML = `
+            ${renderBudgetTiersHtml(options, tierKey)}
+            ${renderSightseeingChecklistHtml(tier.destination_spots, destCity)}
+            <div style="background: #FFFFFF; border: 1px solid var(--border); border-radius: 14px; padding: 16px; line-height: 1.6; font-size: 14px;">
+              ${formatAiMarkdown(tier.itinerary)}
+            </div>
+          `;
+          wireBudgetTiersEvents(container, options, destCity);
+          wireSightseeingChecklistEvents(container, tier.destination_spots);
+          renderCategorizedPins(tier);
+        });
+      });
+    }
+
     function renderAlternativeRoutesOnMap(routes, activeIndex = 0) {
       if (!map || !routes || !routes.length) return;
       clearAlternativeRoutesFromMap();
@@ -1908,22 +2031,21 @@
       el.className = 'custom-photo-pin';
       el.style.cssText = 'display: flex; flex-direction: column; align-items: center; cursor: pointer; z-index: 10;';
 
-      const imgSrc = loc.imageThumb || FALLBACK_TRAVEL_SVG;
       const labelText = `${index + 1}. ${loc.name || 'Stop'}`;
 
       el.innerHTML = `
-        <div style="width: 70px; border-radius: 10px; overflow: hidden; background: #FFFFFF; border: 2px solid #1A73E8; box-shadow: 0 3px 10px rgba(0,0,0,0.22); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
-          <img src="${imgSrc}" alt="${loc.name || 'Place'}" style="width: 70px; height: 44px; object-fit: cover; display: block;" onerror="window.handleImgError(this, 'travel')">
-          <div style="font-size: 10px; font-weight: 700; color: #1E293B; padding: 3px 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; background: #FFFFFF;">
-            ${labelText}
-          </div>
+        <div style="display: flex; align-items: center; gap: 6px; background: #FFFFFF; border: 1.5px solid #1A73E8; border-radius: 16px; padding: 3px 9px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); font-size: 11px; font-weight: 700; color: #1E293B; white-space: nowrap; transition: transform 0.15s ease;" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'">
+          <span style="background: #1A73E8; color: #FFFFFF; border-radius: 50%; width: 17px; height: 17px; display: inline-flex; align-items: center; justify-content: center; font-size: 9.5px; font-weight: 800; flex-shrink: 0;">${index + 1}</span>
+          <span style="max-width: 130px; overflow: hidden; text-overflow: ellipsis;">${loc.name || 'Stop'}</span>
         </div>
-        <div style="width: 12px; height: 12px; background: #1A73E8; border: 2px solid #FFFFFF; border-radius: 50%; margin-top: 3px; box-shadow: 0 1px 4px rgba(0,0,0,0.3);"></div>
+        <div style="width: 7px; height: 7px; background: #FFFFFF; border-right: 1.5px solid #1A73E8; border-bottom: 1.5px solid #1A73E8; transform: rotate(45deg); margin-top: -4px;"></div>
       `;
 
       el.addEventListener('click', (e) => {
         e.stopPropagation();
-        openPlacePhotoModal(loc);
+        if (map && !isNaN(lng) && !isNaN(lat)) {
+          map.flyTo({ center: [lng, lat], zoom: 14 });
+        }
       });
 
       const marker = new mapboxgl.Marker({ element: el, anchor: 'bottom' })
@@ -2122,18 +2244,11 @@
 
       pinnedBar.style.display = 'block';
       cardsContainer.innerHTML = userPinnedStops.map((stop, idx) => {
-        const imgSrc = stop.imageThumb || FALLBACK_TRAVEL_SVG;
         return `
-          <div style="flex-shrink: 0; width: 140px; background: #0F172A; border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.3); position: relative; cursor: pointer;" class="pinned-stop-item" data-stop-index="${idx}">
-            <div style="position: relative; width: 100%; height: 75px; background: #1E293B;">
-              <img src="${imgSrc}" alt="${stop.name}" style="width: 100%; height: 100%; object-fit: cover; display: block;" onerror="window.handleImgError(this, 'travel')">
-              <span style="position: absolute; top: 4px; left: 4px; background: rgba(16, 185, 129, 0.9); color: #FFFFFF; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 6px;">#${idx + 1}</span>
-              <button type="button" class="btn-remove-single-pin" data-remove-index="${idx}" title="Remove pin" style="position: absolute; top: 4px; right: 4px; background: rgba(15, 23, 42, 0.75); color: #EF4444; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1;">✕</button>
-            </div>
-            <div style="padding: 8px;">
-              <strong style="display: block; font-size: 12px; color: #FFFFFF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px;">${stop.name}</strong>
-              <div style="font-size: 10px; color: #94A3B8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${stop.description || 'Pinned location'}</div>
-            </div>
+          <div style="flex-shrink: 0; display: inline-flex; align-items: center; gap: 8px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 8px 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); cursor: pointer; transition: all 0.15s ease;" class="pinned-stop-item" data-stop-index="${idx}">
+            <span style="background: #1A73E8; color: #FFFFFF; font-size: 11px; font-weight: 800; padding: 2px 7px; border-radius: 6px;">#${idx + 1}</span>
+            <span style="font-size: 12.5px; font-weight: 700; color: #1E293B; max-width: 140px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${stop.name}</span>
+            <button type="button" class="btn-remove-single-pin" data-remove-index="${idx}" title="Remove pin" style="background: #F1F5F9; color: #64748B; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; margin-left: 2px; line-height: 1;">✕</button>
           </div>
         `;
       }).join('');
@@ -2143,11 +2258,8 @@
           if (e.target.closest('.btn-remove-single-pin')) return;
           const idx = parseInt(card.getAttribute('data-stop-index'), 10);
           const stop = userPinnedStops[idx];
-          if (stop) {
-            openPlacePhotoModal(stop);
-            if (map && !isNaN(stop.lng) && !isNaN(stop.lat)) {
-              map.flyTo({ center: [stop.lng, stop.lat], zoom: 13 });
-            }
+          if (stop && map && !isNaN(stop.lng) && !isNaN(stop.lat)) {
+            map.flyTo({ center: [stop.lng, stop.lat], zoom: 14 });
           }
         });
       });
@@ -2202,31 +2314,12 @@
       const fullName = feature.place_name || feature.text || 'Pinned Location';
       const shortName = feature.text || fullName.split(',')[0].trim();
 
-      let imageThumb = null;
-      let imageFull = null;
-      let description = `Explore ${shortName}, India`;
-
-      try {
-        const queryUrl = `${API_BASE}/api/places/photo?name=${encodeURIComponent(shortName)}&region=${encodeURIComponent(fallbackRegion || '')}`;
-        const photoRes = await fetch(queryUrl);
-        if (photoRes.ok) {
-          const photoData = await photoRes.json();
-          imageThumb = photoData.imageThumb || null;
-          imageFull = photoData.imageFull || null;
-          if (photoData.description) description = photoData.description;
-        }
-      } catch (err) {
-        console.warn('Place photo fetch failed:', err);
-      }
-
       const stop = {
         name: shortName,
         fullName: fullName,
         lng: lng,
         lat: lat,
-        imageThumb: imageThumb,
-        imageFull: imageFull,
-        description: description
+        description: `Pinned location in ${fallbackRegion || 'India'}`
       };
 
       userPinnedStops.push(stop);
@@ -2719,16 +2812,25 @@
           }
 
           // Render AI Itinerary Timeline & Destination Places Checklist
-          if (aiData && aiData.itinerary) {
+          if (aiData && (aiData.itinerary || aiData.options)) {
             if (timelineContainer) {
               const targetCity = routesData?.destination?.name || promptText || 'Destination';
+              const budgetTiersHtml = aiData.options ? renderBudgetTiersHtml(aiData.options, 'exact_budget') : '';
               const checklistHtml = renderSightseeingChecklistHtml(destinationPlaces, targetCity);
+              const activeItinerary = (aiData.options && aiData.options.exact_budget)
+                ? aiData.options.exact_budget.itinerary
+                : (aiData.itinerary || '');
               timelineContainer.innerHTML = `
+                ${budgetTiersHtml}
                 ${checklistHtml}
                 <div style="background: #FFFFFF; border: 1px solid var(--border); border-radius: 14px; padding: 16px; line-height: 1.6; font-size: 14px;">
-                  ${formatAiMarkdown(aiData.itinerary)}
+                  ${formatAiMarkdown(activeItinerary)}
                 </div>
               `;
+              if (aiData.options) {
+                wireBudgetTiersEvents(timelineContainer, aiData.options, targetCity);
+                renderCategorizedPins(aiData.options.exact_budget);
+              }
               wireSightseeingChecklistEvents(timelineContainer, destinationPlaces);
             }
 

@@ -2190,156 +2190,247 @@ app.get('/api/places/photo', async (req, res) => {
   }
 });
 
-// --- Curated City Sightseeing Attractions & Benchmarks ---
-const CURATED_CITY_SIGHTSEEING = {
-  mumbai: [
-    { name: 'Gateway of India', lat: 18.9220, lng: 72.8347, best_time: '9:00 AM - 11:30 AM', entry_fee: 'Free', short_note: 'Iconic 26m arch monument overlooking the Mumbai Harbour and Arabian Sea.' },
-    { name: 'Marine Drive & Promenade', lat: 18.9432, lng: 72.8223, best_time: 'Sunset 5:30 PM - 7:30 PM', entry_fee: 'Free', short_note: 'The Queen\'s Necklace coastal promenade with panoramic sea breezes.' },
-    { name: 'Chhatrapati Shivaji Maharaj Terminus', lat: 18.9401, lng: 72.8358, best_time: '11:00 AM - 1:00 PM', entry_fee: 'Free', short_note: 'UNESCO World Heritage Victorian Gothic architectural masterpiece.' },
-    { name: 'Siddhivinayak Temple', lat: 19.0169, lng: 72.8311, best_time: 'Morning 7:00 AM - 9:00 AM', entry_fee: 'Free (VIP ₹100)', short_note: 'Revered spiritual temple dedicated to Lord Ganesha in Prabhadevi.' },
-    { name: 'Bandra-Worli Sea Link', lat: 19.0330, lng: 72.8183, best_time: 'Afternoon / Evening Drive', entry_fee: 'Toll ₹85', short_note: 'Modern 8-lane cable-stayed architectural wonder over Mahim Bay.' },
-    { name: 'Colaba Causeway Bazaar', lat: 18.9186, lng: 72.8295, best_time: '3:00 PM - 6:00 PM', entry_fee: 'Free', short_note: 'Historic street market for handicrafts, vintage jewelry & legendary cafes.' },
-    { name: 'Elephanta Caves', lat: 18.9633, lng: 72.9315, best_time: '10:00 AM - 2:00 PM', entry_fee: '₹40 (Ferry ₹260)', short_note: 'Ancient rock-cut cave temples dedicated to Shiva on Elephanta Island.' }
+// --- Curated City & Corridor Data for 3-Tier AI Concierge ---
+const CURATED_CITY_DATA = {
+  mumbai: {
+    destination_spots: [
+      { name: 'Gateway of India', lat: 18.9220, lng: 72.8347, best_time: '9:00 AM - 11:30 AM', entry_fee: 'Free', short_note: 'Iconic 26m arch monument overlooking Mumbai Harbour & Arabian Sea.' },
+      { name: 'Marine Drive & Promenade', lat: 18.9432, lng: 72.8223, best_time: 'Sunset 5:30 PM - 7:30 PM', entry_fee: 'Free', short_note: 'The Queen\'s Necklace coastal promenade with sunset sea breezes.' },
+      { name: 'Chhatrapati Shivaji Maharaj Terminus', lat: 18.9401, lng: 72.8358, best_time: '11:00 AM - 1:00 PM', entry_fee: 'Free', short_note: 'UNESCO World Heritage Victorian Gothic architectural masterpiece.' },
+      { name: 'Siddhivinayak Temple', lat: 19.0169, lng: 72.8311, best_time: 'Morning 7:00 AM - 9:00 AM', entry_fee: 'Free (VIP ₹100)', short_note: 'Revered spiritual temple dedicated to Lord Ganesha in Prabhadevi.' },
+      { name: 'Bandra-Worli Sea Link', lat: 19.0330, lng: 72.8183, best_time: 'Afternoon / Evening Drive', entry_fee: 'Toll ₹85', short_note: 'Modern 8-lane cable-stayed architectural wonder over Mahim Bay.' },
+      { name: 'Colaba Causeway Bazaar', lat: 18.9186, lng: 72.8295, best_time: '3:00 PM - 6:00 PM', entry_fee: 'Free', short_note: 'Historic street market for handicrafts, vintage jewelry & legendary cafes.' },
+      { name: 'Elephanta Caves', lat: 18.9633, lng: 72.9315, best_time: '10:00 AM - 2:00 PM', entry_fee: '₹40 (Ferry ₹260)', short_note: 'Ancient rock-cut cave temples dedicated to Shiva on Elephanta Island.' }
+    ],
+    restaurants: {
+      under_budget: [
+        { name: 'Bademiya Kebabs, Colaba', lat: 18.9228, lng: 72.8320, cuisine: 'Mughlai & Rolls', rating: '4.6★', price_for_two: '₹600' },
+        { name: 'Kyani & Co. Irani Cafe', lat: 18.9430, lng: 72.8285, cuisine: 'Parsi Bun Maska & Chai', rating: '4.5★', price_for_two: '₹350' },
+        { name: 'Sardar Refreshments, Tardeo', lat: 18.9680, lng: 72.8160, cuisine: 'Famous Extra Butter Pav Bhaji', rating: '4.7★', price_for_two: '₹400' }
+      ],
+      exact_budget: [
+        { name: 'Trishna Seafood Restaurant, Fort', lat: 18.9288, lng: 72.8312, cuisine: 'Coastal Koli Seafood', rating: '4.8★', price_for_two: '₹1,800' },
+        { name: 'Britannia & Co., Ballard Estate', lat: 18.9355, lng: 72.8390, cuisine: 'Authentic Berry Pulao', rating: '4.7★', price_for_two: '₹1,100' },
+        { name: 'Mahesh Lunch Home, Fort', lat: 18.9320, lng: 72.8335, cuisine: 'Mangalorean Ghee Roast', rating: '4.6★', price_for_two: '₹1,500' }
+      ],
+      smart_upgrade: [
+        { name: 'Wasabi by Morimoto (Taj Mahal Palace)', lat: 18.9217, lng: 72.8333, cuisine: 'Contemporary Japanese Fine Dining', rating: '4.9★', price_for_two: '₹5,500' },
+        { name: 'The Table, Colaba', lat: 18.9235, lng: 72.8318, cuisine: 'Farm-to-Table Global Cuisine', rating: '4.8★', price_for_two: '₹3,800' },
+        { name: 'Dome InterContinental, Marine Drive', lat: 18.9325, lng: 72.8220, cuisine: 'Rooftop Lounge & Cocktails', rating: '4.7★', price_for_two: '₹4,200' }
+      ]
+    },
+    hotels: {
+      under_budget: [
+        { name: 'Hotel Suba Palace, Colaba', lat: 18.9240, lng: 72.8315, rating: '4.5★', price_per_night: '₹3,200/night', amenities: 'AC, Free Wi-Fi, 24/7 Desk, Heritage Walk' },
+        { name: 'Residency Hotel Fort', lat: 18.9340, lng: 72.8340, rating: '4.4★', price_per_night: '₹3,500/night', amenities: 'Central Location, Complimentary Breakfast' }
+      ],
+      exact_budget: [
+        { name: 'Fariyas Hotel, Colaba', lat: 18.9195, lng: 72.8290, rating: '4.7★', price_per_night: '₹5,800/night', amenities: 'Swimming Pool, Sea View, Fitness Centre, Multi-Cuisine Dining' },
+        { name: 'The Gordon House Hotel, Colaba', lat: 18.9230, lng: 72.8322, rating: '4.6★', price_per_night: '₹6,200/night', amenities: 'Boutique Designer Suites, All Day Dining, Bar' }
+      ],
+      smart_upgrade: [
+        { name: 'The Taj Mahal Palace, Mumbai', lat: 18.9217, lng: 72.8333, rating: '4.9★', price_per_night: '₹14,500/night', amenities: 'Sea-facing Heritage Wing, Butler Service, Luxury Spa, Ocean Pool' },
+        { name: 'The Oberoi, Nariman Point', lat: 18.9270, lng: 72.8205, rating: '4.9★', price_per_night: '₹16,000/night', amenities: 'Panoramic Marine Drive Views, Michelin-calibre dining, Concierge' }
+      ]
+    }
+  },
+  bhopal: {
+    destination_spots: [
+      { name: 'Upper Lake (Bada Talab)', lat: 23.2500, lng: 77.3468, best_time: 'Sunset 5:00 PM - 7:00 PM', entry_fee: 'Free (Boating ₹150)', short_note: 'India\'s largest man-made lake with boating & waterfront boulevard.' },
+      { name: 'Taj-ul-Masajid', lat: 23.2628, lng: 77.3934, best_time: '9:00 AM - 12:00 PM', entry_fee: 'Free', short_note: 'One of the largest mosques in Asia with pink minarets & marble domes.' },
+      { name: 'Van Vihar National Park', lat: 23.2285, lng: 77.3719, best_time: '7:00 AM - 10:30 AM', entry_fee: '₹20 / person', short_note: 'Sprawling lakeside open-air wildlife sanctuary & safari park.' },
+      { name: 'Bharat Bhavan Cultural Complex', lat: 23.2435, lng: 77.3888, best_time: '2:00 PM - 6:00 PM', entry_fee: '₹20', short_note: 'Multi-arts centre designed by Charles Correa overlooking the lake.' },
+      { name: 'Sanchi Stupa Complex', lat: 23.4795, lng: 77.7397, best_time: '9:00 AM - 1:00 PM', entry_fee: '₹40 / person', short_note: 'Ancient UNESCO World Heritage Buddhist sanctuary founded by Emperor Ashoka.' },
+      { name: 'Shaukat Mahal & Sadar Manzil', lat: 23.2570, lng: 77.4019, best_time: '11:00 AM - 2:00 PM', entry_fee: 'Free', short_note: 'Unique Indo-Gothic palace fusion built during the reign of the Begums.' }
+    ],
+    restaurants: {
+      under_budget: [
+        { name: 'Sharma & Vishnu Fast Food', lat: 23.2205, lng: 77.4310, cuisine: 'Bhopali Poha Jalebi & Chaat', rating: '4.7★', price_for_two: '₹200' },
+        { name: 'Hakeem Hotel, MP Nagar', lat: 23.2330, lng: 77.4320, cuisine: 'Authentic Mughlai & Biryani', rating: '4.6★', price_for_two: '₹600' },
+        { name: 'Wind & Waves Restaurant', lat: 23.2490, lng: 77.3850, cuisine: 'Lakeside Multi-cuisine', rating: '4.5★', price_for_two: '₹500' }
+      ],
+      exact_budget: [
+        { name: 'Under the Mango Tree (Jehan Numa)', lat: 23.2428, lng: 77.3912, cuisine: 'Royal Bhopali Rezala & Kebabs', rating: '4.8★', price_for_two: '₹1,600' },
+        { name: 'Shahnama, Jehan Numa Palace', lat: 23.2428, lng: 77.3912, cuisine: 'Multi-Cuisine Buffet & Grill', rating: '4.7★', price_for_two: '₹1,800' },
+        { name: 'Mocha Cafe & Bar, Arera Colony', lat: 23.2100, lng: 77.4350, cuisine: 'Continental & Artisanal Coffee', rating: '4.6★', price_for_two: '₹1,200' }
+      ],
+      smart_upgrade: [
+        { name: 'The General\'s Table (Jehan Numa Retreat)', lat: 23.2250, lng: 77.3680, cuisine: 'Slow-Cooked Organic Heritage Cuisine', rating: '4.9★', price_for_two: '₹3,200' },
+        { name: 'Za-aiqa, Courtyard by Marriott', lat: 23.2350, lng: 77.4330, cuisine: 'Awadhi & Pan-Indian Fine Dining', rating: '4.8★', price_for_two: '₹2,800' }
+      ]
+    },
+    hotels: {
+      under_budget: [
+        { name: 'Hotel Lake View Ashok', lat: 23.2450, lng: 77.3870, rating: '4.4★', price_per_night: '₹2,400/night', amenities: 'Lake View, Free Wi-Fi, Restaurant, Parking' },
+        { name: 'Courtyard Bhopal Central', lat: 23.2335, lng: 77.4300, rating: '4.3★', price_per_night: '₹2,800/night', amenities: 'Clean AC Rooms, In-house Cafe' }
+      ],
+      exact_budget: [
+        { name: 'Jehan Numa Palace Hotel', lat: 23.2428, lng: 77.3912, rating: '4.8★', price_per_night: '₹6,200/night', amenities: '19th-Century Royal Palace, Equestrian Track, Swimming Pool, Luxury Spa' },
+        { name: 'Noor-Us-Sabah Palace', lat: 23.2750, lng: 77.3650, rating: '4.7★', price_per_night: '₹5,500/night', amenities: 'Hilltop Heritage Palace, Panoramic Lake Vistas, Mughal Gardens' }
+      ],
+      smart_upgrade: [
+        { name: 'Jehan Numa Retreat, Van Vihar', lat: 23.2250, lng: 77.3680, rating: '4.9★', price_per_night: '₹10,500/night', amenities: 'Eco-Luxury Forest Cottages, Private Spa, Organic Farm, Chauffeur Service' },
+        { name: 'Taj Lakefront, Bhopal', lat: 23.2200, lng: 77.3900, rating: '4.9★', price_per_night: '₹12,000/night', amenities: 'Infinity Lakeside Pool, Presidential Suites, Dedicated Concierge' }
+      ]
+    }
+  }
+};
+
+const CORRIDOR_EN_ROUTE_STOPS = {
+  'mumbai': [
+    { name: 'Indore Chhappan Dukan', lat: 22.7230, lng: 75.8820, type: 'Culinary Heritage Stop', description: 'Legendary 56-shop food boulevard serving famous Malwa snacks.' },
+    { name: 'Maheshwar Fort & Narmada Ghats', lat: 22.1764, lng: 75.5828, type: 'Heritage Fort & Ghats', description: 'Ancient Ahilyabai Holkar palace with intricate stone carvings over river Narmada.' },
+    { name: 'Dhule Highway Oasis & EV Hub', lat: 20.9042, lng: 74.7749, type: 'Expressway Rest Plaza', description: 'Clean restrooms, EV fast charging, fuel, and multi-cuisine restaurant.' },
+    { name: 'Igatpuri Western Ghats Lookout', lat: 19.6967, lng: 73.5606, type: 'Scenic Mountain Viewpoint', description: 'Misty mountain waterfalls and panoramic valley viewing halt.' }
   ],
-  bhopal: [
-    { name: 'Upper Lake (Bada Talab)', lat: 23.2500, lng: 77.3468, best_time: 'Sunset 5:00 PM - 7:00 PM', entry_fee: 'Free (Boating ₹150)', short_note: 'India\'s largest man-made lake with boating and scenic waterfront.' },
-    { name: 'Taj-ul-Masajid', lat: 23.2628, lng: 77.3934, best_time: '9:00 AM - 12:00 PM', entry_fee: 'Free', short_note: 'One of the largest mosques in Asia with pink minarets & marble domes.' },
-    { name: 'Van Vihar National Park', lat: 23.2285, lng: 77.3719, best_time: '7:00 AM - 10:30 AM', entry_fee: '₹20 / person', short_note: 'Sprawling lakeside open-air wildlife sanctuary & safari park.' },
-    { name: 'Bharat Bhavan Cultural Complex', lat: 23.2435, lng: 77.3888, best_time: '2:00 PM - 6:00 PM', entry_fee: '₹20', short_note: 'Multi-arts centre designed by Charles Correa overlooking the lake.' },
-    { name: 'Sanchi Stupa Complex', lat: 23.4795, lng: 77.7397, best_time: '9:00 AM - 1:00 PM', entry_fee: '₹40 / person', short_note: 'Ancient UNESCO World Heritage Buddhist sanctuary founded by Emperor Ashoka.' },
-    { name: 'Shaukat Mahal & Sadar Manzil', lat: 23.2570, lng: 77.4019, best_time: '11:00 AM - 2:00 PM', entry_fee: 'Free', short_note: 'Unique Indo-Gothic palace fusion built during the reign of the Begums.' }
-  ],
-  delhi: [
-    { name: 'India Gate & Kartavya Path', lat: 28.6129, lng: 77.2295, best_time: 'Evening 5:00 PM - 8:00 PM', entry_fee: 'Free', short_note: 'Grand 42m triumphal war memorial arch with manicured lawns.' },
-    { name: 'Red Fort (Lal Qila)', lat: 28.6562, lng: 77.2410, best_time: '9:30 AM - 1:00 PM', entry_fee: '₹35 / person', short_note: 'UNESCO historic Mughal imperial citadel of red sandstone.' },
-    { name: 'Qutub Minar', lat: 28.5245, lng: 77.1855, best_time: '2:30 PM - 5:30 PM', entry_fee: '₹40 / person', short_note: 'Soaring 73m victory minaret with ancient iron pillar and intricate carvings.' },
-    { name: 'Humayun\'s Tomb', lat: 28.5933, lng: 77.2507, best_time: '8:30 AM - 11:30 AM', entry_fee: '₹40 / person', short_note: 'Stunning charbagh garden mausoleum that inspired the Taj Mahal.' },
-    { name: 'Lotus Temple', lat: 28.5535, lng: 77.2588, best_time: '10:00 AM - 12:00 PM', entry_fee: 'Free', short_note: 'Architectural marvel shaped like a blooming white lotus open to all faiths.' },
-    { name: 'Chandni Chowk & Khari Baoli', lat: 28.6506, lng: 77.2303, best_time: '1:00 PM - 4:00 PM', entry_fee: 'Free', short_note: 'Historic spice market and street-food haven operating since 1650.' }
-  ],
-  jaipur: [
-    { name: 'Hawa Mahal (Palace of Winds)', lat: 26.9239, lng: 75.8267, best_time: '9:00 AM - 11:30 AM', entry_fee: '₹50 / person', short_note: 'Iconic 5-storey pink sandstone honeycomb facade with 953 jharokhas.' },
-    { name: 'Amber Palace & Fort', lat: 26.9855, lng: 75.8513, best_time: '8:00 AM - 12:00 PM', entry_fee: '₹100 / person', short_note: 'Hilltop Rajput fortress with Sheesh Mahal and scenic Maota Lake views.' },
-    { name: 'City Palace Jaipur', lat: 26.9258, lng: 75.8236, best_time: '1:00 PM - 4:00 PM', entry_fee: '₹200 / person', short_note: 'Royal residence combining Rajput and Mughal architectural splendor.' },
-    { name: 'Jantar Mantar Observatory', lat: 26.9248, lng: 75.8246, best_time: '11:00 AM - 1:00 PM', entry_fee: '₹50 / person', short_note: 'World\'s largest stone sundial and UNESCO astronomical instruments.' },
-    { name: 'Nahargarh Fort', lat: 26.9374, lng: 75.8155, best_time: 'Sunset 5:00 PM - 7:00 PM', entry_fee: '₹50 / person', short_note: 'Dramatic Aravalli ridge fort with sweeping vistas of the Pink City.' },
-    { name: 'Albert Hall Museum', lat: 26.9116, lng: 75.8195, best_time: 'Evening 6:00 PM - 8:00 PM', entry_fee: '₹40 / person', short_note: 'Oldest state museum housed in illuminated Indo-Saracenic building.' }
-  ],
-  goa: [
-    { name: 'Basilica of Bom Jesus', lat: 15.5009, lng: 73.9116, best_time: '9:00 AM - 12:00 PM', entry_fee: 'Free', short_note: 'UNESCO World Heritage 16th-century baroque church holding St. Francis Xavier.' },
-    { name: 'Fort Aguada & Lighthouse', lat: 15.4925, lng: 73.7735, best_time: '4:00 PM - 6:30 PM', entry_fee: '₹50 / person', short_note: '17th-century Portuguese fortress commanding panoramic Arabian Sea views.' },
-    { name: 'Dudhsagar Waterfalls', lat: 15.3144, lng: 74.3144, best_time: '7:00 AM - 1:00 PM', entry_fee: '₹500 jeep safari', short_note: 'Four-tiered sea of milk waterfall crashing through lush Western Ghats.' },
-    { name: 'Anjuna Flea Market & Beach', lat: 15.5733, lng: 73.7410, best_time: '11:00 AM - 5:00 PM', entry_fee: 'Free', short_note: 'Vibrant beach lined with red cliffs, artisan stalls & beachfront shacks.' },
-    { name: 'Fontainhas Latin Quarter', lat: 15.4989, lng: 73.8315, best_time: '3:30 PM - 6:00 PM', entry_fee: 'Free', short_note: 'Picturesque heritage neighborhood of vibrant Portuguese colonial villas.' },
-    { name: 'Palolem Beach Crescent', lat: 15.0100, lng: 74.0232, best_time: 'Sunset 5:00 PM - 7:00 PM', entry_fee: 'Free', short_note: 'Calm crescent bay fringed by coconut palms and beach huts.' }
+  'bhopal': [
+    { name: 'Dewas Chamunda Mata Tekri', lat: 22.9676, lng: 76.0534, type: 'Hilltop Temple & Viewpoint', description: 'Sacred hill shrine with ropeway and scenic vistas of Malwa plateau.' },
+    { name: 'Ashta Highway Rest Plaza', lat: 23.0200, lng: 76.7200, type: 'Rest & Refreshment Plaza', description: 'Clean family washrooms, fuel station, and fresh Malwa snacks.' },
+    { name: 'Sehore Crescent Water Park', lat: 23.2000, lng: 77.0800, type: 'Scenic Roadside Halt', description: 'Lush greenery, coffee lounge, and highway travelers retreat.' }
   ]
 };
 
-// AI Travel Planner Route
+// AI Travel Planner Route with Universal 3-Tier Budget Calibration
 app.post('/api/ai/plan-trip', async (req, res) => {
-  const { destination, days, interests, prompt: userPrompt, budget, duration, travelers } = req.body;
+  const { destination, days, interests, prompt: userPrompt, budget, duration, travelers, origin } = req.body;
   const targetDestination = destination || userPrompt || 'Mumbai';
+  const originCity = origin || 'Ujjain';
   const targetDays = days || duration || '2 Days';
   const travelerCount = travelers ? `${travelers} travelers` : '4 travelers';
-  const tripBudget = budget ? `Budget: ₹${budget}` : (interests || 'Moderate budget');
+  const numBudget = Math.max(1000, parseFloat(budget) || 20000);
 
   const destKey = (targetDestination || '').toLowerCase().trim();
-  const matchedKey = Object.keys(CURATED_CITY_SIGHTSEEING).find(k => destKey.includes(k)) || 'mumbai';
-  const fallbackSightseeing = CURATED_CITY_SIGHTSEEING[matchedKey] || CURATED_CITY_SIGHTSEEING.mumbai;
+  const matchedKey = Object.keys(CURATED_CITY_DATA).find(k => destKey.includes(k)) || 'mumbai';
+  const cityData = CURATED_CITY_DATA[matchedKey] || CURATED_CITY_DATA.mumbai;
+  const enRouteData = CORRIDOR_EN_ROUTE_STOPS[matchedKey] || CORRIDOR_EN_ROUTE_STOPS.mumbai;
+
+  // Compute 3 Calibrated Tiers
+  const costUnder = Math.round(numBudget * 0.82); // strictly 75%-90% of B
+  const costExact = Math.round(numBudget);         // strictly <= B
+  const costUpgrade = Math.round(numBudget + 4000); // strictly B + ₹3k to ₹5k
 
   try {
-    const aiPrompt = `You are a premier India travel architect. Create a realistic, highly detailed ${targetDays} travel itinerary for ${targetDestination} for ${travelerCount} with total ${tripBudget}.
-Provide the response strictly in JSON format with three top-level keys:
-1. "itinerary": A well-structured markdown itinerary detailing morning, afternoon, and evening plans per day, transit recommendations, and authentic regional dining.
-2. "corridor_stops": An array of 2 to 4 major highway transit/midpoint rest stops along the journey corridor with:
-   - "name": real name of the town, fort, or expressway plaza
-   - "lat": float latitude
-   - "lng": float longitude
-   - "type": e.g. "Rest & Fuel Plaza", "Heritage Monument", "Scenic Viewpoint"
-   - "description": 1 concise sentence about the stop
-3. "destination_places": An array of 5 to 7 real, famous, and exact sightseeing attractions INSIDE ${targetDestination} (for example in Mumbai: Gateway of India, Marine Drive, Chhatrapati Shivaji Maharaj Terminus, Siddhivinayak Temple, Bandra-Worli Sea Link, Colaba Causeway, Elephanta Caves). Each item must have:
-   - "name": exact landmark name
-   - "lat": float latitude
-   - "lng": float longitude
-   - "best_time": recommended time of day (e.g. "9:00 AM - 11:30 AM" or "Sunset 5:30 PM")
-   - "entry_fee": exact entry fee or "Free" (e.g. "Free", "₹50 / person", "₹100")
-   - "short_note": 1 crisp sentence describing the visitor experience and highlight
-Use REAL, named local hotels and restaurants for ${targetDestination} in the itinerary and recommendations (never use generic placeholders like "Highway Grand Oasis" or "Express Dhaba").`;
+    const aiPrompt = `You are India's premier travel architect. Create a realistic, highly detailed ${targetDays} travel itinerary from "${originCity}" to "${targetDestination}" for ${travelerCount} with a baseline user budget B = ₹${numBudget}.
+You MUST generate 3 budget-calibrated plan options:
+1. "under_budget": Total cost strictly between 75% and 90% of B (around ₹${costUnder}, save ₹${numBudget - costUnder}).
+2. "exact_budget": Total cost strictly <= B (around ₹${costExact}).
+3. "smart_upgrade": Total cost strictly B + ₹3,000 to B + ₹5,000 (around ₹${costUpgrade}), including an explicit "upgrade_perks" array explaining what the extra ₹4,000 unlocks.
 
-    const response = await ai.models.generateContent({
-      model: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
-      contents: aiPrompt,
-      config: {
-        responseMimeType: 'application/json',
-      },
-    });
+For EACH of the 3 options, provide REAL, VERIFIABLE places with exact decimal [lat, lng] coordinates (NO generic placeholders):
+- "en_route_spots": 3 to 4 real highway/midpoint heritage, viewpoint, or rest stops between ${originCity} and ${targetDestination} with name, lat (float), lng (float), type, and description.
+- "destination_spots": 5 to 7 real famous tourist attractions inside ${targetDestination} with name, lat (float), lng (float), best_time, entry_fee, and short_note.
+- "restaurants": 3 to 4 real named restaurants or cafes in ${targetDestination} with name, lat (float), lng (float), cuisine, rating, and price_for_two.
+- "hotels": 2 to 3 real named hotels in ${targetDestination} with name, lat (float), lng (float), rating, price_per_night, and amenities.
+- "itinerary": Day-by-day markdown text describing morning, afternoon, and evening activities.
 
-    const cleanJson = (response.text || '').replace(/```(?:json)?\s*|\s*```/g, '').trim();
-    let aiData;
+Provide the response strictly in JSON format with top-level key "options" containing "under_budget", "exact_budget", "smart_upgrade".`;
+
+    let options = null;
+
     try {
-      aiData = JSON.parse(cleanJson);
-    } catch (parseErr) {
-      aiData = {
-        itinerary: cleanJson || `Custom ${targetDays} itinerary for ${targetDestination} (${travelerCount}).`,
-        destination_places: fallbackSightseeing,
-        corridor_stops: []
-      };
+      const response = await ai.models.generateContent({
+        model: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
+        contents: aiPrompt,
+        config: {
+          responseMimeType: 'application/json',
+        },
+      });
+
+      const cleanJson = (response.text || '').replace(/```(?:json)?\s*|\s*```/g, '').trim();
+      const parsed = JSON.parse(cleanJson);
+      if (parsed && parsed.options) {
+        options = parsed.options;
+      }
+    } catch (aiErr) {
+      console.warn('Gemini 3-tier generation notice:', aiErr.message);
     }
 
-    let places = (aiData.destination_places && Array.isArray(aiData.destination_places) && aiData.destination_places.length > 0)
-      ? aiData.destination_places
-      : (aiData.locations && Array.isArray(aiData.locations) && aiData.locations.length > 0 ? aiData.locations : fallbackSightseeing);
-
-    places = places.map((p, pIdx) => {
-      let lng = parseFloat(p.lng);
-      let lat = parseFloat(p.lat);
-      if (isNaN(lng) || isNaN(lat) || (Math.abs(lat) > 60 && Math.abs(lng) < 40)) {
-        const fb = fallbackSightseeing[pIdx % fallbackSightseeing.length];
-        lng = fb.lng;
-        lat = fb.lat;
-      }
+    // Build or normalize robust 3-tier structure
+    const makeTier = (tierName, cost, savings, perks, restTier, hotelTier, titleTag) => {
+      const opt = (options && options[tierName]) || {};
       return {
-        name: p.name || `Sightseeing Attraction #${pIdx + 1}`,
-        lng,
-        lat,
-        best_time: p.best_time || 'Open Daily 9:00 AM - 6:00 PM',
-        entry_fee: p.entry_fee || 'Free',
-        short_note: p.short_note || p.description || `Famous sightseeing landmark in ${targetDestination}.`
+        tier: tierName,
+        title: titleTag.title,
+        tag: titleTag.tag,
+        total_cost: cost,
+        savings: savings || 0,
+        upgrade_perks: perks || [],
+        en_route_spots: (opt.en_route_spots && opt.en_route_spots.length) ? opt.en_route_spots : enRouteData,
+        destination_spots: (opt.destination_spots && opt.destination_spots.length) ? opt.destination_spots : cityData.destination_spots,
+        restaurants: (opt.restaurants && opt.restaurants.length) ? opt.restaurants : (cityData.restaurants[restTier] || cityData.restaurants.exact_budget),
+        hotels: (opt.hotels && opt.hotels.length) ? opt.hotels : (cityData.hotels[hotelTier] || cityData.hotels.exact_budget),
+        itinerary: opt.itinerary || `### ${titleTag.title} — ${targetDestination} (${targetDays}, ${travelerCount})\n\n- **Day 1**: Departure from ${originCity}, transit via scenic highway stops, hotel check-in, and evening local exploration.\n- **Day 2**: Full-day guided sightseeing of iconic landmarks, regional dining, and sunset viewpoint.\n\n*Budget Calibrated: ₹${cost.toLocaleString('en-IN')} (Target: ₹${numBudget.toLocaleString('en-IN')})*`
       };
-    });
+    };
 
-    await Promise.all(
-      places.map(async (loc) => {
-        try {
-          const photoData = await fetchLandmarkPhoto(loc.name, targetDestination);
-          loc.imageThumb = photoData.imageThumb;
-          loc.imageFull = photoData.imageFull;
-          loc.description = loc.short_note || photoData.description || `Explore ${loc.name}, India`;
-        } catch (fetchErr) {
-          loc.imageThumb = null;
-          loc.imageFull = null;
-          loc.description = loc.short_note || `Explore ${loc.name}`;
-        }
-      })
-    );
+    const finalOptions = {
+      under_budget: makeTier(
+        'under_budget',
+        costUnder,
+        numBudget - costUnder,
+        [],
+        'under_budget',
+        'under_budget',
+        { title: 'Smart Saver Corridor', tag: `VALUE TIER • SAVE ₹${(numBudget - costUnder).toLocaleString('en-IN')}` }
+      ),
+      exact_budget: makeTier(
+        'exact_budget',
+        costExact,
+        0,
+        [],
+        'exact_budget',
+        'exact_budget',
+        { title: 'Balanced Premium Corridor', tag: `RECOMMENDED • EXACT ₹${costExact.toLocaleString('en-IN')}` }
+      ),
+      smart_upgrade: makeTier(
+        'smart_upgrade',
+        costUpgrade,
+        0,
+        [
+          'Private executive AC SUV upgrade with zero surge and personal chauffeur',
+          '4-Star boutique heritage stay with complimentary breakfast & evening high tea',
+          'Skip-the-line VIP passes to key monuments & guided heritage walk',
+          'Reserved dining at award-winning authentic local chef restaurants'
+        ],
+        'smart_upgrade',
+        'smart_upgrade',
+        { title: 'Luxury Executive Corridor', tag: `SMART UPGRADE • +₹4,000` }
+      )
+    };
+
+    const defaultSpots = finalOptions.exact_budget.destination_spots;
 
     res.json({
       success: true,
-      itinerary: aiData.itinerary || `### ${targetDestination} Plan (${targetDays}, ${travelerCount})\n\nComprehensive travel curation across ${targetDestination}.`,
-      destination_places: places,
-      locations: places,
-      corridor_stops: aiData.corridor_stops || []
+      options: finalOptions,
+      destination_places: defaultSpots,
+      locations: defaultSpots,
+      corridor_stops: finalOptions.exact_budget.en_route_spots,
+      itinerary: finalOptions.exact_budget.itinerary
     });
   } catch (err) {
     console.error('AI plan-trip error:', err.message);
+    const fallbackTier = {
+      tier: 'exact_budget',
+      title: 'Balanced Premium Corridor',
+      tag: `RECOMMENDED • ₹${numBudget.toLocaleString('en-IN')}`,
+      total_cost: numBudget,
+      en_route_spots: enRouteData,
+      destination_spots: cityData.destination_spots,
+      restaurants: cityData.restaurants.exact_budget,
+      hotels: cityData.hotels.exact_budget,
+      itinerary: `### Curated ${targetDestination} Plan (${targetDays}, ${travelerCount})\n\n- **Day 1**: Scenic transit from ${originCity}, midpoint rest stop, hotel check-in & landmark visits.\n- **Day 2**: Cultural attractions, waterfront promenade & famous regional culinary stops.`
+    };
     res.json({
       success: true,
-      itinerary: `### ${targetDestination} Curated Plan (${targetDays}, ${travelerCount})\n\n- **Day 1**: Arrival in ${targetDestination}, check-in, and heritage landmark exploration.\n- **Day 2**: Cultural attractions, waterfront promenade, and authentic local dining.\n\n*(Curated with high-priority local sights for ${targetDestination})*`,
-      destination_places: fallbackSightseeing,
-      locations: fallbackSightseeing,
-      corridor_stops: [
-        { name: 'Corridor Transit Hub', lng: 75.7682, lat: 23.1824, type: 'Rest & Fuel Plaza', description: 'Major highway interchange with EV fast charging & food court.' }
-      ]
+      options: {
+        under_budget: { ...fallbackTier, tier: 'under_budget', title: 'Smart Saver Corridor', tag: `VALUE TIER • ₹${costUnder.toLocaleString('en-IN')}`, total_cost: costUnder, savings: numBudget - costUnder },
+        exact_budget: fallbackTier,
+        smart_upgrade: { ...fallbackTier, tier: 'smart_upgrade', title: 'Luxury Executive Corridor', tag: `SMART UPGRADE • ₹${costUpgrade.toLocaleString('en-IN')}`, total_cost: costUpgrade, upgrade_perks: ['Executive SUV with chauffeur', '4-Star heritage hotel upgrade', 'VIP darshan & monument skip-the-line passes'] }
+      },
+      destination_places: cityData.destination_spots,
+      locations: cityData.destination_spots,
+      itinerary: fallbackTier.itinerary
     });
   }
 });
