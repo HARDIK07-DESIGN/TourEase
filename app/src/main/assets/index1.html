@@ -165,36 +165,116 @@
       position: relative;
     }
 
-    .role-switcher-select {
+    .role-switcher-btn {
       appearance: none;
       -webkit-appearance: none;
       background: var(--surface-subtle);
       border: 1px solid var(--border-input);
-      padding: 6px 28px 6px 12px;
+      padding: 6px 10px;
       border-radius: var(--radius-pill);
       font-size: 12px;
       font-weight: 600;
       color: var(--text-main);
-      outline: none;
-      font-family: inherit;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
       transition: var(--transition);
+      font-family: inherit;
+      user-select: none;
     }
 
-    .role-switcher-select:focus {
-      border-color: var(--primary);
+    .role-switcher-btn:hover {
       background: var(--surface);
+      border-color: var(--primary);
+    }
+
+    .role-switcher-btn:focus {
+      outline: none;
       box-shadow: 0 0 0 3px var(--accent-glow);
     }
 
-    .role-switcher-arrow {
+    .custom-role-popover {
       position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 9px;
+      top: calc(100% + 6px);
+      right: 0;
+      width: 230px;
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+      padding: 6px;
+      z-index: 1050;
+      animation: popoverFadeIn 0.15s ease-out;
+    }
+
+    @keyframes popoverFadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .custom-role-popover-header {
+      font-size: 10px;
+      font-weight: 800;
       color: var(--text-muted);
-      pointer-events: none;
+      letter-spacing: 0.6px;
+      padding: 6px 10px 4px 10px;
+      border-bottom: 1px solid #F1F5F9;
+      margin-bottom: 4px;
+    }
+
+    .custom-role-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.15s ease;
+      user-select: none;
+    }
+
+    .custom-role-item:hover {
+      background: #F8FAFC;
+    }
+
+    .custom-role-item.active {
+      background: #EFF6FF;
+    }
+
+    .role-item-icon {
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .role-item-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .role-item-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1E293B;
+    }
+
+    .custom-role-item.active .role-item-title {
+      color: #1D4ED8;
+    }
+
+    .role-item-desc {
+      font-size: 11px;
+      color: #64748B;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .role-item-check {
+      font-size: 13px;
+      font-weight: 800;
+      color: #2563EB;
+      flex-shrink: 0;
     }
 
     .user-profile-pill-btn {
@@ -1089,15 +1169,10 @@
         flex-shrink: 1;
         min-width: 0;
       }
-      .role-switcher-select {
-        padding: 5px 22px 5px 8px !important;
+      .role-switcher-btn {
+        padding: 5px 8px !important;
         font-size: 11.5px !important;
-        max-width: 106px;
-        text-overflow: ellipsis;
-      }
-      .role-switcher-arrow {
-        right: 6px;
-        font-size: 8px;
+        gap: 4px !important;
       }
       .user-profile-pill-btn {
         width: 28px;
@@ -1153,6 +1228,54 @@
       }
     }
 
+    /* Polish for screens <= 420px */
+    @media (max-width: 420px) {
+      .android-top-bar {
+        padding: 8px 8px 6px 8px !important;
+        gap: 4px !important;
+      }
+      .brand-section {
+        gap: 4px !important;
+      }
+      .brand-icon-wrap {
+        width: 26px !important;
+        height: 26px !important;
+        border-radius: 7px !important;
+      }
+      .brand-icon-wrap svg {
+        width: 14px !important;
+        height: 14px !important;
+      }
+      .brand-titles h1 {
+        font-size: 14.5px !important;
+      }
+      .header-actions-group {
+        gap: 4px !important;
+      }
+      .role-switcher-btn {
+        padding: 5px 6px !important;
+        font-size: 11px !important;
+        gap: 3px !important;
+      }
+      .btn-track-trip,
+      #btnOpenPublicTrackModal {
+        padding: 5px 6px !important;
+        font-size: 11px !important;
+      }
+      .btn-universal-logout,
+      #btnUniversalLogout {
+        padding: 5px 6px !important;
+        font-size: 11px !important;
+      }
+      .user-profile-pill-btn {
+        display: none !important;
+      }
+      .custom-role-popover {
+        right: -30px !important;
+        width: 215px !important;
+      }
+    }
+
     /* Stack Pickup & Dropoff on narrow screens */
     .cab-route-inputs-grid {
       display: grid;
@@ -1186,13 +1309,41 @@
         </div>
 
         <div class="header-actions-group">
-          <div class="role-switcher-wrap">
-            <select class="role-switcher-select" id="roleSelector">
-              <option value="traveler">🧭 Traveler</option>
-              <option value="cab_owner">🚕 Cab Owner</option>
-              <option value="rental_vendor">🏢 Rental Vendor</option>
-            </select>
-            <span class="role-switcher-arrow">▼</span>
+          <div class="role-switcher-wrap" id="customRoleMenuWrap">
+            <button type="button" class="role-switcher-btn" id="customRoleMenuTrigger" aria-haspopup="true" aria-expanded="false" title="Switch User Role">
+              <span id="currentRoleIcon">🧭</span>
+              <span id="currentRoleLabel">Traveler</span>
+              <span class="role-switcher-arrow">▾</span>
+            </button>
+            <input type="hidden" id="roleSelector" value="traveler">
+
+            <div class="custom-role-popover" id="customRolePopover" style="display: none;">
+              <div class="custom-role-popover-header">SELECT TOUR-EASE ROLE</div>
+              <div class="custom-role-item active" data-role="traveler" id="roleItemTraveler">
+                <div class="role-item-icon">🧭</div>
+                <div class="role-item-info">
+                  <div class="role-item-title">Traveler</div>
+                  <div class="role-item-desc">Plan trips, tours, & cabs</div>
+                </div>
+                <span class="role-item-check" id="roleCheckTraveler">✓</span>
+              </div>
+              <div class="custom-role-item" data-role="cab_owner" id="roleItemCabOwner">
+                <div class="role-item-icon">🚕</div>
+                <div class="role-item-info">
+                  <div class="role-item-title">Cab Owner</div>
+                  <div class="role-item-desc">Manage fleet & rides</div>
+                </div>
+                <span class="role-item-check" id="roleCheckCabOwner" style="display: none;">✓</span>
+              </div>
+              <div class="custom-role-item" data-role="rental_vendor" id="roleItemRentalVendor">
+                <div class="role-item-icon">🏢</div>
+                <div class="role-item-info">
+                  <div class="role-item-title">Rental Vendor</div>
+                  <div class="role-item-desc">Self-drive & commercial fleet</div>
+                </div>
+                <span class="role-item-check" id="roleCheckRentalVendor" style="display: none;">✓</span>
+              </div>
+            </div>
           </div>
           <button class="user-profile-pill-btn" id="userProfileBtn" title="Account Details">HC</button>
           <button type="button" class="btn-track-trip" id="btnOpenPublicTrackModal" title="Track Live Trip with TRK Code" style="background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; padding: 6px 10px; border-radius: 18px; font-size: 11.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s;">
@@ -1283,15 +1434,18 @@
                   <label class="m3-label">Trip Duration *</label>
                   <input type="text" id="conciergeDurationInput" class="m3-text-input" placeholder="e.g. 3 Days" value="3 Days">
                 </div>
-                <div class="m3-input-wrapper" style="margin-bottom: 0;">
+                <div class="m3-input-wrapper" style="margin-bottom: 0;" id="conciergeTravelersWrapper">
                   <label class="m3-label">Travelers</label>
-                  <select id="conciergeTravelersInput" class="m3-text-input" style="background: #FFFFFF; font-weight: 600;">
-                    <option value="1">1 Person</option>
-                    <option value="2">2 People</option>
-                    <option value="3">3 People</option>
-                    <option value="4" selected>4 People</option>
-                    <option value="5">5+ Group</option>
-                  </select>
+                  <div style="display: flex; gap: 4px; align-items: center;">
+                    <select id="conciergeTravelersInput" class="m3-text-input" style="background: #FFFFFF; font-weight: 600; flex: 1; min-width: 80px;">
+                      <option value="1">1 Person</option>
+                      <option value="2">2 People</option>
+                      <option value="3">3 People</option>
+                      <option value="4" selected>4 People</option>
+                      <option value="custom">Custom...</option>
+                    </select>
+                    <input type="number" id="conciergeCustomTravelersInput" class="m3-text-input" min="1" max="100" placeholder="Count" value="4" style="display: none; width: 64px; padding: 10px 4px; font-weight: 700; text-align: center; font-size: 13px;" title="Enter exact number of travelers">
+                  </div>
                 </div>
               </div>
 

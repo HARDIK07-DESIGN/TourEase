@@ -848,6 +848,40 @@
       });
     }
 
+    // Custom TourEase Role Popover Menu
+    const customRoleTrigger = document.getElementById('customRoleMenuTrigger');
+    const customRolePopover = document.getElementById('customRolePopover');
+
+    if (customRoleTrigger && customRolePopover) {
+      customRoleTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = customRolePopover.style.display === 'block';
+        customRolePopover.style.display = isOpen ? 'none' : 'block';
+        customRoleTrigger.setAttribute('aria-expanded', String(!isOpen));
+      });
+
+      document.querySelectorAll('.custom-role-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const targetRole = item.getAttribute('data-role');
+          if (targetRole) {
+            switchRole(targetRole);
+            customRolePopover.style.display = 'none';
+            customRoleTrigger.setAttribute('aria-expanded', 'false');
+          }
+        });
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('#customRoleMenuWrap')) {
+          if (customRolePopover.style.display === 'block') {
+            customRolePopover.style.display = 'none';
+            customRoleTrigger.setAttribute('aria-expanded', 'false');
+          }
+        }
+      });
+    }
+
     if (roleSelector) {
       roleSelector.value = state.activeRole;
       roleSelector.addEventListener('change', (e) => {
@@ -879,6 +913,28 @@
 
     const roleSelector = document.getElementById('roleSelector');
     if (roleSelector) roleSelector.value = newRole;
+
+    // Update Custom Role Trigger Button UI
+    const roleIconEl = document.getElementById('currentRoleIcon');
+    const roleLabelEl = document.getElementById('currentRoleLabel');
+    const roleIcons = { traveler: '🧭', cab_owner: '🚕', rental_vendor: '🏢' };
+    const roleLabels = { traveler: 'Traveler', cab_owner: 'Cab Owner', rental_vendor: 'Rental Vendor' };
+
+    if (roleIconEl && roleIcons[newRole]) roleIconEl.textContent = roleIcons[newRole];
+    if (roleLabelEl && roleLabels[newRole]) roleLabelEl.textContent = roleLabels[newRole];
+
+    // Update Custom Role Popover active items & checkmarks
+    document.querySelectorAll('.custom-role-item').forEach(item => {
+      const itemRole = item.getAttribute('data-role');
+      const checkEl = item.querySelector('.role-item-check');
+      if (itemRole === newRole) {
+        item.classList.add('active');
+        if (checkEl) checkEl.style.display = 'inline';
+      } else {
+        item.classList.remove('active');
+        if (checkEl) checkEl.style.display = 'none';
+      }
+    });
 
     const travelerContainer = document.getElementById('travelerDashboard');
     const cabOwnerContainer = document.getElementById('cabOwnerDashboard');
@@ -2256,10 +2312,27 @@
     const conciergeBudgetInput = document.getElementById('conciergeBudgetInput');
     const conciergeDurationInput = document.getElementById('conciergeDurationInput');
     const conciergeTravelersInput = document.getElementById('conciergeTravelersInput');
+    const customTravelersInput = document.getElementById('conciergeCustomTravelersInput');
     const btnGenerate = document.getElementById('btnGenerateConcierge');
     const resultsContainer = document.getElementById('conciergeItineraryResult');
     const timelineContainer = document.getElementById('itineraryTimelineList');
     const itinerarySummaryBadge = document.getElementById('itinerarySummaryBadge');
+
+    if (conciergeTravelersInput) {
+      conciergeTravelersInput.addEventListener('change', () => {
+        if (conciergeTravelersInput.value === 'custom') {
+          if (customTravelersInput) {
+            customTravelersInput.style.display = 'block';
+            customTravelersInput.focus();
+          }
+        } else {
+          if (customTravelersInput) {
+            customTravelersInput.style.display = 'none';
+            customTravelersInput.value = conciergeTravelersInput.value;
+          }
+        }
+      });
+    }
 
     // Auto-expanding textarea handler
     if (conciergePromptInput && conciergePromptInput.tagName.toLowerCase() === 'textarea') {
@@ -2306,13 +2379,21 @@
       }
 
       // 2. Travelers count matching (e.g. "2 people", "three travelers", "family of 4")
-      const travelersMatch = text.match(/\b(\d+|one|two|three|four|five|six)\s*(?:people|persons?|travelers?|adults?|passengers?)\b/i);
+      const travelersMatch = text.match(/\b(\d+|one|two|three|four|five|six|seven|eight|nine|ten)\s*(?:people|persons?|travelers?|adults?|passengers?)\b/i);
       if (travelersMatch && conciergeTravelersInput) {
         const rawVal = travelersMatch[1].toLowerCase();
         const count = wordNumberMap[rawVal] || parseInt(rawVal, 10);
-        if (!isNaN(count)) {
-          const clamped = Math.min(Math.max(count, 1), 5);
-          conciergeTravelersInput.value = clamped.toString();
+        if (!isNaN(count) && count > 0) {
+          if (count >= 1 && count <= 4) {
+            conciergeTravelersInput.value = count.toString();
+            if (customTravelersInput) customTravelersInput.style.display = 'none';
+          } else {
+            conciergeTravelersInput.value = 'custom';
+            if (customTravelersInput) {
+              customTravelersInput.style.display = 'block';
+              customTravelersInput.value = count.toString();
+            }
+          }
         }
       }
 
@@ -2373,7 +2454,11 @@
 
         const budgetVal = conciergeBudgetInput ? conciergeBudgetInput.value.trim() : '';
         const durationVal = conciergeDurationInput ? conciergeDurationInput.value.trim() : '';
-        const travelersVal = conciergeTravelersInput ? conciergeTravelersInput.value : '2';
+        let travelersVal = conciergeTravelersInput ? conciergeTravelersInput.value : '4';
+        if (travelersVal === 'custom') {
+          const customCount = customTravelersInput ? parseInt(customTravelersInput.value, 10) : 4;
+          travelersVal = String(isNaN(customCount) || customCount < 1 ? 4 : customCount);
+        }
         const promptText = conciergePromptInput ? conciergePromptInput.value.trim() : '';
 
         if (!budgetVal || parseFloat(budgetVal) <= 0 || !durationVal) {
