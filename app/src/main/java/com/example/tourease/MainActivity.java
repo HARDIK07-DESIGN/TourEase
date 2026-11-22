@@ -54,11 +54,12 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setAllowContentAccess(true);
         webSettings.setGeolocationEnabled(true);
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
-        webSettings.setSupportMultipleWindows(true);
+        webSettings.setSupportMultipleWindows(false);
 
         // Customize User-Agent so Google OAuth doesn't trigger disallowed_useragent
         String defaultUa = webSettings.getUserAgentString();
-        webSettings.setUserAgentString(defaultUa.replace("; wv", ""));
+        String cleanUa = defaultUa.replace("; wv", "").replace("Version/4.0 ", "");
+        webSettings.setUserAgentString(cleanUa);
 
         webView.setWebChromeClient(new android.webkit.WebChromeClient() {
             @Override
@@ -82,10 +83,8 @@ public class MainActivity extends AppCompatActivity {
                 Uri uri = request.getUrl();
                 String url = uri != null ? uri.toString() : "";
 
-                // Open Google Sign-In and external intent links in system browser
-                if (url.startsWith("https://accounts.google.com") ||
-                    url.startsWith("https://myaccount.google.com") ||
-                    url.startsWith("tel:") ||
+                // Open telephone, mailto, and external intent links in system apps
+                if (url.startsWith("tel:") ||
                     url.startsWith("mailto:") ||
                     url.startsWith("intent:")) {
                     try {

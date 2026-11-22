@@ -21,6 +21,9 @@
   <link href="https://api.mapbox.com/mapbox-gl-js/v3.1.2/mapbox-gl.css" rel="stylesheet">
   <script src="https://api.mapbox.com/mapbox-gl-js/v3.1.2/mapbox-gl.js"></script>
 
+  <!-- Google Identity Services (OAuth 2.0) -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
   <style>
     /* Google Maps / Uber Consumer Travel UI System */
     :root {
@@ -1475,17 +1478,8 @@
                   <input type="text" id="conciergeDurationInput" class="m3-text-input" placeholder="e.g. 3 Days" value="3 Days">
                 </div>
                 <div class="m3-input-wrapper" style="margin-bottom: 0;" id="conciergeTravelersWrapper">
-                  <label class="m3-label">Travelers (People) *</label>
-                  <div style="display: flex; gap: 6px; align-items: center;">
-                    <input type="number" id="conciergeTravelersInput" class="m3-text-input" min="1" max="100" value="4" style="width: 68px; padding: 8px 6px; font-size: 14px; font-weight: 800; text-align: center; color: var(--primary);" placeholder="Count">
-                    <div class="traveler-pills-row" style="display: flex; gap: 4px; flex: 1;">
-                      <button type="button" class="traveler-quick-pill" data-count="1">1</button>
-                      <button type="button" class="traveler-quick-pill" data-count="2">2</button>
-                      <button type="button" class="traveler-quick-pill" data-count="3">3</button>
-                      <button type="button" class="traveler-quick-pill active" data-count="4">4</button>
-                      <button type="button" class="traveler-quick-pill" data-count="custom">Custom</button>
-                    </div>
-                  </div>
+                  <label class="m3-label">Travelers (Count) *</label>
+                  <input type="number" id="conciergeTravelersInput" class="m3-text-input" min="1" max="100" placeholder="e.g. 2" style="background: white; font-size: 14px; font-weight: 700; width: 100%;">
                 </div>
               </div>
 
@@ -2080,21 +2074,37 @@
 
         <!-- Method 1: Email + OTP Section -->
         <div id="authEmailSection" style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 14px; margin-bottom: 14px;">
-          <label style="display: block; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; margin-bottom: 6px;">Gmail / Email Address</label>
-          <input type="email" id="authEmailInput" class="m3-text-input" placeholder="name@gmail.com" value="traveler@tourease.in" style="margin-bottom: 0; background: white;">
-          <button type="button" class="m3-button-primary" id="btnSendEmailOtp" style="width: 100%; margin-top: 10px; font-size: 13px; padding: 10px;">
-            Send Verification Code to Email →
-          </button>
+          <!-- Email Entry Screen -->
+          <div id="emailEntryStep">
+            <label style="display: block; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; margin-bottom: 6px;">Gmail / Email Address</label>
+            <input type="email" id="authEmailInput" class="m3-text-input" placeholder="name@gmail.com" value="traveler@tourease.in" style="margin-bottom: 0; background: white;">
+            <button type="button" class="m3-button-primary" id="btnSendEmailOtp" style="width: 100%; margin-top: 10px; font-size: 13px; padding: 10px;">
+              Send Verification Code to Email →
+            </button>
+          </div>
 
-          <!-- Email OTP Input Section -->
-          <div id="authEmailOtpSection" style="display: none; margin-top: 14px; padding-top: 12px; border-top: 1px dashed #CBD5E1;">
-            <div id="simulatedEmailOtpBanner" style="background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 8px; padding: 8px 12px; font-size: 12px; color: #1E40AF; margin-bottom: 10px;">
-              ✉️ Email OTP: <strong id="simulatedEmailOtpCode" style="font-family: monospace; font-size: 14px;">593120</strong>
+          <!-- Email 6-Digit OTP Verification Screen (#otpVerifyStep) -->
+          <div id="otpVerifyStep" style="display: none; padding-top: 4px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <div>
+                <span style="font-size: 11px; color: #64748B;">Code sent to:</span>
+                <strong id="otpTargetDisplay" style="font-size: 12px; color: #1E293B; display: block;">user@gmail.com</strong>
+              </div>
+              <button type="button" id="btnChangeEmail" style="background: none; border: none; color: #1A73E8; font-size: 11.5px; font-weight: 700; cursor: pointer; padding: 2px 4px;">
+                Change Email / Resend
+              </button>
             </div>
-            <label style="display: block; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; margin-bottom: 6px;">Enter 6-Digit Email Code</label>
-            <input type="text" id="authEmailOtpInput" class="m3-text-input" placeholder="6-digit code" maxlength="6" value="593120" style="background: white; font-family: monospace; letter-spacing: 4px; font-size: 16px; font-weight: 800; text-align: center; margin-bottom: 10px;">
-            <button type="button" class="m3-button-primary" id="btnVerifyEmailOtp" style="width: 100%; background: #059669; font-size: 13px; padding: 10px;">
-              Verify Email & Continue →
+
+            <!-- Fallback OTP notice banner if SMTP is offline/unconfigured -->
+            <div id="fallbackOtpBanner" style="display: none; background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 8px; padding: 8px 12px; font-size: 12px; color: #1E40AF; margin-bottom: 10px;">
+              🔐 Verification Code: <strong id="fallbackOtpCode" style="font-family: monospace; font-size: 14px; letter-spacing: 2px;">123456</strong>
+            </div>
+
+            <label style="display: block; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; margin-bottom: 6px;">Enter 6-Digit Verification Code</label>
+            <input type="text" id="authEmailOtpInput" class="m3-text-input" placeholder="••••••" maxlength="6" inputmode="numeric" pattern="[0-9]*" style="background: white; font-family: monospace; letter-spacing: 6px; font-size: 18px; font-weight: 800; text-align: center; margin-bottom: 12px;">
+
+            <button type="button" class="m3-button-primary" id="btnVerifyEmailOtp" style="width: 100%; background: #059669; font-size: 13.5px; padding: 11px; font-weight: 700;">
+              Verify &amp; Sign In →
             </button>
           </div>
         </div>
@@ -2190,37 +2200,7 @@
     </div>
   </div>
 
-  <!-- Simulated Google Account Chooser Modal -->
-  <div class="payment-modal-overlay" id="googleAccountChooserModal" style="display: none; z-index: 100000;">
-    <div class="payment-modal-card" style="max-width: 360px; padding: 22px;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <svg width="22" height="22" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
-          <strong style="font-size: 15px; color: #1E293B;">Sign in with Google</strong>
-        </div>
-        <button type="button" id="btnCloseGoogleChooser" style="background: none; border: none; font-size: 18px; cursor: pointer;">✕</button>
-      </div>
-      <p style="font-size: 12.5px; color: #64748B; margin: 0 0 14px 0;">Choose an account to continue to TourEase</p>
 
-      <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px;">
-        <div class="google-acc-item" data-email="hardik.changedia@gmail.com" data-name="Hardik Changedia" style="display: flex; align-items: center; gap: 12px; padding: 10px; border: 1px solid #E2E8F0; border-radius: 10px; cursor: pointer;">
-          <div style="width: 36px; height: 36px; border-radius: 50%; background: #1A73E8; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">HC</div>
-          <div style="flex: 1; min-width: 0;">
-            <strong style="font-size: 13px; color: #1E293B; display: block;">Hardik Changedia</strong>
-            <span style="font-size: 11.5px; color: #64748B; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">hardik.changedia@gmail.com</span>
-          </div>
-        </div>
-
-        <div class="google-acc-item" data-email="partner.fleet@tourease.in" data-name="TourEase Commercial Partner" style="display: flex; align-items: center; gap: 12px; padding: 10px; border: 1px solid #E2E8F0; border-radius: 10px; cursor: pointer;">
-          <div style="width: 36px; height: 36px; border-radius: 50%; background: #059669; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">TP</div>
-          <div style="flex: 1; min-width: 0;">
-            <strong style="font-size: 13px; color: #1E293B; display: block;">TourEase Commercial Partner</strong>
-            <span style="font-size: 11.5px; color: #64748B; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">partner.fleet@tourease.in</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <div class="role-selection-modal" id="roleSelectionModal" style="display: none;">
     <div class="role-selection-card">
@@ -2259,13 +2239,7 @@
       </div>
       <div class="m3-input-wrapper">
         <label class="m3-label">Number of Travelers</label>
-        <select id="pkgTravelersCountSelect" class="m3-text-input" style="background: white; font-weight: 700;">
-          <option value="1">1 Person</option>
-          <option value="2" selected>2 People</option>
-          <option value="3">3 People</option>
-          <option value="4">4 People</option>
-          <option value="5">5 People</option>
-        </select>
+        <input type="number" id="pkgTravelersCountSelect" class="m3-text-input" min="1" max="100" placeholder="e.g. 2" value="2" style="background: white; font-size: 14px; font-weight: 700; width: 100%;">
       </div>
       <div style="display: flex; justify-content: space-between; align-items: center; background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 10px; padding: 12px; margin-bottom: 16px;">
         <span style="font-weight: 700; color: #1E40AF; font-size: 13px;">Total Payable (All-Inclusive)</span>
