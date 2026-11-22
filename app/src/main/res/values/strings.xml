@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TourEase</string>
+    <string name="tourease_live_url">https://tourease.onrender.com</string>
 </resources>

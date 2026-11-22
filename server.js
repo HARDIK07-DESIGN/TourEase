@@ -357,7 +357,7 @@ app.get('/', (req, res) => {
 // Config Route (Strictly from .env)
 app.get('/api/config', (req, res) => {
   res.json({
-    mapboxToken: process.env.MAPBOX_ACCESS_TOKEN || '',
+    mapboxToken: process.env.MAPBOX_TOKEN || process.env.MAPBOX_ACCESS_TOKEN || '',
     razorpayKeyId: process.env.RAZORPAY_KEY_ID || '',
     googleClientId: process.env.GOOGLE_CLIENT_ID || ''
   });
@@ -2330,7 +2330,7 @@ app.post('/api/concierge/routes', async (req, res) => {
   const numBudget = parseFloat(budget) || 20000;
   const numTravelers = parseInt(travelers) || 4;
   const numDays = parseInt(days) || 3;
-  const mapboxToken = process.env.MAPBOX_ACCESS_TOKEN || '';
+  const mapboxToken = process.env.MAPBOX_TOKEN || process.env.MAPBOX_ACCESS_TOKEN || '';
 
   let originGeo = await geocodeMapbox(origin, mapboxToken);
   let destGeo = await geocodeMapbox(destination, mapboxToken);

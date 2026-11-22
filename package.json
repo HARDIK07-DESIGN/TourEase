@@ -1,0 +1,24 @@
+{
+  "name": "tourease",
+  "version": "2.0.0",
+  "description": "TourEase Smart Corridor Mobility & Concierge Platform",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test_final_architecture.js"
+  },
+  "dependencies": {
+    "@google/genai": "^3.3.0",
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^18.0.10",
+    "express": "^5.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "nodemailer": "^10.6.1",
+    "pg": "^8.23.1",
+    "qrcode": "^1.5.4"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
