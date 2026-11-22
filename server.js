@@ -17,32 +17,41 @@ const JWT_SECRET = process.env.JWT_SECRET || 'tourease_secret_key_2026';
 // In-memory OTP cache with 10-minute TTL for instant fallback
 const inMemoryOtpStore = new Map();
 
+// In-memory telemetry cache for live vehicle GPS tracking
+const liveTelemetryStore = new Map();
+
 // Email transporter for real verification & security notifications
+const mailUserClean = (process.env.GMAIL_USER || process.env.SMTP_USER || '').trim();
+const mailPassClean = (process.env.GMAIL_APP_PASSWORD || process.env.SMTP_PASS || '').replace(/\s+/g, '').trim();
+
 const emailTransporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false,
+  requireTLS: true,
+  family: 4,
+  connectionTimeout: 8000,
   auth: {
-    user: process.env.GMAIL_USER || process.env.SMTP_USER || '',
-    pass: process.env.GMAIL_APP_PASSWORD || process.env.SMTP_PASS || ''
+    user: mailUserClean,
+    pass: mailPassClean
   }
 });
 
 async function sendNotificationEmail(to, subject, html) {
-  const mailUser = process.env.GMAIL_USER || process.env.SMTP_USER || '';
-  const mailPass = process.env.GMAIL_APP_PASSWORD || process.env.SMTP_PASS || '';
-  if (!mailUser || !mailPass || mailUser.includes('your_gmail') || mailUser.includes('your_email')) {
+  if (!mailUserClean || !mailPassClean || mailUserClean.includes('your_gmail') || mailUserClean.includes('your_email')) {
     console.log(`[DEV/LOCAL EMAIL NOTIFICATION] To: ${to} | Subject: ${subject}`);
     return false;
   }
   try {
     const sendPromise = emailTransporter.sendMail({
-      from: `"TourEase Security" <${mailUser}>`,
+      from: `"TourEase Security" <${mailUserClean}>`,
       to,
       subject,
       html
     });
-    // 5-second timeout so Render never hangs on blocked SMTP ports
+    // 8-second timeout so Render never hangs on blocked SMTP ports
     const timeoutPromise = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error('SMTP connection timed out after 5s')), 5000)
+      setTimeout(() => reject(new Error('SMTP connection timed out after 8s')), 8000)
     );
     await Promise.race([sendPromise, timeoutPromise]);
     console.log(`[LIVE EMAIL SENT] Successfully delivered email to ${to}`);
@@ -369,7 +378,7 @@ app.get('/api/config', (req, res) => {
   res.json({
     mapboxToken: process.env.MAPBOX_TOKEN || process.env.MAPBOX_ACCESS_TOKEN || '',
     razorpayKeyId: process.env.RAZORPAY_KEY_ID || '',
-    googleClientId: process.env.GOOGLE_CLIENT_ID || ''
+    googleClientId: (process.env.GOOGLE_CLIENT_ID || '641997788141-t76ucjc54qh95vlpchribs35q737rec8.apps.googleusercontent.com').trim()
   });
 });
 
@@ -462,22 +471,31 @@ app.post('/api/auth/send-email-otp', async (req, res) => {
   `;
 
   let liveSent = false;
+  let sendError = null;
   try {
     liveSent = await sendNotificationEmail(cleanEmail, `TourEase Verification Code: ${otp}`, emailHtml);
   } catch (mailErr) {
+    sendError = mailErr.message;
     console.warn('[EMAIL DISPATCH WARNING]', mailErr.message);
   }
 
   console.log(`[EMAIL OTP AUTH] Target: ${cleanEmail} | Generated OTP: ${otp} | LiveSent: ${liveSent}`);
 
-  // Guarantee HTTP 200 with fallbackOtp so the frontend ALWAYS advances to the OTP input screen!
-  res.json({
-    success: true,
-    message: liveSent ? `6-Digit OTP sent to ${cleanEmail}` : `Verification code generated for ${cleanEmail}`,
-    fallbackOtp: otp,
-    simulated_otp: otp,
-    live_sent: liveSent
-  });
+  if (liveSent) {
+    res.json({
+      success: true,
+      message: `6-Digit verification code sent to ${cleanEmail}`,
+      live_sent: true
+    });
+  } else {
+    // If Render free-tier firewall blocks outbound SMTP ports (465/587)
+    res.status(503).json({
+      success: false,
+      error: 'Render free-tier firewall blocks outbound SMTP ports (465/587). Please use "Continue with Google" for instant one-click sign-in or check server logs.',
+      smtp_blocked: true,
+      live_sent: false
+    });
+  }
 });
 
 app.post('/api/auth/verify-otp', async (req, res) => {
@@ -2082,10 +2100,13 @@ app.delete('/api/admin/users/:id', adminAuthMiddleware, async (req, res) => {
   }
 });
 
-// Public "Track a Loved One's Trip" API (No auth required)
-app.get('/api/track/:code', async (req, res) => {
+// Public "Track a Loved One's Trip" & Live Tracking APIs
+const handleTripTrackingLookup = async (req, res) => {
   const code = (req.params.code || '').trim();
   if (!code) return res.status(400).json({ error: 'Tracking code is required' });
+
+  // Check live telemetry cache first
+  const liveTelemetry = liveTelemetryStore.get(code.toUpperCase());
 
   try {
     // 1. Check cab_rides
@@ -2103,11 +2124,15 @@ app.get('/api/track/:code', async (req, res) => {
           vehicle: `${r.car_model || 'TourEase Cab'} (${r.plate_number || 'Commercial'})`,
           origin: r.pickup_location,
           destination: r.drop_location,
-          lat: r.pickup_lat || 23.1824,
-          lng: r.pickup_lng || 75.7682,
+          pickup_lat: r.pickup_lat || 23.1824,
+          pickup_lng: r.pickup_lng || 75.7682,
+          current_lat: liveTelemetry?.lat || r.pickup_lat || 23.1824,
+          current_lng: liveTelemetry?.lng || r.pickup_lng || 75.7682,
+          lat: liveTelemetry?.lat || r.pickup_lat || 23.1824,
+          lng: liveTelemetry?.lng || r.pickup_lng || 75.7682,
           fare: r.fare,
           payment_method: r.payment_method,
-          updated_at: r.created_at
+          updated_at: liveTelemetry?.updatedAt || r.created_at
         }
       });
     }
@@ -2127,11 +2152,15 @@ app.get('/api/track/:code', async (req, res) => {
           vehicle: t.package_title,
           origin: 'Corridor Departure Point',
           destination: t.package_title,
-          lat: 23.1764,
-          lng: 75.7828,
+          pickup_lat: 23.1764,
+          pickup_lng: 75.7828,
+          current_lat: liveTelemetry?.lat || 23.1764,
+          current_lng: liveTelemetry?.lng || 75.7828,
+          lat: liveTelemetry?.lat || 23.1764,
+          lng: liveTelemetry?.lng || 75.7828,
           fare: t.total_amount,
           payment_method: t.payment_method,
-          updated_at: t.created_at
+          updated_at: liveTelemetry?.updatedAt || t.created_at
         }
       });
     }
@@ -2149,13 +2178,42 @@ app.get('/api/track/:code', async (req, res) => {
           customer_name: rb.customer_name,
           driver_name: 'Self-Drive Traveler',
           vehicle: `${rb.car_model} (${rb.plate_number})`,
-          origin: 'Authorized Rental Hub',
-          destination: 'Corridor Highway Route',
-          lat: 23.1824,
-          lng: 75.7682,
-          fare: rb.total_price,
+          origin: rb.pickup_location || 'Authorized Rental Hub',
+          destination: rb.drop_location || 'Corridor Highway Route',
+          pickup_lat: 23.1824,
+          pickup_lng: 75.7682,
+          current_lat: liveTelemetry?.lat || 23.1824,
+          current_lng: liveTelemetry?.lng || 75.7682,
+          lat: liveTelemetry?.lat || 23.1824,
+          lng: liveTelemetry?.lng || 75.7682,
+          fare: rb.total_price || rb.total_amount,
           payment_method: rb.payment_method,
-          updated_at: rb.created_at
+          updated_at: liveTelemetry?.updatedAt || rb.created_at
+        }
+      });
+    }
+
+    // 4. If present in live telemetry alone
+    if (liveTelemetry) {
+      return res.json({
+        success: true,
+        trip: {
+          code: code.toUpperCase(),
+          service_type: 'Live Vehicle GPS',
+          status: 'in_transit',
+          customer_name: 'Traveler',
+          driver_name: 'TourEase Driver',
+          vehicle: 'TourEase Fleet Vehicle',
+          origin: 'Pickup Point',
+          destination: 'Destination Point',
+          pickup_lat: liveTelemetry.lat,
+          pickup_lng: liveTelemetry.lng,
+          current_lat: liveTelemetry.lat,
+          current_lng: liveTelemetry.lng,
+          lat: liveTelemetry.lat,
+          lng: liveTelemetry.lng,
+          fare: 0,
+          updated_at: liveTelemetry.updatedAt
         }
       });
     }
@@ -2163,6 +2221,84 @@ app.get('/api/track/:code', async (req, res) => {
     return res.status(404).json({ error: `No active trip found for tracking code "${code}"` });
   } catch (err) {
     res.status(500).json({ error: 'Failed to look up tracking code', details: err.message });
+  }
+};
+
+app.get('/api/track/:code', handleTripTrackingLookup);
+app.get('/api/tracking/:code', handleTripTrackingLookup);
+
+// Cab Owner live GPS location telemetry push
+app.patch('/api/tracking/:code', async (req, res) => {
+  const code = (req.params.code || '').trim().toUpperCase();
+  const { lat, lng, speed, heading } = req.body;
+  if (!lat || !lng) {
+    return res.status(400).json({ error: 'lat and lng are required' });
+  }
+  const parsedLat = parseFloat(lat);
+  const parsedLng = parseFloat(lng);
+  liveTelemetryStore.set(code, {
+    lat: parsedLat,
+    lng: parsedLng,
+    speed: parseFloat(speed) || 0,
+    heading: parseFloat(heading) || 0,
+    updatedAt: new Date().toISOString()
+  });
+
+  try {
+    await pool.query(
+      'UPDATE cab_rides SET pickup_lat = $1, pickup_lng = $2 WHERE tracking_code ILIKE $3',
+      [parsedLat, parsedLng, code]
+    );
+  } catch (e) {
+    // Non-fatal if DB not yet migrated
+  }
+
+  res.json({
+    success: true,
+    tracking_code: code,
+    lat: parsedLat,
+    lng: parsedLng,
+    updated_at: new Date().toISOString()
+  });
+});
+
+// Self-Drive Rental Cancellation & Refund API
+app.patch('/api/bookings/:id/refund', async (req, res) => {
+  const { id } = req.params;
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const checkRes = await client.query('SELECT * FROM rental_bookings WHERE id::text = $1 OR tracking_code ILIKE $1 LIMIT 1', [id]);
+    if (checkRes.rows.length === 0) {
+      await client.query('ROLLBACK');
+      return res.status(404).json({ error: 'Rental booking not found' });
+    }
+    const booking = checkRes.rows[0];
+    if (booking.handover_status === 'CANCELLED' || booking.handover_status === 'Cancelled & Refunded') {
+      await client.query('ROLLBACK');
+      return res.status(400).json({ error: 'Booking has already been cancelled and refunded' });
+    }
+    const refundAmt = parseFloat(booking.total_amount || booking.total_price || 2800);
+    await client.query(
+      "UPDATE rental_bookings SET handover_status = 'Cancelled & Refunded' WHERE id = $1",
+      [booking.id]
+    );
+    await client.query(`
+      INSERT INTO wallet_transactions (role, tx_type, label, gross_amount, commission_amount, net_amount, balance_after)
+      VALUES ('platform_revenue', 'refund', $1, $2, 0, $2, 0)
+    `, [`Customer Refund - Self-Drive #${booking.tracking_code}`, -refundAmt]);
+    await client.query('COMMIT');
+    res.json({
+      success: true,
+      message: `Self-drive reservation #${booking.tracking_code} cancelled and ₹${refundAmt.toLocaleString('en-IN')} has been refunded.`,
+      refund_amount: refundAmt,
+      status: 'Cancelled & Refunded'
+    });
+  } catch (err) {
+    await client.query('ROLLBACK');
+    res.status(500).json({ error: 'Failed to process refund', details: err.message });
+  } finally {
+    client.release();
   }
 });
 

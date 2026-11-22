@@ -227,6 +227,15 @@
       margin-left: 1px !important;
     }
 
+    #currentRoleLabel {
+      max-width: 82px !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      white-space: nowrap !important;
+      display: inline-block !important;
+      vertical-align: middle !important;
+    }
+
     .custom-role-popover {
       position: absolute !important;
       top: calc(100% + 6px) !important;
@@ -2152,10 +2161,14 @@
           </div>
         </div>
 
-        <div style="text-align: center; margin-top: 14px; padding-top: 12px; border-top: 1px solid #E2E8F0;">
-          <button type="button" id="btnGateTrackTrip" style="background: none; border: none; color: #1A73E8; font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
-            <svg class="lucide-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 7 9 3 5 7l4 4"/><path d="m17 11 4 4-4 4-4-4"/><path d="m8 12 4 4"/><path d="m16 8 4-4"/><path d="M9 21a6 6 0 0 0-6-6"/></svg> Track a Loved One's Trip (No Sign-In Required) →
+        <div style="text-align: center; margin-top: 14px; padding-top: 12px; border-top: 1px solid #E2E8F0;" id="gateTrackTripSection">
+          <button type="button" id="btnGateTrackTrip" style="background: none; border: none; color: #1A73E8; font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 8px;">
+            <svg class="lucide-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 7 9 3 5 7l4 4"/><path d="m17 11 4 4-4 4-4-4"/><path d="m8 12 4 4"/><path d="m16 8 4-4"/><path d="M9 21a6 6 0 0 0-6-6"/></svg> Track a Loved One's Trip (No Sign-In Required)
           </button>
+          <div style="display: flex; gap: 8px; width: 100%; box-sizing: border-box; margin-top: 4px;">
+            <input type="text" id="landingTrackCodeInput" placeholder="ENTER CAB / TRK CODE" style="width: 100%; min-width: 180px; height: 46px; padding: 0 14px; font-size: 15px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; box-sizing: border-box; background: #FFFFFF; border: 1.5px solid #CBD5E1; border-radius: 10px; flex: 1;">
+            <button type="button" class="m3-button-primary" id="btnLandingTrackSubmit" style="height: 46px; padding: 0 16px; font-size: 13px; font-weight: 700; white-space: nowrap; flex-shrink: 0;">Track Live</button>
+          </div>
         </div>
       </div>
 
@@ -2776,11 +2789,12 @@
       </div>
 
       <div style="margin-bottom: 14px;">
-        <label class="m3-label" style="font-size: 11px;">ENTER TRIP TRACKING CODE</label>
-        <div style="display: flex; gap: 8px;">
-          <input type="text" id="publicTrackCodeInput" class="m3-text-input" placeholder="e.g. TRK-4821 or CAB-7891" style="flex: 1; margin-bottom: 0; font-family: 'JetBrains Mono', monospace; text-transform: uppercase; font-weight: 700;">
-          <button type="button" class="m3-button-primary" id="btnPublicTrackSubmit" style="padding: 0 18px; font-size: 13px; font-weight: 700;">Track</button>
+        <label class="m3-label" style="font-size: 11px;">ENTER OR PASTE TRACKING CODE (e.g. CAB-5627)</label>
+        <div style="display: flex; gap: 8px; width: 100%; box-sizing: border-box;">
+          <input type="text" id="publicTrackCodeInput" class="m3-text-input" placeholder="e.g. CAB-5627 or TRK-4821" style="width: 100%; min-width: 180px; height: 46px; padding: 0 14px; font-size: 15px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; box-sizing: border-box; background: #FFFFFF; border: 1.5px solid #CBD5E1; border-radius: 10px; flex: 1; margin-bottom: 0;">
+          <button type="button" class="m3-button-primary" id="btnPublicTrackSubmit" style="height: 46px; padding: 0 18px; font-size: 13px; font-weight: 700; white-space: nowrap; flex-shrink: 0;">Track on Map</button>
         </div>
+        <div id="travelerActiveTrackingPills" style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px;"></div>
       </div>
 
       <div id="publicTrackError" style="display: none; background: #FEE2E2; border: 1px solid #FCA5A5; color: #991B1B; padding: 10px 14px; border-radius: 8px; font-size: 12.5px; margin-bottom: 12px;"></div>

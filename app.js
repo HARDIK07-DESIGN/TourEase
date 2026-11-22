@@ -79,7 +79,7 @@
       daily_rate: 2800,
       transmission: 'Automatic',
       seats: 5,
-      photo_url: EV_NEXON_SVG,
+      photo_url: 'https://images.unsplash.com/photo-1590362891991-f776e747a588?auto=format&fit=crop&w=800&q=80',
       last_photo_update: '2026-09-01'
     },
     {
@@ -90,7 +90,7 @@
       daily_rate: 3800,
       transmission: 'Automatic',
       seats: 7,
-      photo_url: SUV_THAR_SVG,
+      photo_url: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=800&q=80',
       last_photo_update: '2026-09-10'
     },
     {
@@ -101,7 +101,7 @@
       daily_rate: 3100,
       transmission: 'Manual',
       seats: 5,
-      photo_url: SUV_CRETA_SVG,
+      photo_url: 'https://images.unsplash.com/photo-1508974239320-0a029497e820?auto=format&fit=crop&w=800&q=80',
       last_photo_update: '2026-08-25'
     },
     {
@@ -112,7 +112,7 @@
       daily_rate: 1900,
       transmission: 'Manual',
       seats: 5,
-      photo_url: DEFAULT_CAR_SVG,
+      photo_url: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=800&q=80',
       last_photo_update: '2026-07-15'
     }
   ];
@@ -121,12 +121,19 @@
   const PREDEFINED_TOURS = [
     {
       id: 'TOUR-01',
-      title: 'Spiritual Ujjain–Omkareshwar Circuit',
+      title: 'Shipra Ghat & Ujjain Spiritual Corridor',
       duration: '2 Days / 1 Night',
       price: '₹ 4,800 / person',
       start_point: 'Mahakaleshwar Temple Corridor, Ujjain',
       end_point: 'Mamleshwar Jyotirlinga, Omkareshwar',
       description: 'Sacred twin-Jyotirlinga spiritual journey with VIP temple fast-track darshan, Narmada Ghat boat tour, and verified sattvic cuisine.',
+      image_url: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=800&q=80',
+      images: [
+        'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1609766857041-ed402ea8069a?auto=format&fit=crop&w=800&q=80'
+      ],
       stops: [
         { time: '05:30 AM', location: 'Mahakaleshwar Gate 4', activity: 'Bhasma Aarti Darshan & Corridor Walk', type: 'temple' },
         { time: '09:00 AM', location: 'Sanwer Highway Rest Area', activity: 'Sanitized Restroom & Traditional Breakfast (Poha-Jalebi)', type: 'refreshment' },
@@ -141,7 +148,14 @@
       price: '₹ 1,650 / person',
       start_point: 'Rajwada Royal Palace, Old Indore',
       end_point: 'Sarafa Bazaar Midnight Food Street',
-      description: 'Curated gastronomic journey through Indore’s Clean Street Food hubs featuring iconic regional dishes and historical walk.',
+      description: 'Curated gastronomic journey through Indore Clean Street Food hubs featuring iconic regional dishes and historical walk.',
+      image_url: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=800&q=80',
+      images: [
+        'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1596178065887-1198b6148b2b?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=800&q=80'
+      ],
       stops: [
         { time: '05:00 PM', location: 'Rajwada Palace & Lal Bagh', activity: '7-Storey Holkar Heritage Walk & Museum Guided Tour', type: 'heritage' },
         { time: '06:30 PM', location: 'Chappan Dukan (56 Shops)', activity: 'Vijay Chaat Khopra Patties, Johny Hot Dog & Matka Shikanji', type: 'food' },
@@ -151,17 +165,24 @@
     },
     {
       id: 'TOUR-03',
-      title: 'Malwa Heritage & Shipra Ghats Expedition',
+      title: 'Malabar Heritage & Coastal Backwaters',
       duration: '1 Day (9 Hours)',
       price: '₹ 2,400 / person',
-      start_point: 'Ram Ghat, Shipra River, Ujjain',
-      end_point: 'Devi Ahilya Bai Holkar Fort, Maheshwar',
-      description: 'Scenic journey bridging ancient river ghats with royal handloom weaver colonies and Maratha fort architecture.',
+      start_point: 'Fort Kochi Heritage Harbor',
+      end_point: 'Alleppey Backwaters Canal Network',
+      description: 'Scenic journey bridging ancient Chinese fishing nets, spice trading quarters, and palm-fringed tropical backwaters.',
+      image_url: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=800&q=80',
+      images: [
+        'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1589182373726-e4f658ab50f0?auto=format&fit=crop&w=800&q=80'
+      ],
       stops: [
-        { time: '06:30 AM', location: 'Ram Ghat Banks', activity: 'Sunrise Shipra Snan & Morning Heritage Walk', type: 'culture' },
-        { time: '08:45 AM', location: 'Highway Highway Dhaba #12', activity: 'Breakfast & Rest Pod Stop (Sanitary Verified)', type: 'refreshment' },
-        { time: '12:30 PM', location: 'Maheshwar Ahilya Fort', activity: 'Royal Palace Architecture & Museum Tour', type: 'heritage' },
-        { time: '03:30 PM', location: 'Rehwa Society Handloom', activity: 'Live Handloom Weaving Demonstration & Textile Walk', type: 'culture' }
+        { time: '06:30 AM', location: 'Fort Kochi Beach Promenade', activity: 'Sunrise Chinese Fishing Nets Walk & Fishermen Heritage', type: 'culture' },
+        { time: '09:00 AM', location: 'Mattancherry Spice Bazaar', activity: 'Historic Cinnamon & Cardamom Warehouse Walk & Breakfast', type: 'refreshment' },
+        { time: '12:30 PM', location: 'Vembanad Lake Houseboat Hub', activity: 'Traditional Kuttanad Banana-Leaf Lunch on Water', type: 'heritage' },
+        { time: '03:30 PM', location: 'Alleppey Shikhara Canal', activity: 'Silent Electric Boat Cruise through Village Lagoons', type: 'culture' }
       ]
     }
   ];
@@ -706,7 +727,7 @@
             authEmailOtpInput.value = "";
             authEmailOtpInput.focus();
           }
-          showToast(`Verification code ready: ${currentEmailOtp}`, 'info');
+          
         } finally {
           btnSendEmailOtp.disabled = false;
           btnSendEmailOtp.textContent = originalBtnText;
@@ -759,7 +780,7 @@
     }
 
     // 3. Real Google Identity Services (OAuth 2.0)
-    let googleClientId = '641997788141-t76ucjc54qh95svlpchribs35q737rec8.apps.googleusercontent.com';
+    let googleClientId = '641997788141-t76ucjc54qh95vlpchribs35q737rec8.apps.googleusercontent.com';
 
     async function initGoogleIdentityServices() {
       try {
@@ -1042,10 +1063,14 @@
     // Update Custom Role Trigger Button UI
     const roleIconEl = document.getElementById('currentRoleIcon');
     const roleLabelEl = document.getElementById('currentRoleLabel');
-    const roleIcons = { traveler: '', cab_owner: '', rental_vendor: '' };
+    const roleIcons = {
+      traveler: '<svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>',
+      cab_owner: '<svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2v4"/><path d="M10 2v4"/><rect width="18" height="8" x="3" y="10" rx="2"/><path d="M5 18v2"/><path d="M19 18v2"/></svg>',
+      rental_vendor: '<svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><path d="M8 14h.01"/><path d="M16 14h.01"/></svg>'
+    };
     const roleLabels = { traveler: 'Traveler', cab_owner: 'Cab Owner', rental_vendor: 'Rental Vendor' };
 
-    if (roleIconEl && roleIcons[newRole]) roleIconEl.textContent = roleIcons[newRole];
+    if (roleIconEl && roleIcons[newRole]) roleIconEl.innerHTML = roleIcons[newRole];
     if (roleLabelEl && roleLabels[newRole]) roleLabelEl.textContent = roleLabels[newRole];
 
     // Update Custom Role Popover active items & checkmarks
@@ -1507,6 +1532,64 @@
           }
         });
       });
+    }
+
+    
+    function restoreActiveAiItinerary() {
+      try {
+        const raw = localStorage.getItem('tourease_active_ai_itinerary');
+        if (!raw) return;
+        const saved = JSON.parse(raw);
+        if (!saved || !saved.aiData) return;
+        const { routesData, aiData, promptText, durationVal, travelersVal, numBudget } = saved;
+        const destinationPlaces = (aiData && aiData.destination_places && aiData.destination_places.length > 0)
+          ? aiData.destination_places
+          : ((routesData && routesData.destination_places && routesData.destination_places.length > 0)
+            ? routesData.destination_places
+            : (aiData && aiData.locations && aiData.locations.length > 0 ? aiData.locations : []));
+
+        window.__currentDestinationPlaces = destinationPlaces;
+        const resCont = document.getElementById('conciergeItineraryResult');
+        const timeCont = document.getElementById('itineraryTimelineList');
+        if (resCont) resCont.style.display = 'block';
+
+        if (routesData && routesData.success && routesData.routes && routesData.routes.length > 0) {
+          renderAlternativeRoutesOnMap(routesData.routes, 0);
+          renderAlternativeRouteCards(
+            routesData.routes,
+            routesData.origin?.name || 'Bhopal',
+            routesData.destination?.name || 'Mumbai',
+            numBudget,
+            travelersVal,
+            durationVal
+          );
+        } else if (destinationPlaces && destinationPlaces.length > 0) {
+          renderDestinationSightseeingMarkers(destinationPlaces);
+        }
+
+        if (timeCont) {
+          const targetCity = routesData?.destination?.name || promptText || 'Destination';
+          const budgetTiersHtml = aiData.options ? renderBudgetTiersHtml(aiData.options, 'exact_budget') : '';
+          const checklistHtml = renderSightseeingChecklistHtml(destinationPlaces, targetCity);
+          const activeItinerary = (aiData.options && aiData.options.exact_budget)
+            ? aiData.options.exact_budget.itinerary
+            : (aiData.itinerary || '');
+          timeCont.innerHTML = `
+            ${budgetTiersHtml}
+            ${checklistHtml}
+            <div style="background: #FFFFFF; border: 1px solid var(--border); border-radius: 14px; padding: 16px; line-height: 1.6; font-size: 14px;">
+              ${formatAiMarkdown(activeItinerary)}
+            </div>
+          `;
+          if (aiData.options) {
+            wireBudgetTiersEvents(timeCont, aiData.options, targetCity);
+            renderCategorizedPins(aiData.options.exact_budget);
+          }
+          wireSightseeingChecklistEvents(timeCont, destinationPlaces);
+        }
+      } catch (err) {
+        console.warn('Could not restore AI itinerary:', err);
+      }
     }
 
     function renderBudgetTiersHtml(options, activeTierKey = 'exact_budget') {
@@ -2911,6 +2994,22 @@
 
           window.__currentDestinationPlaces = destinationPlaces;
 
+            // Persist active AI itinerary to localStorage so external browsing never clears it
+            try {
+              localStorage.setItem('tourease_active_ai_itinerary', JSON.stringify({
+                routesData,
+                aiData,
+                promptText,
+                durationVal,
+                travelersVal,
+                numBudget,
+                savedAt: Date.now()
+              }));
+            } catch (saveErr) {
+              console.warn('Failed to persist AI itinerary:', saveErr);
+            }
+
+
           // Render interactive alternative routes on Mapbox & Route Cards
           if (routesData && routesData.success && routesData.routes && routesData.routes.length > 0) {
             renderAlternativeRoutesOnMap(routesData.routes, 0);
@@ -3606,54 +3705,45 @@
         `;
       });
 
-      const coverImg = tour.image_data || tour.image_url || DEFAULT_TOUR_SVG;
+      const photos = Array.isArray(tour.images) && tour.images.length > 0 ? tour.images : [tour.image_url || tour.image_data || DEFAULT_TOUR_SVG];
+      const coverImg = photos[0];
       const durationLabel = tour.duration || (tour.duration_days ? `${tour.duration_days} Days / ${tour.duration_days - 1} Nights` : 'All-Inclusive');
       const priceLabel = typeof tour.price === 'number' ? `₹ ${tour.price.toLocaleString('en-IN')}` : (tour.price || '₹ 4,800');
-      const descLabel = tour.description || tour.subtitle || 'All-inclusive curated journey with verified transport, stays, and regional guides.';
-      const startPoint = tour.start_point || 'Terminal / City Hub';
-      const endPoint = tour.end_point || 'Destination Landmark';
 
       tourCard.innerHTML = `
-        <div style="position: relative; width: 100%; height: 160px; background: #E2E8F0;">
-          <img src="${coverImg}" id="pkg-img-${tour.id}" alt="${tour.title}" style="width: 100%; height: 160px; object-fit: cover; display: block;" onerror="window.handleImgError(this, 'tour')">
-          <span style="position: absolute; top: 12px; left: 12px; background: rgba(15,23,42,0.85); color: #FFFFFF; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 20px; backdrop-filter: blur(4px);">
-            ${durationLabel} • Verified
-          </span>
-          <span style="position: absolute; bottom: 12px; right: 12px; background: #1A73E8; color: #FFFFFF; font-size: 13px; font-weight: 800; padding: 5px 12px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
-            ${priceLabel} / person
-          </span>
-        </div>
-
-        <div style="padding: 16px;">
-          <h3 class="tour-title" style="margin: 0 0 6px 0; font-size: 17px; font-weight: 800; color: #1E293B;">${tour.title}</h3>
-          <p class="tour-desc" style="margin: 0 0 14px 0; font-size: 13px; color: #64748B; line-height: 1.5;">${descLabel}</p>
-
-          <div style="display: flex; gap: 8px; margin-bottom: 12px;">
-            <button type="button" class="tour-timeline-toggle-btn" id="toggle-btn-${tour.id}" onclick="window.toggleTourAccordion('${tour.id}')" style="flex: 1; background: #F1F5F9; border: 1px solid #CBD5E1; color: #334155; border-radius: 10px; padding: 10px; font-size: 13px; font-weight: 700; cursor: pointer;">
-              View Itinerary Timeline ▾
-            </button>
-            <button type="button" class="m3-button-primary" style="flex: 1.2; border-radius: 10px;" onclick="window.openTourBookingDrawer('${tour.id}', '${tour.title.replace(/'/g, "\\'")}', '${priceLabel}', '${durationLabel}')">
-              Book Tour Package →
-            </button>
+        <div style="position: relative; width: 100%; height: 210px; background: #0F172A; overflow: hidden;">
+          <img id="tourCoverImg-${tour.id}" src="${coverImg}" alt="${tour.title}" style="width: 100%; height: 100%; object-fit: cover; transition: all 0.3s;" onerror="window.handleImgError(this, 'tour')">
+          <div style="position: absolute; top: 12px; right: 12px; background: rgba(15,23,42,0.85); backdrop-filter: blur(6px); color: #FFFFFF; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2);">
+            ${durationLabel}
           </div>
-
-          <div class="tour-expanded-drawer" id="drawer-${tour.id}" style="display: none; padding-top: 10px; border-top: 1px solid #E2E8F0;">
-            <div style="background: #F8FAFC; border-radius: 8px; padding: 10px; margin-bottom: 12px; font-size: 12px;">
-              <div><span style="font-weight: 700; color: #64748B;">START:</span> <strong>${startPoint}</strong></div>
-              <div style="margin-top: 4px;"><span style="font-weight: 700; color: #64748B;">END:</span> <strong>${endPoint}</strong></div>
+          ${photos.length > 1 ? `
+            <div style="position: absolute; bottom: 10px; left: 12px; right: 12px; display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px;">
+              ${photos.map((p, pIdx) => `
+                <img src="${p}" style="width: 38px; height: 38px; border-radius: 6px; object-fit: cover; border: 2px solid ${pIdx === 0 ? '#1A73E8' : 'rgba(255,255,255,0.8)'}; cursor: pointer; flex-shrink: 0;" onclick="const ci = this.closest('.tour-package-card').querySelector('img[id^=tourCoverImg-]'); if (ci) { ci.src = '${p}'; }" onerror="window.handleImgError(this, 'tour')">
+              `).join('')}
             </div>
-
-            <h5 style="margin: 0 0 10px 0; font-size: 11.5px; text-transform: uppercase; color: #64748B; letter-spacing: 0.5px;">Scheduled Timeline & Highlights:</h5>
-            <div class="tour-stops-timeline">
-              ${stopsHtml || '<div style="font-size: 12px; color: #64748B;">Flexible stops curated along corridor.</div>'}
+          ` : ''}
+        </div>
+        <div style="padding: 16px;">
+          <h3 style="font-size: 17px; font-weight: 800; color: #1E293B; margin: 0 0 6px 0;">${tour.title}</h3>
+          <p style="font-size: 12.5px; color: #64748B; line-height: 1.45; margin: 0 0 14px 0;">${tour.description}</p>
+          <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 12px; margin-bottom: 14px;">
+            <div style="font-size: 10.5px; font-weight: 800; color: #475569; letter-spacing: 0.6px; text-transform: uppercase; margin-bottom: 10px;">ITINERARY MILESTONES &amp; TIMELINE</div>
+            ${stopsHtml}
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #F1F5F9; padding-top: 12px;">
+            <div>
+              <span style="font-size: 10px; color: #64748B; text-transform: uppercase; font-weight: 700;">Price per Traveler</span>
+              <div style="font-size: 18px; font-weight: 800; color: #1A73E8;">${priceLabel}</div>
             </div>
+            <button type="button" class="m3-button-primary" style="padding: 8px 18px; font-size: 13px; font-weight: 700;" onclick="window.openPackageBookingModal('${tour.id}')">
+              Book Tour →
+            </button>
           </div>
         </div>
       `;
       container.appendChild(tourCard);
     }
-
-    renderBookedPackagesHistory();
   }
 
   function renderBookedPackagesHistory() {
@@ -3698,9 +3788,7 @@
             </div>
             <div style="display: flex; gap: 6px;">
               ${!isCancelled ? `
-                <button type="button" class="m3-button-primary" style="padding: 6px 10px; font-size: 11px; border-radius: 8px; background: #FEE2E2; color: #991B1B; border: 1px solid #FCA5A5;" onclick="window.cancelTourBooking('${trackingCode}')">
-                  ✕ Cancel & Refund
-                </button>
+                
                 <button type="button" class="m3-button-primary" style="padding: 6px 12px; font-size: 11px; border-radius: 8px;" onclick="window.trackLiveTripRoute('${trackingCode}', '${b.tour_id || 'T1'}')">
                   Track Live Trip 📡
                 </button>
@@ -3875,10 +3963,10 @@
   }
 
   const NEARBY_CABS = [
-    { id: 'CAB-101', driver: 'Ramesh Verma', car: 'Prime Sedan', tier: 'Prime Sedan', plate: 'MP-09-CB-4491', fare: 149, rating: '4.9 ★', eta: '4 mins away' },
-    { id: 'CAB-102', driver: 'Suresh Patel', car: 'SUV XL (6-Seater)', tier: 'SUV XL', plate: 'MP-09-ZT-8821', fare: 229, rating: '4.8 ★', eta: '7 mins away' },
-    { id: 'CAB-103', driver: 'Vikram Joshi', car: 'Green EV Sedan', tier: 'Green EV', plate: 'MP-09-EV-3312', fare: 139, rating: '4.9 ★', eta: '3 mins away' },
-    { id: 'CAB-104', driver: 'Amit Sharma', car: 'Dzire Comfort', tier: 'Sedan Comfort', plate: 'MP-09-CD-1109', fare: 169, rating: '4.7 ★', eta: '5 mins away' }
+    { id: 'CAB-101', driver: 'Ramesh Verma', car: 'Prime Sedan', tier: 'Prime Sedan', plate: 'MP-09-CB-4491', fare: 149, rating: '4.9 ★', eta: '4 mins away', photoUrl: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=800&q=80' },
+    { id: 'CAB-102', driver: 'Suresh Patel', car: 'SUV XL (6-Seater)', tier: 'SUV XL', plate: 'MP-09-ZT-8821', fare: 229, rating: '4.8 ★', eta: '7 mins away', photoUrl: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=800&q=80' },
+    { id: 'CAB-103', driver: 'Vikram Joshi', car: 'Green EV Sedan', tier: 'Green EV', plate: 'MP-09-EV-3312', fare: 139, rating: '4.9 ★', eta: '3 mins away', photoUrl: 'https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=800&q=80' },
+    { id: 'CAB-104', driver: 'Amit Sharma', car: 'Dzire Comfort', tier: 'Sedan Comfort', plate: 'MP-09-CD-1109', fare: 169, rating: '4.7 ★', eta: '5 mins away', photoUrl: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=800&q=80' }
   ];
 
   function initIntercityCabBooking() {
@@ -4745,7 +4833,7 @@
           return `
             <div style="background: white; border: 1px solid #E2E8F0; border-radius: 12px; padding: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.03);">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                <span style="background: #1A73E8; color: white; font-family: monospace; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 4px;">${r.tracking_code || r.trackingCode}</span>
+                <span style="background: #F1F5F9; color: #475569; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 4px; border: 1px solid #E2E8F0;">Ride #${r.id || (r.tracking_code || r.trackingCode || "").slice(-4) || "101"}</span>
                 <span style="font-size: 11px; font-weight: 700; color: ${isPendingCash ? '#D97706' : (isAccepted ? '#059669' : '#1A73E8')}; background: ${isPendingCash ? '#FEF3C7' : (isAccepted ? '#ECFDF5' : '#EFF6FF')}; padding: 2px 8px; border-radius: 10px;">
                   ${isPendingCash ? '● CASH PENDING' : (isAccepted ? '● ACCEPTED / EN ROUTE' : '● NEW REQUEST')}
                 </span>
@@ -5520,15 +5608,111 @@
     );
   };
 
-  window.viewCustomerOnMap = function (trackingCode, lat, lng, pickupLocation) {
-    window.openTrackingModal(
-      'Customer Pickup Location',
-      trackingCode,
-      'Dispatch In Transit',
-      `Pickup: ${pickupLocation}`,
-      lat,
-      lng
-    );
+  
+  window.viewCustomerOnMap = function (trackingCode, custLat, custLng, pickupLocation) {
+    const pLat = parseFloat(custLat) || 23.1824;
+    const pLng = parseFloat(custLng) || 75.7682;
+
+    const modal = document.getElementById('trackingMapModal');
+    if (!modal) return;
+
+    const elTitle = document.getElementById('trackingModalTitle');
+    const elCode = document.getElementById('trackingModalCodeDisplay');
+    const elStatus = document.getElementById('trackingModalStatusDisplay');
+    const elDetail = document.getElementById('trackingModalDetailText');
+
+    if (elTitle) elTitle.textContent = 'Active Ride Route & Dispatch Navigation';
+    if (elCode) elCode.textContent = `Ride Navigation • ${pickupLocation}`;
+    if (elStatus) elStatus.textContent = 'En Route to Pickup';
+    if (elDetail) elDetail.textContent = `Customer Pickup: ${pickupLocation}`;
+
+    modal.style.display = 'flex';
+
+    const renderDualPins = (cabLat, cabLng) => {
+      const container = document.getElementById('trackingModalMap');
+      if (!container || typeof mapboxgl === 'undefined') return;
+
+      if (!trackingMapInstance) {
+        trackingMapInstance = new mapboxgl.Map({
+          container: 'trackingModalMap',
+          style: 'mapbox://styles/mapbox/streets-v12',
+          center: [cabLng, cabLat],
+          zoom: 13
+        });
+        trackingMapInstance.addControl(new mapboxgl.NavigationControl({ showCompass: false, showZoom: true }), 'top-right');
+      } else {
+        trackingMapInstance.resize();
+      }
+
+      // Clear existing markers if any
+      if (window.__trackingModalMarkers) {
+        window.__trackingModalMarkers.forEach(m => m.remove());
+      }
+      window.__trackingModalMarkers = [];
+
+      // 1. Cab Owner Marker (Live GPS - Blue vehicle icon)
+      const cabEl = document.createElement('div');
+      cabEl.innerHTML = `
+        <div style="display: flex; flex-direction: column; align-items: center; cursor: pointer;">
+          <div style="background: #1A73E8; color: white; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; border: 2.5px solid white; box-shadow: 0 3px 8px rgba(0,0,0,0.3);">
+            🚕
+          </div>
+          <div style="background: #1A73E8; color: white; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 8px; margin-top: 2px; white-space: nowrap;">Your Cab (Live GPS)</div>
+        </div>
+      `;
+      const cabMarker = new mapboxgl.Marker({ element: cabEl })
+        .setLngLat([cabLng, cabLat])
+        .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML('<strong>Your Cab</strong><br>Live GPS Location'))
+        .addTo(trackingMapInstance);
+      window.__trackingModalMarkers.push(cabMarker);
+
+      // 2. Customer Pickup Marker (Amber/Red Pin)
+      const custEl = document.createElement('div');
+      custEl.innerHTML = `
+        <div style="display: flex; flex-direction: column; align-items: center; cursor: pointer;">
+          <div style="background: #D97706; color: white; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; border: 2.5px solid white; box-shadow: 0 3px 8px rgba(0,0,0,0.3);">
+            📍
+          </div>
+          <div style="background: #D97706; color: white; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 8px; margin-top: 2px; white-space: nowrap;">Customer Pickup</div>
+        </div>
+      `;
+      const custMarker = new mapboxgl.Marker({ element: custEl })
+        .setLngLat([pLng, pLat])
+        .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(`<strong>Pickup</strong><br>${pickupLocation}`))
+        .addTo(trackingMapInstance);
+      window.__trackingModalMarkers.push(custMarker);
+
+      // Fit both pins simultaneously
+      const bounds = new mapboxgl.LngLatBounds();
+      bounds.extend([cabLng, cabLat]);
+      bounds.extend([pLng, pLat]);
+      trackingMapInstance.fitBounds(bounds, { padding: 60, maxZoom: 15, duration: 1000 });
+
+      // Telemetry push to server
+      if (trackingCode) {
+        fetch(`${API_BASE}/api/tracking/${encodeURIComponent(trackingCode)}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ lat: cabLat, lng: cabLng })
+        }).catch(e => console.warn('Telemetry push note:', e));
+      }
+    };
+
+    // Obtain Cab Owner live location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          renderDualPins(pos.coords.latitude, pos.coords.longitude);
+        },
+        () => {
+          // Fallback slightly offset from pickup
+          renderDualPins(pLat - 0.012, pLng - 0.015);
+        },
+        { enableHighAccuracy: true, timeout: 5000, maximumAge: 10000 }
+      );
+    } else {
+      renderDualPins(pLat - 0.012, pLng - 0.015);
+    }
   };
 
   window.acceptCabRide = function (trackingCode) {
@@ -5617,7 +5801,62 @@
     });
   };
 
-  window.cancelRentalReservation = function (trackingCode) {
+  
+  window.cancelAndRefundRental = window.cancelRentalReservation = function (trackingCode) {
+    window.showAppModal({
+      title: 'Cancel & Refund Self-Drive Reservation?',
+      message: `Are you sure you want to cancel vehicle reservation #${trackingCode}?\nFull rental escrow payment will be refunded to your original payment method.`,
+      type: 'warning',
+      confirmText: 'Yes, Cancel & Refund',
+      cancelText: 'Keep Reservation',
+      onConfirm: async () => {
+        try {
+          let refundAmt = 0;
+          let resMsg = '';
+          const resp = await fetch(`${API_BASE}/api/bookings/${encodeURIComponent(trackingCode)}/refund`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' }
+          });
+          if (resp.ok) {
+            const data = await resp.json();
+            refundAmt = data.refund_amount || 0;
+            resMsg = data.message;
+          } else {
+            const altResp = await fetch(`${API_BASE}/api/rentals/book/${encodeURIComponent(trackingCode)}/cancel`, { method: 'POST' });
+            if (altResp.ok) {
+              const data = await altResp.json();
+              refundAmt = data.refund_amount || 0;
+            }
+          }
+          const rbks = getStorage(STORAGE_KEYS.RENTAL_BOOKINGS, []);
+          const match = rbks.find(r => r.tracking_code === trackingCode);
+          if (match) {
+            match.handover_status = 'Cancelled & Refunded';
+            match.paymentStatus = 'Refunded';
+            if (!refundAmt) refundAmt = parseFloat(match.total_fare || match.total_amount || 2800);
+            setStorage(STORAGE_KEYS.RENTAL_BOOKINGS, rbks);
+          }
+          window.showAppModal({
+            title: 'Reservation Cancelled & Refunded',
+            message: resMsg || `Self-drive reservation #${trackingCode} has been cancelled.\n₹${refundAmt.toLocaleString('en-IN')} has been refunded.`,
+            type: 'success'
+          });
+          if (typeof renderActiveRentalReservations === 'function') renderActiveRentalReservations();
+          if (typeof renderCombinedHistoryUI === 'function') renderCombinedHistoryUI();
+          if (typeof syncGlobalStateWithBackend === 'function') syncGlobalStateWithBackend();
+        } catch (err) {
+          window.showAppModal({
+            title: 'Cancellation Error',
+            message: err.message || 'Failed to process rental cancellation.',
+            type: 'error'
+          });
+        }
+      }
+    });
+  };
+
+  // legacy alias
+  window._origCancelRentalReservation = function (trackingCode) {
     window.showAppModal({
       title: 'Cancel Rental Reservation?',
       message: `Are you sure you want to cancel vehicle reservation #${trackingCode}?\nFull escrow payment will be instantly refunded to your original payment method.`,
@@ -5775,11 +6014,7 @@
           </div>
 
           <div style="display: flex; gap: 8px; justify-content: flex-end;">
-            ${trip.canCancel ? `
-              <button type="button" class="m3-button-primary" style="padding: 6px 12px; font-size: 11px; background: #FEE2E2; color: #991B1B; border: 1px solid #FCA5A5; border-radius: 8px;" onclick="${trip.type === 'tour' ? `window.cancelTourBooking('${trip.trackingCode}')` : (trip.type === 'rental' ? `window.cancelRentalReservation('${trip.trackingCode}')` : `window.cancelCabRide('${trip.trackingCode}')`)}">
-                ✕ Cancel & Refund
-              </button>
-            ` : ''}
+            
             <button type="button" class="m3-button-primary" style="padding: 6px 14px; font-size: 11px; background: #1A73E8; color: white; border-radius: 8px;" onclick="window.openDigitalBillModal({ trackingCode: '${trip.trackingCode}', serviceType: '${trip.category.replace(/'/g, "\\'")}', title: '${trip.title.replace(/'/g, "\\'")}', route: '${trip.subtitle.replace(/'/g, "\\'")}', date: '${trip.date}', fare: ${trip.fare}, paymentMethod: '${trip.paymentMethod}' })">
               🧾 Get Bill (SMS / Email)
             </button>
@@ -6219,6 +6454,7 @@
         window.recordModalOpen('publicTrackingModal');
       }
       if (errorBox) errorBox.style.display = 'none';
+      renderActiveTrackingPills();
       if (input) {
         input.value = '';
         input.focus();
@@ -6228,6 +6464,10 @@
     function closeModal() {
       if (modal) modal.style.display = 'none';
       if (errorBox) errorBox.style.display = 'none';
+      if (publicTrackPollInterval) {
+        clearInterval(publicTrackPollInterval);
+        publicTrackPollInterval = null;
+      }
     }
 
     if (btnOpen) btnOpen.addEventListener('click', openModal);
@@ -6235,11 +6475,57 @@
     if (btnClose) btnClose.addEventListener('click', closeModal);
     if (backdrop) backdrop.addEventListener('click', closeModal);
 
+    // Wire Landing Card Track Live submit
+    const landingInput = document.getElementById('landingTrackCodeInput');
+    const btnLandingSubmit = document.getElementById('btnLandingTrackSubmit');
+    if (btnLandingSubmit) {
+      btnLandingSubmit.addEventListener('click', () => {
+        const cd = (landingInput?.value || '').trim();
+        if (cd) window.executePublicTrack(cd);
+      });
+    }
+    if (landingInput) {
+      landingInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          const cd = (landingInput?.value || '').trim();
+          if (cd) window.executePublicTrack(cd);
+        }
+      });
+    }
+
+    let publicTrackPollInterval = null;
+
+    function renderActiveTrackingPills() {
+      const pillsContainer = document.getElementById('travelerActiveTrackingPills');
+      if (!pillsContainer) return;
+      const cabs = getStorage(STORAGE_KEYS.CAB_BOOKINGS, []);
+      const rentals = getStorage(STORAGE_KEYS.RENTAL_BOOKINGS, []);
+      const activeCodes = [
+        ...cabs.map(c => c.trackingCode || c.tracking_code).filter(Boolean),
+        ...rentals.map(r => r.tracking_code).filter(Boolean)
+      ];
+      if (activeCodes.length === 0) {
+        pillsContainer.innerHTML = '<span style="font-size: 11px; color: #94A3B8;">No active bookings yet. Book a cab or rental to get a live tracking code.</span>';
+        return;
+      }
+      pillsContainer.innerHTML = activeCodes.slice(0, 5).map(cd => `
+        <button type="button" class="traveler-quick-track-pill" style="background: #EFF6FF; border: 1px solid #BFDBFE; color: #1D4ED8; font-size: 11px; font-weight: 700; padding: 5px 9px; border-radius: 6px; cursor: pointer;" onclick="document.getElementById('publicTrackCodeInput').value='${cd}'; window.executePublicTrack('${cd}');">
+          📍 ${cd}
+        </button>
+      `).join('');
+    }
+
+    window.executePublicTrack = async function(codeToTrack) {
+      if (modal) modal.style.display = 'flex';
+      executeTrack(codeToTrack);
+    };
+
     async function executeTrack(codeToTrack) {
       const code = (codeToTrack || input?.value || '').trim().toUpperCase();
       if (!code) {
         if (errorBox) {
-          errorBox.textContent = 'Please enter a valid tracking code (e.g. TRK-4821 or CAB-7891).';
+          errorBox.textContent = 'Please enter a valid tracking code (e.g. CAB-5627 or TRK-4821).';
           errorBox.style.display = 'block';
         }
         return;
@@ -6250,46 +6536,111 @@
         btnSubmit.textContent = 'Locating...';
       }
 
-      try {
-        const resp = await fetch(`/api/track/${encodeURIComponent(code)}`);
-        const data = await resp.json();
-        if (btnSubmit) {
-          btnSubmit.disabled = false;
-          btnSubmit.textContent = 'Track';
+      if (publicTrackPollInterval) clearInterval(publicTrackPollInterval);
+
+      const doLookup = async () => {
+        let t = null;
+        try {
+          const resp = await fetch(`${API_BASE}/api/tracking/${encodeURIComponent(code)}`);
+          if (resp.ok) {
+            const data = await resp.json();
+            if (data.success && data.trip) t = data.trip;
+          }
+        } catch (netErr) {
+          console.warn('Network tracking lookup notice:', netErr);
         }
 
-        if (!resp.ok || !data.success || !data.trip) {
+        if (!t) {
+          // Fallback to localStorage bookings
+          const cabs = getStorage(STORAGE_KEYS.CAB_BOOKINGS, []);
+          const rentals = getStorage(STORAGE_KEYS.RENTAL_BOOKINGS, []);
+          const tours = getStorage(STORAGE_KEYS.TOUR_BOOKINGS, []);
+
+          const cMatch = cabs.find(c => (c.trackingCode || c.tracking_code || '').toUpperCase() === code);
+          const rMatch = rentals.find(r => (r.tracking_code || r.trackingCode || '').toUpperCase() === code);
+          const tMatch = tours.find(o => (o.tracking_code || `TE-${o.id ? o.id.slice(-4) : '8492'}`).toUpperCase() === code);
+
+          if (cMatch) {
+            t = {
+              code: cMatch.trackingCode || cMatch.tracking_code,
+              service_type: 'City Cab',
+              status: cMatch.status || 'in_transit',
+              customer_name: cMatch.customerName || 'Traveler',
+              driver_name: cMatch.driver || 'Ramesh Verma',
+              vehicle: `${cMatch.car || 'Prime Sedan'} (${cMatch.plate || 'MP-09-CB-4491'})`,
+              origin: cMatch.pickup || 'Pickup Location',
+              destination: cMatch.drop || 'Drop Location',
+              pickup_lat: cMatch.pickup_lat || 23.1824,
+              pickup_lng: cMatch.pickup_lng || 75.7682,
+              lat: 23.1850,
+              lng: 75.7720
+            };
+          } else if (rMatch) {
+            t = {
+              code: rMatch.tracking_code,
+              service_type: 'Self-Drive Rental',
+              status: rMatch.handover_status || 'active',
+              customer_name: rMatch.customer_name || 'Traveler',
+              driver_name: 'Self-Drive Traveler',
+              vehicle: `${rMatch.car_model} (${rMatch.plate_number || 'Commercial'})`,
+              origin: rMatch.pickup_location || 'Ujjain Hub',
+              destination: rMatch.drop_location || 'Indore Terminal',
+              pickup_lat: 23.1824,
+              pickup_lng: 75.7682,
+              lat: 23.1824,
+              lng: 75.7682
+            };
+          } else if (tMatch) {
+            t = {
+              code: code,
+              service_type: 'Guided Tour',
+              status: tMatch.status || 'CONFIRMED',
+              customer_name: 'Traveler',
+              driver_name: 'TourEase Guide',
+              vehicle: tMatch.title || 'TourEase Corridor Experience',
+              origin: 'Corridor Departure Point',
+              destination: tMatch.title || 'Ujjain Corridor',
+              pickup_lat: 23.1764,
+              pickup_lng: 75.7828,
+              lat: 23.1764,
+              lng: 75.7828
+            };
+          }
+        }
+
+        if (btnSubmit) {
+          btnSubmit.disabled = false;
+          btnSubmit.textContent = 'Track on Map';
+        }
+
+        if (!t) {
           if (errorBox) {
-            errorBox.textContent = data.error || `No active trip found for tracking code "${code}". Verify code with traveler.`;
+            errorBox.textContent = `No active trip found for tracking code "${code}". Verify code with traveler.`;
             errorBox.style.display = 'block';
           }
           if (resultCard) resultCard.style.display = 'none';
           return;
         }
 
-        const t = data.trip;
         if (resultCard) resultCard.style.display = 'block';
         if (typeBadge) typeBadge.textContent = (t.service_type || 'Fleet Trip').toUpperCase();
         if (statusBadge) {
-          statusBadge.textContent = (t.status || 'Active').replace(/_/g, ' ');
-          if (t.status === 'in_transit' || t.status === 'en_route') {
-            statusBadge.style.background = '#DCFCE7';
-            statusBadge.style.color = '#15803D';
-          } else {
-            statusBadge.style.background = '#FEF3C7';
-            statusBadge.style.color = '#B45309';
-          }
+          statusBadge.textContent = (t.status || 'In Transit').replace(/_/g, ' ');
+          statusBadge.style.background = '#DCFCE7';
+          statusBadge.style.color = '#15803D';
         }
-        if (titleText) titleText.textContent = `${t.origin || 'Origin'} → ${t.destination || 'Destination'}`;
+        if (titleText) titleText.textContent = `${t.origin || 'Pickup'} → ${t.destination || 'Destination'}`;
         if (subtitleText) {
-          subtitleText.textContent = `${t.vehicle || 'Tour Vehicle'} • Chauffeur: ${t.driver_name || 'Assigned Driver'} (${t.customer_name || 'Passenger'})`;
+          subtitleText.textContent = `${t.vehicle || 'Vehicle'} • Chauffeur: ${t.driver_name || 'Assigned Chauffeur'} (${t.customer_name || 'Passenger'})`;
         }
         if (lastUpdateText) {
-          lastUpdateText.textContent = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+          lastUpdateText.textContent = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         }
 
-        const lng = Number(t.lng) || 75.7682;
-        const lat = Number(t.lat) || 23.1824;
+        const cabLat = Number(t.current_lat || t.lat) || 23.1824;
+        const cabLng = Number(t.current_lng || t.lng) || 75.7682;
+        const pickLat = Number(t.pickup_lat) || cabLat;
+        const pickLng = Number(t.pickup_lng) || cabLng;
 
         if (window.mapboxgl && mapboxgl.accessToken) {
           const mapEl = document.getElementById('publicTrackingMap');
@@ -6298,32 +6649,62 @@
               publicTrackMap = new mapboxgl.Map({
                 container: 'publicTrackingMap',
                 style: 'mapbox://styles/mapbox/streets-v12',
-                center: [lng, lat],
+                center: [cabLng, cabLat],
                 zoom: 13
               });
               publicTrackMap.addControl(new mapboxgl.NavigationControl({ showCompass: false, showZoom: true }), 'top-right');
             } else {
-              publicTrackMap.flyTo({ center: [lng, lat], zoom: 13, essential: true });
+              publicTrackMap.resize();
             }
 
             if (publicTrackMarker) publicTrackMarker.remove();
-            publicTrackMarker = new mapboxgl.Marker({ color: '#1A73E8' })
-              .setLngLat([lng, lat])
-              .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(`<strong>${escapeHtml(t.service_type)}</strong><br>${escapeHtml(t.vehicle)}`))
+            if (window.__publicTrackPickupMarker) window.__publicTrackPickupMarker.remove();
+
+            // 1. Vehicle Pin (Blue/Emerald)
+            const vEl = document.createElement('div');
+            vEl.innerHTML = `
+              <div style="display: flex; flex-direction: column; align-items: center; cursor: pointer;">
+                <div style="background: #1A73E8; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; border: 2.5px solid white; box-shadow: 0 3px 8px rgba(0,0,0,0.3);">
+                  🚗
+                </div>
+                <div style="background: #1A73E8; color: white; font-size: 9.5px; font-weight: 800; padding: 2px 6px; border-radius: 6px; margin-top: 2px; white-space: nowrap;">Live Cab</div>
+              </div>
+            `;
+            publicTrackMarker = new mapboxgl.Marker({ element: vEl })
+              .setLngLat([cabLng, cabLat])
+              .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(`<strong>${t.vehicle}</strong><br>Live Telemetry Active`))
               .addTo(publicTrackMap);
-            publicTrackMarker.togglePopup();
+
+            // 2. Pickup Pin (Amber)
+            if (Math.abs(pickLat - cabLat) > 0.0001 || Math.abs(pickLng - cabLng) > 0.0001) {
+              const pEl = document.createElement('div');
+              pEl.innerHTML = `
+                <div style="display: flex; flex-direction: column; align-items: center; cursor: pointer;">
+                  <div style="background: #D97706; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; border: 2.5px solid white; box-shadow: 0 3px 8px rgba(0,0,0,0.3);">
+                    📍
+                  </div>
+                  <div style="background: #D97706; color: white; font-size: 9.5px; font-weight: 800; padding: 2px 6px; border-radius: 6px; margin-top: 2px; white-space: nowrap;">Pickup</div>
+                </div>
+              `;
+              window.__publicTrackPickupMarker = new mapboxgl.Marker({ element: pEl })
+                .setLngLat([pickLng, pickLat])
+                .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(`<strong>Pickup:</strong><br>${t.origin}`))
+                .addTo(publicTrackMap);
+
+              const bounds = new mapboxgl.LngLatBounds();
+              bounds.extend([cabLng, cabLat]);
+              bounds.extend([pickLng, pickLat]);
+              publicTrackMap.fitBounds(bounds, { padding: 45, maxZoom: 15, duration: 800 });
+            } else {
+              publicTrackMap.flyTo({ center: [cabLng, cabLat], zoom: 14, essential: true });
+            }
           }
         }
-      } catch (err) {
-        if (btnSubmit) {
-          btnSubmit.disabled = false;
-          btnSubmit.textContent = 'Track';
-        }
-        if (errorBox) {
-          errorBox.textContent = 'Network error while querying tracking service: ' + err.message;
-          errorBox.style.display = 'block';
-        }
-      }
+      };
+
+      await doLookup();
+      // Auto-refresh every 5 seconds
+      publicTrackPollInterval = setInterval(doLookup, 5000);
     }
 
     if (btnSubmit) {
@@ -6348,16 +6729,7 @@
     }
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    initAuthAndRoleSwitcher();
-    initTravelerDashboard();
-    initPublicTracking();
-    window.syncGlobalStateWithBackend();
-  });
-
-})();   
-
-    // Wire Traveler Count Quick Pills
+  function initTravelerCountPills() {
     const travelerPillsGroup = document.getElementById('travelerQuickPillsGroup');
     const travelerCountInput = document.getElementById('travelerCountInput');
     const hiddenTravelersInput = document.getElementById('conciergeTravelersInput');
@@ -6389,3 +6761,15 @@
         }
       });
     }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    initAuthAndRoleSwitcher();
+    initTravelerDashboard();
+    initPublicTracking();
+    initTravelerCountPills();
+    window.syncGlobalStateWithBackend();
+    setTimeout(restoreActiveAiItinerary, 200);
+  });
+
+})();

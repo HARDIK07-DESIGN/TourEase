@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 Uri uri = request.getUrl();
                 String url = uri != null ? uri.toString() : "";
+                String host = uri != null && uri.getHost() != null ? uri.getHost().toLowerCase() : "";
 
                 // Open telephone, mailto, and external intent links in system apps
                 if (url.startsWith("tel:") ||
@@ -93,6 +94,25 @@ public class MainActivity extends AppCompatActivity {
                         return true;
                     } catch (Exception e) {
                         return false;
+                    }
+                }
+
+                // Intercept external search/web links (e.g. google.com/search) to open in system browser
+                // Keep TourEase backend and Google OAuth in WebView
+                if (url.startsWith("http://") || url.startsWith("https://")) {
+                    boolean isInternal = host.equals("tourease-zocf.onrender.com") ||
+                                         host.equals("accounts.google.com") ||
+                                         host.equals("localhost") ||
+                                         host.equals("10.0.2.2") ||
+                                         host.isEmpty();
+                    if (!isInternal) {
+                        try {
+                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, uri);
+                            startActivity(browserIntent);
+                            return true;
+                        } catch (Exception e) {
+                            return false;
+                        }
                     }
                 }
                 return false;
