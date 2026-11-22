@@ -424,7 +424,7 @@
         <span style="font-size: 10px;">🟢</span> Live PostgreSQL
       </div>
       <button type="button" class="btn-lock" id="btnAdminLogout" title="Lock Admin Portal">
-        🔒 Lock Portal
+         Lock Portal
       </button>
     </div>
   </header>
@@ -441,13 +441,13 @@
       📋 Vehicle Verification
     </button>
     <button type="button" class="admin-tab-btn" data-tab="tab-fleet" id="tabBtnFleet">
-      🚗 Fleet Safety & Compliance
+       Fleet Safety & Compliance
     </button>
     <button type="button" class="admin-tab-btn" data-tab="tab-users" id="tabBtnUsers">
       👥 User Governance
     </button>
     <button type="button" class="admin-tab-btn" data-tab="tab-live-track" id="tabBtnLiveTrack">
-      🛰️ Live TRK GPS Tracking
+       Live TRK GPS Tracking
     </button>
     <button type="button" class="admin-tab-btn" data-tab="tab-financials" id="tabBtnFinancials">
       💰 Platform Financials
@@ -682,7 +682,7 @@
         <label style="font-size: 11.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 6px;">Lookup Active Trip by Tracking Code (TRK-XXXX / CAB-XXXX)</label>
         <div style="display: flex; gap: 10px; max-width: 500px; margin-bottom: 12px;">
           <input type="text" id="adminTrkInput" placeholder="e.g. TRK-4821 or CAB-7891" style="flex: 1; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 14px; font-family: 'JetBrains Mono', monospace; text-transform: uppercase; font-weight: 700; outline: none;">
-          <button type="button" class="btn-action-primary" id="btnAdminTrackSubmit" onclick="submitAdminTrack()">🛰️ Locate Vehicle</button>
+          <button type="button" class="btn-action-primary" id="btnAdminTrackSubmit" onclick="submitAdminTrack()"> Locate Vehicle</button>
         </div>
 
         <div id="adminTrackResultCard" style="display: none; background: #F8FAFC; border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-top: 10px;">
@@ -833,7 +833,7 @@
         if (packages.length === 0) {
           container.innerHTML = `
             <div style="background: white; border: 1px dashed var(--border); border-radius: var(--radius); padding: 40px 20px; text-align: center; color: var(--text-muted);">
-              <div style="font-size: 32px; margin-bottom: 8px;">🎉</div>
+              <div style="font-size: 32px; margin-bottom: 8px;"></div>
               <strong style="font-size: 16px; color: var(--text); display: block;">Queue is completely clear!</strong>
               <p style="font-size: 13px; margin-top: 4px;">Zero user-submitted custom AI packages awaiting moderation.</p>
             </div>
@@ -1024,7 +1024,7 @@
             <td>
               ${l.action === 'LOGIN' 
                 ? '<span class="badge badge-success">✓ LOGIN</span>' 
-                : '<span class="badge badge-warning">🚪 LOGOUT</span>'}
+                : '<span class="badge badge-warning"> LOGOUT</span>'}
             </td>
             <td><code>${escapeHtml(l.ip_address || '127.0.0.1')}</code></td>
           </tr>

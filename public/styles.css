@@ -1,0 +1,69 @@
+/* TourEase Production System & Lucide Icons */
+.lucide-icon {
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.traveler-quick-pill {
+  flex: 1;
+  background: #F1F5F9;
+  border: 1px solid #CBD5E1;
+  color: #334155;
+  border-radius: 8px;
+  padding: 7px 2px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s ease;
+}
+.traveler-quick-pill.active {
+  background: #1A73E8;
+  color: #FFFFFF;
+  border-color: #1A73E8;
+  box-shadow: 0 1px 4px rgba(26,115,232,0.3);
+}
+
+.btn-search-book {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #EFF6FF;
+  color: #1D4ED8;
+  border: 1px solid #BFDBFE;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-search-book:hover {
+  background: #DBEAFE;
+}
+
+.btn-focus-pin {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #FFFFFF;
+  color: #334155;
+  border: 1px solid #CBD5E1;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-focus-pin:hover {
+  background: #F8FAFC;
+}
+
+.mapboxgl-ctrl-compass {
+  display: none !important;
+}

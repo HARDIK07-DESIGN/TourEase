@@ -17,6 +17,7 @@
     href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
     rel="stylesheet">
 
+  <link rel="stylesheet" href="styles.css">
   <!-- Mapbox GL JS -->
   <link href="https://api.mapbox.com/mapbox-gl-js/v3.1.2/mapbox-gl.css" rel="stylesheet">
   <script src="https://api.mapbox.com/mapbox-gl-js/v3.1.2/mapbox-gl.js"></script>
@@ -104,180 +105,194 @@
       background: var(--bg);
     }
 
-    /* Top Navigation Header */
+    
+    /* Top Navigation Header - Consumer Grade Non-Overlapping Layout */
     .android-top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 14px;
-      padding-top: calc(10px + env(safe-area-inset-top, 0px));
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      z-index: 100;
-      box-shadow: var(--shadow-sm);
-      width: 100%;
-      box-sizing: border-box;
-      gap: 8px;
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      padding: 8px 10px !important;
+      padding-top: calc(8px + env(safe-area-inset-top, 0px)) !important;
+      background: var(--surface) !important;
+      border-bottom: 1px solid var(--border) !important;
+      z-index: 100 !important;
+      box-shadow: var(--shadow-sm) !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+      gap: 6px !important;
+      position: relative !important;
+      flex-wrap: nowrap !important;
     }
 
     .brand-section {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      user-select: none;
-      flex-shrink: 0;
+      display: flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      cursor: pointer !important;
+      user-select: none !important;
+      flex-shrink: 0 !important;
+      white-space: nowrap !important;
+      min-width: 0 !important;
     }
 
     .brand-icon-wrap {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      background: var(--primary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 6px rgba(26, 115, 232, 0.3);
-      flex-shrink: 0;
+      width: 28px !important;
+      height: 28px !important;
+      border-radius: 7px !important;
+      background: var(--primary) !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      box-shadow: 0 2px 6px rgba(26, 115, 232, 0.3) !important;
+      flex-shrink: 0 !important;
     }
 
     .brand-icon-wrap svg {
-      width: 16px;
-      height: 16px;
-      fill: #FFFFFF;
+      width: 15px !important;
+      height: 15px !important;
+      fill: #FFFFFF !important;
+    }
+
+    .brand-titles {
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: center !important;
+      min-width: 0 !important;
     }
 
     .brand-titles h1 {
-      margin: 0;
-      font-size: 17px;
-      font-weight: 800;
-      color: var(--text-main);
-      line-height: 1;
-      white-space: nowrap;
-      letter-spacing: -0.02em;
+      margin: 0 !important;
+      font-size: 16px !important;
+      font-weight: 800 !important;
+      color: var(--text-main) !important;
+      line-height: 1 !important;
+      white-space: nowrap !important;
+      letter-spacing: -0.02em !important;
     }
 
     .brand-titles .subtitle,
-    #headerRoleBadge {
+    #headerRoleBadge,
+    .user-profile-pill-btn {
       display: none !important;
     }
 
     .header-actions-group {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-shrink: 0;
-      margin-left: auto;
+      display: flex !important;
+      align-items: center !important;
+      gap: 5px !important;
+      flex-shrink: 0 !important;
+      margin-left: auto !important;
+      position: static !important;
+      transform: none !important;
+      flex-wrap: nowrap !important;
     }
 
     .role-switcher-wrap {
-      position: relative;
-      flex-shrink: 0;
+      position: relative !important;
+      transform: none !important;
+      flex-shrink: 0 !important;
     }
 
     .role-switcher-btn {
-      appearance: none;
-      -webkit-appearance: none;
-      background: var(--surface-subtle);
-      border: 1px solid var(--border-input);
-      padding: 5px 9px;
-      border-radius: var(--radius-pill);
-      font-size: 11.5px;
-      font-weight: 700;
-      color: var(--text-main);
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      transition: var(--transition);
-      font-family: inherit;
-      user-select: none;
-      white-space: nowrap;
-      flex-shrink: 0;
+      appearance: none !important;
+      -webkit-appearance: none !important;
+      background: var(--surface-subtle) !important;
+      border: 1px solid var(--border-input) !important;
+      padding: 5px 8px !important;
+      border-radius: var(--radius-pill) !important;
+      font-size: 11.5px !important;
+      font-weight: 700 !important;
+      color: var(--text-main) !important;
+      cursor: pointer !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 4px !important;
+      transition: var(--transition) !important;
+      font-family: inherit !important;
+      user-select: none !important;
+      white-space: nowrap !important;
+      flex-shrink: 0 !important;
+      position: static !important;
+      transform: none !important;
+    }
+
+    .role-switcher-btn:hover {
+      background: var(--surface) !important;
+      border-color: var(--primary) !important;
+    }
+
+    .role-switcher-arrow {
+      font-size: 9px !important;
+      color: var(--text-muted) !important;
+      margin-left: 1px !important;
+    }
+
+    .custom-role-popover {
+      position: absolute !important;
+      top: calc(100% + 6px) !important;
+      right: 0 !important;
+      width: 220px !important;
+      background: var(--surface) !important;
+      border: 1px solid var(--border) !important;
+      border-radius: var(--radius) !important;
+      box-shadow: var(--shadow-lg) !important;
+      padding: 6px !important;
+      z-index: 1000 !important;
     }
 
     .btn-track-trip,
     #btnOpenPublicTrackModal {
-      appearance: none;
-      -webkit-appearance: none;
-      background: #EFF6FF;
-      border: 1px solid #BFDBFE;
-      padding: 5px 9px;
-      border-radius: var(--radius-pill);
-      font-size: 11.5px;
-      font-weight: 700;
-      color: #1D4ED8;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      transition: var(--transition);
-      font-family: inherit;
-      user-select: none;
-      white-space: nowrap;
-      flex-shrink: 0;
+      appearance: none !important;
+      -webkit-appearance: none !important;
+      background: #EFF6FF !important;
+      border: 1px solid #BFDBFE !important;
+      padding: 5px 8px !important;
+      border-radius: var(--radius-pill) !important;
+      font-size: 11.5px !important;
+      font-weight: 700 !important;
+      color: #1D4ED8 !important;
+      cursor: pointer !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 4px !important;
+      transition: var(--transition) !important;
+      font-family: inherit !important;
+      user-select: none !important;
+      white-space: nowrap !important;
+      flex-shrink: 0 !important;
     }
     .btn-track-trip:hover,
     #btnOpenPublicTrackModal:hover {
-      background: #DBEAFE;
+      background: #DBEAFE !important;
     }
 
     .btn-universal-logout,
     #btnUniversalLogout {
-      appearance: none;
-      -webkit-appearance: none;
-      background: #FEF2F2;
-      border: 1px solid #FECACA;
-      padding: 5px 9px;
-      border-radius: var(--radius-pill);
-      font-size: 11.5px;
-      font-weight: 700;
-      color: #DC2626;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      transition: var(--transition);
-      font-family: inherit;
-      user-select: none;
-      white-space: nowrap;
-      flex-shrink: 0;
+      appearance: none !important;
+      -webkit-appearance: none !important;
+      background: #FEF2F2 !important;
+      border: 1px solid #FECACA !important;
+      padding: 5px 8px !important;
+      border-radius: var(--radius-pill) !important;
+      font-size: 11.5px !important;
+      font-weight: 700 !important;
+      color: #DC2626 !important;
+      cursor: pointer !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 4px !important;
+      transition: var(--transition) !important;
+      font-family: inherit !important;
+      user-select: none !important;
+      white-space: nowrap !important;
+      flex-shrink: 0 !important;
     }
     .btn-universal-logout:hover,
     #btnUniversalLogout:hover {
-      background: #FEE2E2;
+      background: #FEE2E2 !important;
     }
 
-    .role-switcher-btn:hover {
-      background: var(--surface);
-      border-color: var(--primary);
-    }
-
-    .role-switcher-btn:focus {
-      outline: none;
-      box-shadow: 0 0 0 3px var(--accent-glow);
-    }
-
-    .custom-role-popover {
-      position: absolute;
-      top: calc(100% + 6px);
-      right: 0;
-      width: 230px;
-      background: #FFFFFF;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
-      padding: 6px;
-      z-index: 1050;
-      animation: popoverFadeIn 0.15s ease-out;
-    }
-
-    @keyframes popoverFadeIn {
-      from { opacity: 0; transform: translateY(-4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .custom-role-popover-header {
+.custom-role-popover-header {
       font-size: 10px;
       font-weight: 800;
       color: var(--text-muted);
@@ -1436,7 +1451,7 @@
         <div class="header-actions-group">
           <div class="role-switcher-wrap" id="customRoleMenuWrap">
             <button type="button" class="role-switcher-btn" id="customRoleMenuTrigger" aria-haspopup="true" aria-expanded="false" title="Switch User Role">
-              <span id="currentRoleIcon">🧭</span>
+              <span id="currentRoleIcon"><svg class="lucide-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span>
               <span id="currentRoleLabel">Traveler</span>
               <span class="role-switcher-arrow">▾</span>
             </button>
@@ -1445,40 +1460,40 @@
             <div class="custom-role-popover" id="customRolePopover" style="display: none;">
               <div class="custom-role-popover-header">SELECT TOUR-EASE ROLE</div>
               <div class="custom-role-item active" data-role="traveler" id="roleItemTraveler">
-                <div class="role-item-icon">🧭</div>
+                <div class="role-item-icon"><svg class="lucide-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></div>
                 <div class="role-item-info">
                   <div class="role-item-title">Traveler</div>
                   <div class="role-item-desc">Plan trips, tours, & cabs</div>
                 </div>
-                <span class="role-item-check" id="roleCheckTraveler">✓</span>
+                <span class="role-item-check" id="roleCheckTraveler"><svg class="lucide-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
               </div>
               <div class="custom-role-item" data-role="cab_owner" id="roleItemCabOwner">
-                <div class="role-item-icon">🚕</div>
+                <div class="role-item-icon"><svg class="lucide-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2v4"/><path d="M10 2v4"/><rect width="18" height="8" x="3" y="10" rx="2"/><path d="M5 18v2"/><path d="M19 18v2"/></svg></div>
                 <div class="role-item-info">
                   <div class="role-item-title">Cab Owner</div>
                   <div class="role-item-desc">Manage fleet & rides</div>
                 </div>
-                <span class="role-item-check" id="roleCheckCabOwner" style="display: none;">✓</span>
+                <span class="role-item-check" id="roleCheckCabOwner" style="display: none;"><svg class="lucide-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
               </div>
               <div class="custom-role-item" data-role="rental_vendor" id="roleItemRentalVendor">
-                <div class="role-item-icon">🏢</div>
+                <div class="role-item-icon"><svg class="lucide-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><path d="M8 14h.01"/><path d="M16 14h.01"/></svg></div>
                 <div class="role-item-info">
                   <div class="role-item-title">Rental Vendor</div>
                   <div class="role-item-desc">Self-drive & commercial fleet</div>
                 </div>
-                <span class="role-item-check" id="roleCheckRentalVendor" style="display: none;">✓</span>
+                <span class="role-item-check" id="roleCheckRentalVendor" style="display: none;"><svg class="lucide-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
               </div>
             </div>
           </div>
-          <button class="user-profile-pill-btn" id="userProfileBtn" title="Account Details">HC</button>
+          <button class="user-profile-pill-btn" id="userProfileBtn" title="Account Details" style="display: none !important;">HC</button>
           <button type="button" class="btn-track-trip" id="btnOpenPublicTrackModal" title="Track Live Trip with TRK Code">
-            <span class="btn-icon">🛰️</span>
-            <span class="btn-text">Track</span>
-          </button>
+              <span class="btn-icon"><svg class="lucide-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg></span>
+              <span class="btn-text">Track</span>
+            </button>
           <button type="button" class="btn-universal-logout" id="btnUniversalLogout" title="Sign out of TourEase">
-            <span class="btn-icon">🚪</span>
-            <span class="btn-text">Logout</span>
-          </button>
+              <span class="btn-icon"><svg class="lucide-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span>
+              <span class="btn-text">Logout</span>
+            </button>
         </div>
       </header>
 
@@ -1503,14 +1518,14 @@
                     <input type="text" id="mapPlaceSearchInput" class="map-search-input"
                       placeholder="Search any place in India (e.g. Munnar, Jaipur)...">
                     <button type="button" id="btnSearchMapPlace" class="map-action-btn">Pin</button>
-                    <button type="button" id="btnUseMyLocation" class="map-action-btn" title="Use Live GPS Location" style="background: #10B981; color: white;">📍 GPS</button>
-                    <button type="button" id="btnToggleFullMap" class="map-toggle-btn" title="Expand Full-Screen Map">⛶
+                    <button type="button" id="btnUseMyLocation" class="map-action-btn" title="Use Live GPS Location" style="background: #10B981; color: white;"><svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> GPS</button>
+                    <button type="button" id="btnToggleFullMap" class="map-toggle-btn" title="Expand Full-Screen Map"><svg class="lucide-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
                       Full</button>
                   </div>
 
                   <!-- Satellite Toggle Button inside Overlay below Search Bar -->
                   <button type="button" id="btnToggleMapStyle" class="map-style-toggle-btn"
-                    title="Toggle Map / Satellite View">🛰️ Satellite</button>
+                    title="Toggle Map / Satellite View"><svg class="lucide-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 7 9 3 5 7l4 4"/><path d="m17 11 4 4-4 4-4-4"/><path d="m8 12 4 4"/><path d="m16 8 4-4"/><path d="M9 21a6 6 0 0 0-6-6"/></svg> Satellite</button>
 
                   <div id="mapSearchSuggestions"></div>
                 </div>
@@ -1520,12 +1535,12 @@
 
               <div class="pinned-stops-container" id="pinnedStopsBar">
                 <div class="pinned-stops-header">
-                  <span class="pinned-stops-title">📍 Pinned Map Stops</span>
+                  <span class="pinned-stops-title"><svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> Pinned Map Stops</span>
                   <button type="button" id="btnClearMapPins" class="pinned-stops-clear">Clear Pins</button>
                 </div>
                 <div class="pinned-stops-scroll" id="pinnedStopsCards"></div>
                 <button type="button" id="btnAnalyzeMapPins" class="m3-button-primary pinned-stops-analyze-btn">
-                  ✨ Analyze Pinned Locations & Build Detailed Plan
+                  <svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg> Analyze Pinned Locations & Build Detailed Plan
                 </button>
               </div>
             </div>
@@ -1542,11 +1557,11 @@
                     <button type="button" id="btnStopVoice" class="voice-btn-done"
                       title="Finish & Stop Recording">Done</button>
                     <button type="button" id="btnCancelVoice" class="voice-btn-cancel"
-                      title="Cancel Voice Input">✕</button>
+                      title="Cancel Voice Input"><svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
                   </div>
                   <button type="button" id="btnVoicePrompt" class="voice-mic-btn" style="height: 52px; width: 52px;"
                     title="Speak destination & preferences" aria-label="Voice input">
-                    🎙️
+                    <svg class="lucide-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
                   </button>
                 </div>
               </div>
@@ -1563,7 +1578,14 @@
                 </div>
                 <div class="m3-input-wrapper" style="margin-bottom: 0;" id="conciergeTravelersWrapper">
                   <label class="m3-label">Travelers (Count) *</label>
-                  <input type="number" id="conciergeTravelersInput" class="m3-text-input" min="1" max="100" placeholder="e.g. 2" style="background: white; font-size: 14px; font-weight: 700; width: 100%;">
+                  <div style="display: flex; gap: 6px; margin-bottom: 6px;" id="travelerQuickPillsGroup">
+                    <button type="button" class="traveler-quick-pill" data-travelers="1">1</button>
+                    <button type="button" class="traveler-quick-pill active" data-travelers="2">2</button>
+                    <button type="button" class="traveler-quick-pill" data-travelers="3">3</button>
+                    <button type="button" class="traveler-quick-pill" data-travelers="4">4</button>
+                  </div>
+                  <input type="number" id="travelerCountInput" class="m3-text-input" min="1" max="100" value="2" placeholder="Custom #" style="background: white; font-size: 13.5px; font-weight: 700; width: 100%; padding: 7px 10px;">
+                  <input type="hidden" id="conciergeTravelersInput" value="2">
                 </div>
               </div>
 
@@ -1603,10 +1625,10 @@
                   </div>
                 </label>
                 <button type="button" id="btnSubmitAiPackageForReview" class="m3-button-primary" style="display: none; width: 100%; margin-top: 10px; padding: 8px 12px; font-size: 12px; font-weight: 700; background: #2563EB;">
-                  🚀 Submit Itinerary for Community Review
+                  <svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg> Submit Itinerary for Community Review
                 </button>
                 <div id="aiSubmitStatusNotice" style="display: none; font-size: 12px; color: #166534; font-weight: 600; margin-top: 8px;">
-                  ✓ Itinerary submitted for review! It will appear in public Tour Packages upon moderation.
+                  <svg class="lucide-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Itinerary submitted for review! It will appear in public Tour Packages upon moderation.
                 </div>
               </div>
             </div>
@@ -1647,7 +1669,7 @@
 
             <!-- Cab Route Selector Card -->
             <div class="aura-card" id="cabRouteConfigCard" style="margin-bottom: 16px; border: 1px solid var(--border);">
-              <div style="font-size: 12px; font-weight: 800; color: var(--primary); text-transform: uppercase; margin-bottom: 10px;">📍 Route & Travel Estimation</div>
+              <div style="font-size: 12px; font-weight: 800; color: var(--primary); text-transform: uppercase; margin-bottom: 10px;"><svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> Route & Travel Estimation</div>
               <div class="cab-route-inputs-grid">
                 <div class="m3-input-wrapper" style="margin-bottom: 0;">
                   <label class="m3-label">Pickup Location</label>
@@ -1694,12 +1716,12 @@
 
               <!-- Driver Cash Approval Waiting State Banner -->
               <div id="driverCashWaitBanner" style="display: none; background: #FFFBEB; border: 1.5px solid #F59E0B; border-radius: 12px; padding: 14px; margin-bottom: 14px; color: #92400E; font-size: 13px;">
-                <strong>⏳ Waiting for Driver to Confirm Cash Receipt...</strong>
+                <strong><svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Waiting for Driver to Confirm Cash Receipt...</strong>
                 <p style="margin: 4px 0 0 0; font-size: 12px;">Please hand over exact cash to the chauffeur. Switch to the <strong>Cab Owner</strong> role in the top header to simulate/verify cash acceptance.</p>
               </div>
 
               <div style="display: flex; gap: 10px;">
-                <button type="button" class="m3-button-primary" id="btnCancelActiveCabRide" style="flex: 0.8; background: #FEE2E2; border: 1.5px solid #FCA5A5; color: #991B1B; padding: 10px; border-radius: 10px; font-weight: 700;">✕ Cancel Ride</button>
+                <button type="button" class="m3-button-primary" id="btnCancelActiveCabRide" style="flex: 0.8; background: #FEE2E2; border: 1.5px solid #FCA5A5; color: #991B1B; padding: 10px; border-radius: 10px; font-weight: 700;"><svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Cancel Ride</button>
                 <button type="button" class="m3-button-primary" id="btnSimulateRideEnd" style="flex: 1.2;">Complete Ride & Checkout →</button>
               </div>
             </div>
@@ -1725,7 +1747,7 @@
                 <button type="button" class="m3-button-primary" id="btnBookAnotherCab"
                   style="flex: 1; background: white; color: var(--text-main); border: 1px solid var(--border);">Book Another Cab</button>
                 <button type="button" class="m3-button-primary" id="btnReceiptGetBill"
-                  style="flex: 1; background: #1A73E8; color: white;">🧾 Get Bill (SMS / Email)</button>
+                  style="flex: 1; background: #1A73E8; color: white;"><svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v.5"/><path d="M12 6v.5"/></svg> Get Bill (SMS / Email)</button>
               </div>
             </div>
 
@@ -1762,11 +1784,11 @@
             <!-- Hybrid Online/Offline Emergency Map Card -->
             <div class="aura-card" style="border: 1px solid var(--border); padding: 14px;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <h3 style="font-size: 16px; font-weight: 800; margin: 0; color: var(--text-main);">📍 Emergency Location & Nearby Aid</h3>
+                <h3 style="font-size: 16px; font-weight: 800; margin: 0; color: var(--text-main);"><svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> Emergency Location & Nearby Aid</h3>
                 <span id="sosNetworkStatusBadge" class="tab-badge" style="background: #E8F0FE; color: #1A73E8; margin: 0; font-size: 10px;">● CONNECTED</span>
               </div>
               <div id="sosOfflineBanner" style="display: none; background: #FFFBEB; border: 1px solid #F59E0B; border-radius: 8px; padding: 10px; margin-bottom: 10px; font-size: 12px; color: #92400E;">
-                <strong>⚠️ Offline Mode — Showing Last Connected Location</strong>
+                <strong><svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Offline Mode — Showing Last Connected Location</strong>
                 <div id="sosOfflineCoordsDisplay" style="font-family: monospace; margin-top: 2px;">Lat: 23.1824° N, Lng: 75.7682° E</div>
               </div>
               <div id="sosEmergencyMap" style="height: 220px; width: 100%; border-radius: 12px; overflow: hidden; background: #E2E8F0; margin-bottom: 12px; position: relative;"></div>
@@ -1801,7 +1823,7 @@
           <!-- Mandatory KYC Onboarding Gate -->
           <div id="cabOwnerKycGateCard" class="aura-card" style="display: none; border: 1.5px solid #F59E0B; background: #FFFBEB;">
             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-              <span style="font-size: 20px;">📄</span>
+              <span style="font-size: 20px;"><svg class="lucide-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><polyline points="14 2 14 8 20 8"/></svg></span>
               <h3 style="margin: 0; font-size: 18px; font-weight: 800; color: #92400E;">Driver & Vehicle KYC Required</h3>
             </div>
             <p style="font-size: 13px; color: #78350F; margin: 0 0 16px 0;">To accept intercity bookings and withdraw earnings, government regulations require verified commercial license and vehicle documentation.</p>
@@ -1840,7 +1862,7 @@
                 </div>
                 <div style="flex: 1; min-width: 0;">
                   <div style="display: flex; align-items: center; gap: 6px;">
-                    <span style="font-size: 11px; font-weight: 800; background: #DCFCE7; color: #15803D; padding: 2px 8px; border-radius: 6px;">✓ VERIFIED PARTNER</span>
+                    <span style="font-size: 11px; font-weight: 800; background: #DCFCE7; color: #15803D; padding: 2px 8px; border-radius: 6px;"><svg class="lucide-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> VERIFIED PARTNER</span>
                     <span style="font-size: 11px; color: #64748B;" id="cabOwnerModelYearBadge">2024</span>
                   </div>
                   <h3 style="font-size: 16px; font-weight: 800; margin: 4px 0 2px 0; color: #1E293B;" id="cabOwnerVehicleModelText">Commercial Cab Fleet</h3>
@@ -1853,19 +1875,19 @@
             <!-- KYC Status Verified Banner -->
             <div style="display: flex; justify-content: space-between; align-items: center; background: #ECFDF5; border: 1px solid #A7F3D0; border-radius: 12px; padding: 12px 16px; margin-bottom: 16px;">
               <div style="display: flex; align-items: center; gap: 8px;">
-                <span style="color: #059669; font-size: 16px;">✓</span>
+                <span style="color: #059669; font-size: 16px;"><svg class="lucide-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
                 <div>
                   <strong style="font-size: 13px; color: #065F46;">KYC Verified Driver Profile</strong>
                   <div style="font-size: 11px; color: #047857;" id="cabOwnerKycSummaryText">License & RC Approved</div>
                 </div>
               </div>
-              <button type="button" id="btnEditCabKyc" style="background: none; border: 1px solid #059669; color: #059669; border-radius: 6px; padding: 4px 8px; font-size: 11px; font-weight: 700; cursor: pointer;">📄 View / Update</button>
+              <button type="button" id="btnEditCabKyc" style="background: none; border: 1px solid #059669; color: #059669; border-radius: 6px; padding: 4px 8px; font-size: 11px; font-weight: 700; cursor: pointer;"><svg class="lucide-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><polyline points="14 2 14 8 20 8"/></svg> View / Update</button>
             </div>
 
             <!-- Incoming & Active Ride Requests Container (Emulator / Driver Live Dispatch) -->
             <div class="aura-card" id="cabOwnerLiveDispatchSection" style="margin-bottom: 16px; border: 2px solid var(--primary); background: #F8FAFC;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <h3 style="font-size: 16px; font-weight: 800; margin: 0; color: var(--text-main);">🚖 Incoming & Active Ride Requests</h3>
+                <h3 style="font-size: 16px; font-weight: 800; margin: 0; color: var(--text-main);"><svg class="lucide-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2v4"/><path d="M10 2v4"/><rect width="18" height="8" x="3" y="10" rx="2"/><path d="M5 18v2"/><path d="M19 18v2"/></svg> Incoming & Active Ride Requests</h3>
                 <span id="cabOwnerActiveRidesCountBadge" class="tab-badge" style="background: var(--primary); color: white; margin: 0; font-size: 11px;">0 Active</span>
               </div>
               <div id="cabOwnerIncomingRidesList" style="display: flex; flex-direction: column; gap: 12px;"></div>
@@ -1874,7 +1896,7 @@
             <!-- Driver Pending Cash Approval Box -->
             <div id="driverPendingCashRequestCard" class="aura-card" style="display: none; border: 2px solid #D97706; background: #FEF3C7; margin-bottom: 16px;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                <span style="font-size: 12px; font-weight: 800; color: #92400E; text-transform: uppercase;">🔔 PENDING CASH APPROVAL</span>
+                <span style="font-size: 12px; font-weight: 800; color: #92400E; text-transform: uppercase;"><svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg> PENDING CASH APPROVAL</span>
                 <span id="cashRequestRideRef" style="font-size: 11px; font-weight: 700; background: #F59E0B; color: white; padding: 2px 6px; border-radius: 4px;">RIDE-LIVE</span>
               </div>
               <p style="font-size: 13px; color: #78350F; margin: 0 0 12px 0;">Traveler has requested to complete cash trip. Verify physical cash receipt:</p>
@@ -1888,14 +1910,14 @@
                 </div>
               </div>
               <button type="button" class="m3-button-primary" id="btnConfirmDriverCashReceived" style="background: #059669; width: 100%;">
-                ✅ Confirm Cash Received
+                <svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Confirm Cash Received
               </button>
             </div>
 
             <!-- Active Ride Payment QR Code for Customer Scan-to-Pay -->
             <div id="cabRidePaymentQrWrap" class="aura-card" style="display: none; border: 2px solid #2563EB; background: #EFF6FF; margin-bottom: 16px; text-align: center;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <span style="font-size: 12px; font-weight: 800; color: #1E40AF; text-transform: uppercase;">📱 LIVE RIDE PAYMENT QR</span>
+                <span style="font-size: 12px; font-weight: 800; color: #1E40AF; text-transform: uppercase;"><svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg> LIVE RIDE PAYMENT QR</span>
                 <span id="cabRideQrRef" style="font-size: 11px; font-weight: 700; background: #2563EB; color: white; padding: 2px 6px; border-radius: 4px;">CAB-LIVE</span>
               </div>
               <p style="font-size: 12.5px; color: #1E3A8A; margin: 0 0 12px 0;">Customer can scan this dynamic QR code to pay online directly to your wallet.</p>
@@ -1948,7 +1970,7 @@
           <!-- Mandatory Vendor KYC Gate -->
           <div id="vendorKycGateCard" class="aura-card" style="display: none; border: 1.5px solid #2563EB; background: #EFF6FF; margin-bottom: 16px;">
             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-              <span style="font-size: 20px;">🏢</span>
+              <span style="font-size: 20px;"><svg class="lucide-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><path d="M8 14h.01"/><path d="M16 14h.01"/></svg></span>
               <h3 style="margin: 0; font-size: 18px; font-weight: 800; color: #1E40AF;">Rental Vendor Registration & Documentation</h3>
             </div>
             <p style="font-size: 13px; color: #1E3A8A; margin: 0 0 16px 0;">Provide business registration credentials to list self-drive vehicles under TourEase commercial policy.</p>
@@ -1971,7 +1993,7 @@
                 </div>
                 <div style="flex: 1; min-width: 0;">
                   <div style="display: flex; align-items: center; gap: 6px;">
-                    <span style="font-size: 11px; font-weight: 800; background: #EFF6FF; color: #1D4ED8; padding: 2px 8px; border-radius: 6px;">✓ COMMERCIAL FLEET VENDOR</span>
+                    <span style="font-size: 11px; font-weight: 800; background: #EFF6FF; color: #1D4ED8; padding: 2px 8px; border-radius: 6px;"><svg class="lucide-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> COMMERCIAL FLEET VENDOR</span>
                   </div>
                   <h3 style="font-size: 16px; font-weight: 800; margin: 4px 0 2px 0; color: #1E293B;" id="rentalVendorBusinessText">Self-Drive Fleet Hub</h3>
                   <div style="font-size: 12px; color: #475569;" id="rentalVendorGstText">GSTIN: Verified Commercial Permit</div>
@@ -1982,7 +2004,7 @@
             <!-- Active Customer Rental Reservations & Handover Gate -->
             <div class="aura-card" id="vendorReservationsSection" style="margin-bottom: 16px; border: 2px solid var(--primary); background: #F8FAFC;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <h3 style="font-size: 16px; font-weight: 800; margin: 0; color: var(--text-main);">🔑 Active Customer Reservations</h3>
+                <h3 style="font-size: 16px; font-weight: 800; margin: 0; color: var(--text-main);"><svg class="lucide-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg> Active Customer Reservations</h3>
                 <span id="vendorActiveReservationsBadge" class="tab-badge" style="background: var(--primary); color: white; margin: 0; font-size: 11px;">0 Reserved</span>
               </div>
               <div id="vendorCustomerReservationsList" style="display: flex; flex-direction: column; gap: 12px;"></div>
@@ -2096,14 +2118,14 @@
       <!-- STEP 1: Role Selection -->
       <div id="authStepRoleSelect">
         <div style="text-align: center; margin-bottom: 20px;">
-          <div style="width: 52px; height: 52px; background: #E8F0FE; color: #1A73E8; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 26px; margin-bottom: 8px;">🚀</div>
+          <div style="width: 52px; height: 52px; background: #E8F0FE; color: #1A73E8; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 26px; margin-bottom: 8px;"><svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg></div>
           <h2 style="font-size: 23px; font-weight: 800; color: #1E293B; margin: 0 0 6px 0;">Welcome to TourEase</h2>
           <p style="color: var(--text-muted); font-size: 13.5px; margin: 0;">Select your account type to proceed</p>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px;">
           <div class="role-choice-card" data-role="traveler" id="roleChoiceTraveler" style="display: flex; align-items: center; gap: 14px; padding: 14px; border: 2px solid #E2E8F0; border-radius: 14px; cursor: pointer; transition: all 0.2s;">
-            <div style="font-size: 30px; width: 44px; text-align: center;">🧭</div>
+            <div style="font-size: 30px; width: 44px; text-align: center;"><svg class="lucide-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></div>
             <div style="flex: 1;">
               <strong style="font-size: 15px; color: #1E293B; display: block;">Traveler</strong>
               <span style="font-size: 12px; color: #64748B;">Book city cabs, tours & self-drive rentals</span>
@@ -2112,7 +2134,7 @@
           </div>
 
           <div class="role-choice-card" data-role="cab_owner" id="roleChoiceCabOwner" style="display: flex; align-items: center; gap: 14px; padding: 14px; border: 2px solid #E2E8F0; border-radius: 14px; cursor: pointer; transition: all 0.2s;">
-            <div style="font-size: 30px; width: 44px; text-align: center;">🚖</div>
+            <div style="font-size: 30px; width: 44px; text-align: center;"><svg class="lucide-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2v4"/><path d="M10 2v4"/><rect width="18" height="8" x="3" y="10" rx="2"/><path d="M5 18v2"/><path d="M19 18v2"/></svg></div>
             <div style="flex: 1;">
               <strong style="font-size: 15px; color: #1E293B; display: block;">Cab Owner / Driver</strong>
               <span style="font-size: 12px; color: #64748B;">Accept city rides, collect fares & track earnings</span>
@@ -2121,7 +2143,7 @@
           </div>
 
           <div class="role-choice-card" data-role="rental_vendor" id="roleChoiceRentalVendor" style="display: flex; align-items: center; gap: 14px; padding: 14px; border: 2px solid #E2E8F0; border-radius: 14px; cursor: pointer; transition: all 0.2s;">
-            <div style="font-size: 30px; width: 44px; text-align: center;">🔑</div>
+            <div style="font-size: 30px; width: 44px; text-align: center;"><svg class="lucide-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg></div>
             <div style="flex: 1;">
               <strong style="font-size: 15px; color: #1E293B; display: block;">Rental Fleet Vendor</strong>
               <span style="font-size: 12px; color: #64748B;">List self-drive vehicles & verify key handovers</span>
@@ -2132,7 +2154,7 @@
 
         <div style="text-align: center; margin-top: 14px; padding-top: 12px; border-top: 1px solid #E2E8F0;">
           <button type="button" id="btnGateTrackTrip" style="background: none; border: none; color: #1A73E8; font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
-            🛰️ Track a Loved One's Trip (No Sign-In Required) →
+            <svg class="lucide-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 7 9 3 5 7l4 4"/><path d="m17 11 4 4-4 4-4-4"/><path d="m8 12 4 4"/><path d="m16 8 4-4"/><path d="M9 21a6 6 0 0 0-6-6"/></svg> Track a Loved One's Trip (No Sign-In Required) →
           </button>
         </div>
       </div>
@@ -2149,10 +2171,10 @@
         <!-- 2-Method Authentication Tabs (Gmail OTP & Google Identity) -->
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 14px; background: #F1F5F9; padding: 4px; border-radius: 10px;">
           <button type="button" id="tabAuthEmailBtn" class="auth-method-tab active" style="padding: 9px 4px; font-size: 12px; font-weight: 700; border: none; border-radius: 8px; background: #FFFFFF; color: #1A73E8; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
-            ✉️ Gmail 6-Digit OTP
+            <svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg> Gmail 6-Digit OTP
           </button>
           <button type="button" id="tabAuthGoogleBtn" class="auth-method-tab" style="padding: 9px 4px; font-size: 12px; font-weight: 700; border: none; border-radius: 8px; background: transparent; color: #64748B; cursor: pointer;">
-            🌐 Continue with Google
+            <svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> Continue with Google
           </button>
         </div>
 
@@ -2169,23 +2191,16 @@
 
           <!-- Email 6-Digit OTP Verification Screen (#otpVerifyStep) -->
           <div id="otpVerifyStep" style="display: none; padding-top: 4px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-              <div>
-                <span style="font-size: 11px; color: #64748B;">Code sent to:</span>
-                <strong id="otpTargetDisplay" style="font-size: 12px; color: #1E293B; display: block;">user@gmail.com</strong>
-              </div>
-              <button type="button" id="btnChangeEmail" style="background: none; border: none; color: #1A73E8; font-size: 11.5px; font-weight: 700; cursor: pointer; padding: 2px 4px;">
-                Change Email / Resend
+            <div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; background: #FFFFFF; border: 1px solid #E2E8F0; padding: 10px 12px; border-radius: 8px;">
+              <span style="font-size: 11px; color: #64748B;">Code sent to:</span>
+              <strong id="otpTargetDisplay" style="font-size: 12.5px; color: #1E293B; word-break: break-all; display: block;">user@gmail.com</strong>
+              <button type="button" id="btnChangeEmail" style="align-self: flex-start; background: none; border: none; color: #1A73E8; font-size: 11.5px; font-weight: 700; cursor: pointer; padding: 2px 0; text-decoration: underline;">
+                ← Change Email / Resend
               </button>
             </div>
 
-            <!-- Fallback OTP notice banner if SMTP is offline/unconfigured -->
-            <div id="fallbackOtpBanner" style="display: none; background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 8px; padding: 8px 12px; font-size: 12px; color: #1E40AF; margin-bottom: 10px;">
-              🔐 Verification Code: <strong id="fallbackOtpCode" style="font-family: monospace; font-size: 14px; letter-spacing: 2px;">123456</strong>
-            </div>
-
             <label style="display: block; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; margin-bottom: 6px;">Enter 6-Digit Verification Code</label>
-            <input type="text" id="authEmailOtpInput" class="m3-text-input" placeholder="••••••" maxlength="6" inputmode="numeric" pattern="[0-9]*" style="background: white; font-family: monospace; letter-spacing: 6px; font-size: 18px; font-weight: 800; text-align: center; margin-bottom: 12px;">
+            <input type="text" id="authEmailOtpInput" class="m3-text-input" placeholder="••••••" maxlength="6" inputmode="numeric" pattern="[0-9]*" value="" style="background: white; font-family: monospace; letter-spacing: 6px; font-size: 18px; font-weight: 800; text-align: center; margin-bottom: 12px;">
 
             <button type="button" class="m3-button-primary" id="btnVerifyEmailOtp" style="width: 100%; background: #059669; font-size: 13.5px; padding: 11px; font-weight: 700;">
               Verify &amp; Sign In →
@@ -2193,13 +2208,16 @@
           </div>
         </div>
 
-        <!-- Method 2: Google One-Tap Section -->
+        <!-- Hidden containers for Google Identity & OTP banner checks -->
+        <div id="googleSignInContainer" style="display: none;"></div>
+        <div id="fallbackOtpBanner" style="display: none !important;"><span id="fallbackOtpCode"></span></div>
+
+        <!-- Method 2: Google One-Tap Section (Single Clean Button) -->
         <div id="authGoogleSection" style="display: none; margin-bottom: 14px;">
           <button type="button" class="m3-button-primary" id="btnGoogleLogin" style="width: 100%; background: #FFFFFF; color: #1E293B; border: 1.5px solid #CBD5E1; box-shadow: 0 2px 6px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 700; padding: 11px;">
             <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
             Continue with Google
           </button>
-          <div id="googleSignInContainer" style="margin-top: 8px;"></div>
         </div>
       </div>
 
@@ -2261,7 +2279,7 @@
               </div>
               <div id="partnerDocProofPreview" style="display: none; width: 100%; text-align: center;">
                 <div style="display: inline-flex; align-items: center; gap: 8px; background: #FFFFFF; border: 1px solid #CBD5E1; padding: 8px 12px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); margin-bottom: 6px;">
-                  <span style="font-size: 20px;">📄</span>
+                  <span style="font-size: 20px;"><svg class="lucide-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><polyline points="14 2 14 8 20 8"/></svg></span>
                   <div style="text-align: left;">
                     <strong id="partnerDocProofName" style="display: block; font-size: 12px; color: #1E293B; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">document.pdf</strong>
                     <span id="partnerDocProofSize" style="font-size: 10px; color: #64748B;">120 KB</span>
@@ -2273,7 +2291,7 @@
           </div>
 
           <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 8px; padding: 10px; font-size: 12px; color: #166534; margin-bottom: 14px;">
-            ✓ Your documents are encrypted and reviewed securely for partner onboarding.
+            <svg class="lucide-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Your documents are encrypted and reviewed securely for partner onboarding.
           </div>
 
           <button type="submit" class="m3-button-primary" id="btnSubmitPartnerProof" style="width: 100%; padding: 12px;">
@@ -2291,15 +2309,15 @@
       <h2 style="font-size: 24px; font-weight: 800; margin: 0 0 8px 0;">Choose Role</h2>
       <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">Select your workspace profile.</p>
       <div class="role-choice-card" data-role="traveler" id="roleChoiceTravelerAlt">
-        <div class="role-choice-icon">🧭</div>
+        <div class="role-choice-icon"><svg class="lucide-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></div>
         <div class="role-choice-name">Traveler</div>
       </div>
       <div class="role-choice-card" data-role="cab_owner" id="roleChoiceCabOwnerAlt">
-        <div class="role-choice-icon">🚕</div>
+        <div class="role-choice-icon"><svg class="lucide-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2v4"/><path d="M10 2v4"/><rect width="18" height="8" x="3" y="10" rx="2"/><path d="M5 18v2"/><path d="M19 18v2"/></svg></div>
         <div class="role-choice-name">Cab Owner</div>
       </div>
       <div class="role-choice-card" data-role="rental_vendor" id="roleChoiceRentalVendorAlt">
-        <div class="role-choice-icon">🏢</div>
+        <div class="role-choice-icon"><svg class="lucide-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><path d="M8 14h.01"/><path d="M16 14h.01"/></svg></div>
         <div class="role-choice-name">Rental Vendor</div>
       </div>
     </div>
@@ -2310,7 +2328,7 @@
     <div class="payment-modal-card">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
         <h3 style="font-size: 19px; font-weight: 800; margin: 0; color: var(--text-main);">Book Tour Package</h3>
-        <button type="button" id="btnClosePackageBookingModal" style="background:none; border:none; font-size: 20px; cursor:pointer;">✕</button>
+        <button type="button" id="btnClosePackageBookingModal" style="background:none; border:none; font-size: 20px; cursor:pointer;"><svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
       </div>
       <div style="background: #F8FAFC; padding: 14px; border-radius: 12px; margin-bottom: 14px; border: 1px solid var(--border);">
         <strong style="font-size: 15px; color: var(--text-main); display: block;" id="pkgModalTitle">Tour Title</strong>
@@ -2345,7 +2363,7 @@
       <div id="sdBookingFormStep">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
           <h3 style="font-size: 19px; font-weight: 800; margin: 0; color: var(--text-main);">Reserve Self-Drive Car</h3>
-          <button type="button" id="btnCloseSelfDriveModal" style="background:none; border:none; font-size: 20px; cursor:pointer;">✕</button>
+          <button type="button" id="btnCloseSelfDriveModal" style="background:none; border:none; font-size: 20px; cursor:pointer;"><svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
         </div>
         <div style="background: #F8FAFC; padding: 14px; border-radius: 12px; margin-bottom: 14px; border: 1px solid var(--border);">
           <strong style="font-size: 15px; color: var(--text-main); display: block;" id="sdModalModel">Vehicle Model</strong>
@@ -2377,7 +2395,7 @@
           <strong style="font-size: 20px; font-weight: 800; color: #1D4ED8;" id="sdModalTotalPayable">₹ 2,800</strong>
         </div>
         <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 8px; padding: 10px; margin-bottom: 16px; font-size: 12px; color: #166534;">
-          ✓ 100% Direct In-App Online Payment (Escrow Protected)
+          <svg class="lucide-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 100% Direct In-App Online Payment (Escrow Protected)
         </div>
         <button type="button" class="m3-button-primary" id="btnConfirmSelfDriveReservation" style="width: 100%;">
           Pay & Confirm Reservation →
@@ -2386,7 +2404,7 @@
 
       <!-- Confirmed Receipt Step -->
       <div id="sdReceiptStep" style="display: none; text-align: center;">
-        <div style="width: 52px; height: 52px; background: #DCFCE7; color: #16A34A; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 12px auto;">✓</div>
+        <div style="width: 52px; height: 52px; background: #DCFCE7; color: #16A34A; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 12px auto;"><svg class="lucide-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
         <h3 style="font-size: 19px; font-weight: 800; color: #1E293B; margin: 0 0 6px 0;">Reservation Confirmed!</h3>
         <p style="font-size: 12px; color: #64748B; margin: 0 0 16px 0;">Self-drive car reserved & escrow payment secured.</p>
         <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 14px; text-align: left; margin-bottom: 16px; font-size: 13px;">
@@ -2426,7 +2444,7 @@
           <h3 style="font-size: 18px; font-weight: 800; margin: 0; color: var(--text-main);" id="rfModalTitle">Trip Fulfillment</h3>
           <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;" id="rfModalSubtitle">Bhopal to Mumbai • 3 Days • 4 Travelers</div>
         </div>
-        <button type="button" id="btnCloseRouteFulfillmentModal" style="background:none; border:none; font-size: 20px; cursor:pointer; color: #64748B;">✕</button>
+        <button type="button" id="btnCloseRouteFulfillmentModal" style="background:none; border:none; font-size: 20px; cursor:pointer; color: #64748B;"><svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
       </div>
 
       <!-- Path A: Guided Tour with Driver -->
@@ -2435,7 +2453,7 @@
           <span style="font-size: 11px; font-weight: 800; color: #FFFFFF; background: #2563EB; padding: 2px 8px; border-radius: 6px;">PATH A: RECOMMENDED</span>
           <span style="font-size: 12px; font-weight: 700; color: #16A34A;">All-Inclusive Capped</span>
         </div>
-        <h4 style="font-size: 16px; font-weight: 800; margin: 0 0 4px 0; color: var(--text-main);">🧭 Guided Private Tour with Chauffeur</h4>
+        <h4 style="font-size: 16px; font-weight: 800; margin: 0 0 4px 0; color: var(--text-main);"><svg class="lucide-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg> Guided Private Tour with Chauffeur</h4>
         <p style="font-size: 12px; color: var(--text-muted); margin: 0 0 10px 0;">Commercial AC Sedan / SUV with experienced highway driver. Relax while we handle the driving, navigation & tolls.</p>
         
         <div style="background: #FFFFFF; border: 1px solid var(--border); border-radius: 8px; padding: 10px; margin-bottom: 12px; font-size: 12px;">
@@ -2464,7 +2482,7 @@
           <span style="font-size: 11px; font-weight: 800; color: #475569; background: #F1F5F9; padding: 2px 8px; border-radius: 6px;">PATH B: INDEPENDENT</span>
           <span style="font-size: 12px; font-weight: 600; color: var(--text-muted);" id="rfPathBQualifyingCount">Checking Fleet...</span>
         </div>
-        <h4 style="font-size: 16px; font-weight: 800; margin: 0 0 4px 0; color: var(--text-main);">🔑 Self-Drive Rental Vehicle</h4>
+        <h4 style="font-size: 16px; font-weight: 800; margin: 0 0 4px 0; color: var(--text-main);"><svg class="lucide-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg> Self-Drive Rental Vehicle</h4>
         <p style="font-size: 12px; color: var(--text-muted); margin: 0 0 10px 0;">Drive yourself. Filtered strictly from live fleet by seats capacity & total budget cap.</p>
 
         <!-- Container for qualifying rental cars or badge if none qualify -->
@@ -2480,7 +2498,7 @@
           <button type="button" id="btnBackToFleetModal" style="background: none; border: none; color: var(--primary); font-size: 13px; font-weight: 700; cursor: pointer; padding: 0;">← Fleet</button>
           <h3 style="font-size: 20px; font-weight: 800; margin: 0;">Ride Checkout</h3>
         </div>
-        <button type="button" id="btnClosePaymentModal" style="background:none; border:none; font-size: 20px; cursor:pointer;">✕</button>
+        <button type="button" id="btnClosePaymentModal" style="background:none; border:none; font-size: 20px; cursor:pointer;"><svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
       </div>
       <div
         style="background: var(--bg); padding: 16px; border-radius: 12px; margin-bottom: 16px; border: 1px solid var(--border);">
@@ -2491,7 +2509,7 @@
         <button type="button" class="m3-button-primary active" id="modalPayToggleCash"
           style="background: white; color: var(--primary); border: 2px solid var(--primary); box-shadow: none; padding: 12px 6px;">💵 Cash to Driver</button>
         <button type="button" class="m3-button-primary" id="modalPayToggleOnline"
-          style="background: white; color: var(--text-main); border: 1px solid var(--border-input); box-shadow: none; padding: 12px 6px;">💳 Direct In-App</button>
+          style="background: white; color: var(--text-main); border: 1px solid var(--border-input); box-shadow: none; padding: 12px 6px;"><svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg> Direct In-App</button>
       </div>
       <div id="modalPaymentInfoBox" style="font-size: 12.5px; color: var(--text-muted); background: #F8FAFC; border: 1px solid var(--border); padding: 10px; border-radius: 8px; margin-bottom: 16px;">
         Hand physical cash to chauffeur upon completion. Driver will confirm receipt.
@@ -2505,7 +2523,7 @@
     <div class="place-modal-card">
       <div class="place-modal-img-wrap">
         <img id="placeModalImg" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='360' viewBox='0 0 600 360'><rect width='600' height='360' fill='%23EFF6FF'/><text x='50%25' y='50%25' text-anchor='middle' dominant-baseline='central' fill='%232563EB' font-family='sans-serif' font-weight='700' font-size='20'>TourEase Destination Preview</text></svg>" alt="Location preview">
-        <button type="button" id="btnClosePlaceModal" class="place-modal-close" title="Close Preview">✕</button>
+        <button type="button" id="btnClosePlaceModal" class="place-modal-close" title="Close Preview"><svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
       </div>
       <div class="place-modal-body">
         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
@@ -2525,7 +2543,7 @@
           <span class="tab-badge" id="trackingModalTypeBadge" style="background: #2563EB; color: white; margin: 0; font-size: 11px;">GPS TRACKING</span>
           <h3 style="font-size: 18px; font-weight: 800; margin: 0; color: var(--text-main);" id="trackingModalTitle">Live Location</h3>
         </div>
-        <button type="button" id="btnCloseTrackingModal" style="background: none; border: none; font-size: 20px; cursor: pointer;">✕</button>
+        <button type="button" id="btnCloseTrackingModal" style="background: none; border: none; font-size: 20px; cursor: pointer;"><svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
       </div>
       <div id="trackingModalMap" style="height: 240px; width: 100%; border-radius: 12px; background: #E2E8F0; margin-bottom: 12px; overflow: hidden; position: relative;"></div>
       <div style="background: #F8FAFC; border: 1px solid var(--border); border-radius: 10px; padding: 12px; font-size: 13px;">
@@ -2567,7 +2585,7 @@
           <span class="tab-badge" style="background: #E8F0FE; color: #1A73E8; margin: 0; font-size: 10px;">OFFICIAL GST INVOICE</span>
           <h3 style="font-size: 18px; font-weight: 800; color: #1E293B; margin: 4px 0 0 0;">Digital Bill Delivery</h3>
         </div>
-        <button type="button" id="btnCloseDigitalBillModal" style="background: none; border: none; font-size: 22px; cursor: pointer; color: #64748B; padding: 0;">✕</button>
+        <button type="button" id="btnCloseDigitalBillModal" style="background: none; border: none; font-size: 22px; cursor: pointer; color: #64748B; padding: 0;"><svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
       </div>
 
       <!-- Itemized Bill Summary Card -->
@@ -2604,7 +2622,7 @@
       <div style="margin-bottom: 14px;">
         <label style="font-size: 12px; font-weight: 700; color: #475569; display: block; margin-bottom: 6px;">SELECT DISPATCH CHANNEL</label>
         <div style="display: flex; gap: 8px;">
-          <button type="button" class="m3-button-primary" id="btnBillChannelSms" style="flex: 1; padding: 8px; font-size: 12px; background: #1A73E8; border-radius: 8px;">📱 SMS (Instant)</button>
+          <button type="button" class="m3-button-primary" id="btnBillChannelSms" style="flex: 1; padding: 8px; font-size: 12px; background: #1A73E8; border-radius: 8px;"><svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg> SMS (Instant)</button>
           <button type="button" class="m3-button-primary" id="btnBillChannelEmail" style="flex: 1; padding: 8px; font-size: 12px; background: #F1F5F9; color: #475569; border: 1px solid #CBD5E1; border-radius: 8px;">📧 Email (PDF)</button>
         </div>
       </div>
@@ -2624,7 +2642,7 @@
       <div id="billDispatchStatusBanner" style="display: none; padding: 10px; border-radius: 8px; font-size: 12px; margin-bottom: 12px; text-align: center;"></div>
 
       <button type="button" class="m3-button-primary" id="btnDispatchBillNow" style="width: 100%; padding: 12px; font-size: 14px; font-weight: 800; border-radius: 10px;">
-        🚀 Send Instant Receipt via SMS
+        <svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg> Send Instant Receipt via SMS
       </button>
     </div>
   </div>
@@ -2637,7 +2655,7 @@
           <span class="tab-badge" style="background: #EFF6FF; color: #1D4ED8; margin: 0; font-size: 10px;">LIVE QR SCANNER</span>
           <h3 style="font-size: 18px; font-weight: 800; color: #1E293B; margin: 4px 0 0 0;">Scan Driver's Ride QR</h3>
         </div>
-        <button type="button" id="btnCloseCabQrScannerModal" style="background: none; border: none; font-size: 22px; cursor: pointer; color: #64748B; padding: 0;">✕</button>
+        <button type="button" id="btnCloseCabQrScannerModal" style="background: none; border: none; font-size: 22px; cursor: pointer; color: #64748B; padding: 0;"><svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
       </div>
 
       <div style="position: relative; width: 100%; height: 240px; background: #0F172A; border-radius: 14px; overflow: hidden; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; box-shadow: inset 0 2px 8px rgba(0,0,0,0.4);">
@@ -2653,7 +2671,7 @@
       </div>
 
       <button type="button" class="m3-button-primary" id="btnSimulateScanQr" style="width: 100%; padding: 12px; font-size: 13.5px; font-weight: 800; background: #059669; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 8px;">
-        <span>📱</span> Tap to Simulate Camera Scan &amp; Pay
+        <span><svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg></span> Tap to Simulate Camera Scan &amp; Pay
       </button>
     </div>
   </div>
@@ -2666,7 +2684,7 @@
           <span class="tab-badge" style="background: #ECFDF5; color: #047857; margin: 0; font-size: 10px;">SECURE CHECKOUT</span>
           <h3 style="font-size: 19px; font-weight: 800; color: #1E293B; margin: 4px 0 0 0;">TourEase Pay</h3>
         </div>
-        <button type="button" id="btnCloseDirectOnlinePaymentModal" style="background: none; border: none; font-size: 22px; cursor: pointer; color: #64748B; padding: 0;">✕</button>
+        <button type="button" id="btnCloseDirectOnlinePaymentModal" style="background: none; border: none; font-size: 22px; cursor: pointer; color: #64748B; padding: 0;"><svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
       </div>
 
       <!-- Order Summary Card -->
@@ -2683,10 +2701,10 @@
       <!-- Payment Method Tabs -->
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px;">
         <button type="button" class="m3-button-primary" id="btnDirectPayTabUpi" style="padding: 10px; font-size: 12.5px; font-weight: 700; background: #1A73E8; color: white; border-radius: 8px;">
-          ⚡ Instant UPI
+          <svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Instant UPI
         </button>
         <button type="button" class="m3-button-primary" id="btnDirectPayTabCard" style="padding: 10px; font-size: 12.5px; font-weight: 700; background: #F1F5F9; color: #475569; border: 1px solid #CBD5E1; border-radius: 8px;">
-          💳 Credit / Debit Card
+          <svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg> Credit / Debit Card
         </button>
       </div>
 
@@ -2737,7 +2755,7 @@
         Pay Securely →
       </button>
       <div style="display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 10px; font-size: 11px; color: #64748B;">
-        <span>🔒</span> 256-Bit SSL Encrypted Payment Gateway
+        <span><svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span> 256-Bit SSL Encrypted Payment Gateway
       </div>
     </div>
   </div>
@@ -2748,13 +2766,13 @@
     <div class="auth-modal-card" style="max-width: 480px; width: 92%; max-height: 90vh; overflow-y: auto; padding: 22px;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
         <div style="display: flex; align-items: center; gap: 10px;">
-          <div style="width: 36px; height: 36px; background: #EFF6FF; color: #1A73E8; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px;">🛰️</div>
+          <div style="width: 36px; height: 36px; background: #EFF6FF; color: #1A73E8; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px;"><svg class="lucide-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 7 9 3 5 7l4 4"/><path d="m17 11 4 4-4 4-4-4"/><path d="m8 12 4 4"/><path d="m16 8 4-4"/><path d="M9 21a6 6 0 0 0-6-6"/></svg></div>
           <div>
             <h3 style="font-size: 17px; font-weight: 800; margin: 0; color: #1E293B;">Track Loved One's Journey</h3>
             <p style="font-size: 12px; color: #64748B; margin: 2px 0 0 0;">Live GPS & status verification across India</p>
           </div>
         </div>
-        <button type="button" id="btnClosePublicTrackModal" style="background: none; border: none; font-size: 22px; cursor: pointer; color: #64748B; padding: 0;">✕</button>
+        <button type="button" id="btnClosePublicTrackModal" style="background: none; border: none; font-size: 22px; cursor: pointer; color: #64748B; padding: 0;"><svg class="lucide-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
       </div>
 
       <div style="margin-bottom: 14px;">
@@ -2777,7 +2795,7 @@
           <div id="publicTrackSubtitle" style="font-size: 12px; color: #64748B;">Chauffeur: Ramesh Verma • Dzire (MP-09-CB-4491)</div>
           <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed #CBD5E1; display: flex; justify-content: space-between; font-size: 12px;">
             <span>Updated: <strong id="publicTrackLastUpdate">Live Just Now</strong></span>
-            <span style="color: #059669; font-weight: 700;">🟢 Live Telemetry</span>
+            <span style="color: #059669; font-weight: 700;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#059669;margin-right:4px;"></span> Live Telemetry</span>
           </div>
         </div>
 

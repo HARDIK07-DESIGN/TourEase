@@ -684,7 +684,7 @@
           if (data.fallbackOtp) {
             if (fallbackOtpBanner) fallbackOtpBanner.style.display = 'block';
             if (fallbackOtpCode) fallbackOtpCode.textContent = data.fallbackOtp;
-            if (authEmailOtpInput) authEmailOtpInput.value = data.fallbackOtp;
+            if (authEmailOtpInput) authEmailOtpInput.value = "";
           } else {
             if (fallbackOtpBanner) fallbackOtpBanner.style.display = 'none';
             if (authEmailOtpInput) authEmailOtpInput.value = '';
@@ -703,7 +703,7 @@
           if (fallbackOtpBanner) fallbackOtpBanner.style.display = 'block';
           if (fallbackOtpCode) fallbackOtpCode.textContent = currentEmailOtp;
           if (authEmailOtpInput) {
-            authEmailOtpInput.value = currentEmailOtp;
+            authEmailOtpInput.value = "";
             authEmailOtpInput.focus();
           }
           showToast(`Verification code ready: ${currentEmailOtp}`, 'info');
@@ -1042,7 +1042,7 @@
     // Update Custom Role Trigger Button UI
     const roleIconEl = document.getElementById('currentRoleIcon');
     const roleLabelEl = document.getElementById('currentRoleLabel');
-    const roleIcons = { traveler: '🧭', cab_owner: '🚕', rental_vendor: '🏢' };
+    const roleIcons = { traveler: '', cab_owner: '', rental_vendor: '' };
     const roleLabels = { traveler: 'Traveler', cab_owner: 'Cab Owner', rental_vendor: 'Rental Vendor' };
 
     if (roleIconEl && roleIcons[newRole]) roleIconEl.textContent = roleIcons[newRole];
@@ -1074,27 +1074,18 @@
     if (newRole === 'traveler') {
       if (travelerContainer) travelerContainer.classList.add('active');
       if (travelerBottomNav) travelerBottomNav.style.display = 'flex';
-      if (roleBadge) {
-        roleBadge.textContent = 'Traveler';
-        roleBadge.className = 'role-badge badge-traveler';
-      }
+      if (roleBadge) { roleBadge.textContent = ""; roleBadge.style.display = "none"; }
       showToast('Switched to Traveler Dashboard', 'info');
     } else if (newRole === 'cab_owner') {
       if (cabOwnerContainer) cabOwnerContainer.classList.add('active');
       if (travelerBottomNav) travelerBottomNav.style.display = 'none';
-      if (roleBadge) {
-        roleBadge.textContent = 'Cab Owner';
-        roleBadge.className = 'role-badge badge-cab';
-      }
+      if (roleBadge) { roleBadge.textContent = ""; roleBadge.style.display = "none"; }
       renderCabOwnerDashboard();
       showToast('Switched to Cab Owner Dashboard', 'info');
     } else if (newRole === 'rental_vendor') {
       if (rentalVendorContainer) rentalVendorContainer.classList.add('active');
       if (travelerBottomNav) travelerBottomNav.style.display = 'none';
-      if (roleBadge) {
-        roleBadge.textContent = 'Rental Vendor';
-        roleBadge.className = 'role-badge badge-vendor';
-      }
+      if (roleBadge) { roleBadge.textContent = ""; roleBadge.style.display = "none"; }
       renderRentalVendorDashboard();
       showToast('Switched to Rental Vendor Dashboard', 'info');
     }
@@ -1432,8 +1423,8 @@
           <div style="padding: 6px; max-width: 220px; font-family: -apple-system, sans-serif;">
             <div style="font-size: 10px; font-weight: 800; color: #1A73E8; text-transform: uppercase; letter-spacing: 0.5px;">DESTINATION ATTRACTION #${num}</div>
             <div style="font-size: 14px; font-weight: 800; color: #0F172A; margin: 3px 0 4px 0;">${p.name}</div>
-            <div style="font-size: 11px; color: #475569; margin-bottom: 2px;">⏰ ${p.best_time || 'Open Daily'}</div>
-            <div style="font-size: 11px; color: #16A34A; font-weight: 700; margin-bottom: 4px;">🎟️ ${p.entry_fee || 'Free'}</div>
+            <div style="font-size: 11px; color: #475569; margin-bottom: 2px;"> ${p.best_time || 'Open Daily'}</div>
+            <div style="font-size: 11px; color: #16A34A; font-weight: 700; margin-bottom: 4px;"> ${p.entry_fee || 'Free'}</div>
             <p style="font-size: 12px; color: #334155; line-height: 1.4; margin: 0;">${p.short_note || p.description || ''}</p>
           </div>
         `);
@@ -1464,28 +1455,34 @@
         <div class="aura-card" style="background: #FFFFFF; border: 1px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 14px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 8px;">
             <div>
-              <div style="font-size: 10px; font-weight: 800; color: #1A73E8; letter-spacing: 0.6px; text-transform: uppercase;">DESTINATION SIGHTSEEING</div>
+              <div style="font-size: 10px; font-weight: 800; color: #7C3AED; letter-spacing: 0.6px; text-transform: uppercase;">DESTINATION SIGHTSEEING</div>
               <h4 style="font-size: 15px; font-weight: 800; color: #0F172A; margin: 2px 0 0 0;">Places to Visit in ${destCity || 'Destination'}</h4>
             </div>
             <button type="button" class="btn-fly-sightseeing-pins" style="background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; font-size: 11.5px; font-weight: 700; padding: 6px 10px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 4px; white-space: nowrap; flex-shrink: 0;">
-              🗺️ View Pins on Map
+              View Pins on Map
             </button>
           </div>
-          <div style="display: flex; flex-direction: column; gap: 8px;">
-            ${places.map((p, idx) => `
-              <div class="sightseeing-item-row" data-place-index="${idx}" style="display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; border-radius: 8px; border: 1px solid #E2E8F0; background: #F8FAFC; cursor: pointer; transition: background 0.15s;">
-                <div style="display: flex; align-items: flex-start; gap: 8px; min-width: 0;">
-                  <span style="width: 22px; height: 22px; border-radius: 50%; background: #1A73E8; color: #FFFFFF; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; flex-shrink: 0; margin-top: 1px;">${idx + 1}</span>
-                  <div style="min-width: 0;">
-                    <div style="font-size: 13px; font-weight: 700; color: #0F172A;">${p.name}</div>
-                    <div style="font-size: 11.5px; color: #64748B; margin-top: 1px;">⏰ ${p.best_time || 'Open Daily'} • <span style="color: #16A34A; font-weight: 600;">${p.entry_fee || 'Free'}</span></div>
+          <div style="display: flex; flex-direction: column; gap: 8px;" id="sightseeingChecklistItems">
+            ${places.map((p, idx) => {
+              const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(p.name + ' ' + (destCity || ''))}`;
+              return `
+                <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">
+                  <div style="flex: 1; min-width: 0;">
+                    <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                      <span style="background: #7C3AED; color: #FFFFFF; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 6px;">#${idx + 1}</span>
+                      <strong style="font-size: 13.5px; color: #0F172A;">${p.name}</strong>
+                      ${p.entry_fee ? `<span style="font-size: 10.5px; font-weight: 700; color: #16A34A; background: #DCFCE7; padding: 2px 6px; border-radius: 4px;">${p.entry_fee}</span>` : ''}
+                      ${p.best_time ? `<span style="font-size: 10.5px; color: #475569;">${p.best_time}</span>` : ''}
+                    </div>
+                    ${p.short_note ? `<div style="font-size: 12px; color: #475569; margin-top: 3px; line-height: 1.4;">${p.short_note}</div>` : ''}
+                    <div style="display: flex; gap: 8px; margin-top: 8px; align-items: center;">
+                      <a href="${searchUrl}" target="_blank" rel="noopener" class="btn-search-book">Search & Book ↗</a>
+                      <button type="button" class="btn-focus-pin btn-focus-sightseeing-pin" data-lat="${p.lat}" data-lng="${p.lng}">Focus Pin</button>
+                    </div>
                   </div>
                 </div>
-                <button type="button" class="btn-focus-sightseeing-pin" data-place-index="${idx}" style="background: #FFFFFF; border: 1px solid #CBD5E1; color: #1E293B; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 6px; cursor: pointer; white-space: nowrap; flex-shrink: 0; margin-left: 6px;">
-                  Focus Pin
-                </button>
-              </div>
-            `).join('')}
+              `;
+            }).join('')}
           </div>
         </div>
       `;
@@ -1560,10 +1557,10 @@
       clearSightseeingMarkers();
 
       const categories = [
-        { type: 'sightseeing', color: '#059669', icon: '🏛️', label: 'Sightseeing', items: tier.destination_spots || [] },
-        { type: 'en_route', color: '#1A73E8', icon: '🛣️', label: 'En-Route', items: tier.en_route_spots || [] },
-        { type: 'dining', color: '#D97706', icon: '🍽️', label: 'Dining', items: tier.restaurants || [] },
-        { type: 'hotel', color: '#4F46E5', icon: '🏨', label: 'Hotel', items: tier.hotels || [] }
+        { type: 'sightseeing', color: '#7C3AED', label: 'Sightseeing', items: tier.destination_spots || [] },
+        { type: 'en_route', color: '#1A73E8', label: 'En-Route', items: tier.en_route_spots || [] },
+        { type: 'dining', color: '#D97706', label: 'Dining', items: tier.restaurants || [] },
+        { type: 'hotel', color: '#059669', label: 'Hotel / Stay', items: tier.hotels || [] }
       ];
 
       const bounds = new mapboxgl.LngLatBounds();
@@ -1578,8 +1575,8 @@
           el.className = `categorized-pin pin-cat-${cat.type}`;
           el.innerHTML = `
             <div style="cursor: pointer; display: flex; flex-direction: column; align-items: center; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.25)); transition: transform 0.15s ease;" onmouseover="this.style.transform='scale(1.12)'" onmouseout="this.style.transform='scale(1)'">
-              <div style="background: ${cat.color}; color: #FFFFFF; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; border: 2.5px solid #FFFFFF; box-shadow: 0 1px 4px rgba(0,0,0,0.3); z-index: 2;">
-                ${cat.icon}
+              <div style="background: ${cat.color}; color: #FFFFFF; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; border: 2px solid #FFFFFF; box-shadow: 0 1px 4px rgba(0,0,0,0.3); z-index: 2;">
+                ${idx + 1}
               </div>
               <div style="background: #FFFFFF; color: #0F172A; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 10px; border: 1px solid #CBD5E1; box-shadow: 0 1px 3px rgba(0,0,0,0.12); margin-top: 2px; white-space: nowrap; max-width: 120px; overflow: hidden; text-overflow: ellipsis; pointer-events: none;">
                 ${item.name}
@@ -1587,15 +1584,19 @@
             </div>
           `;
 
+          const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(item.name + ' ' + (item.location || ''))}`;
           const popup = new mapboxgl.Popup({ offset: 20, closeButton: true }).setHTML(`
-            <div style="padding: 6px; max-width: 220px; font-family: -apple-system, sans-serif;">
-              <div style="font-size: 10px; font-weight: 800; color: ${cat.color}; text-transform: uppercase;">${cat.label.toUpperCase()}</div>
+            <div style="padding: 6px; max-width: 240px; font-family: -apple-system, sans-serif;">
+              <div style="font-size: 10px; font-weight: 800; color: ${cat.color}; text-transform: uppercase;">${cat.label}</div>
               <div style="font-size: 13.5px; font-weight: 800; color: #0F172A; margin: 3px 0 4px 0;">${item.name}</div>
-              ${item.cuisine ? `<div style="font-size: 11px; color: #64748B;">🍴 ${item.cuisine} • ${item.price_tier || ''}</div>` : ''}
+              ${item.cuisine ? `<div style="font-size: 11px; color: #64748B;">Cuisine: ${item.cuisine} • ${item.price_tier || ''}</div>` : ''}
               ${item.rating ? `<div style="font-size: 11px; color: #D97706; font-weight: 700;">★ ${item.rating}</div>` : ''}
-              ${item.best_time ? `<div style="font-size: 11px; color: #475569;">⏰ ${item.best_time}</div>` : ''}
-              ${item.entry_fee ? `<div style="font-size: 11px; color: #16A34A; font-weight: 700;">🎟️ ${item.entry_fee}</div>` : ''}
-              <p style="font-size: 11.5px; color: #334155; line-height: 1.4; margin: 4px 0 0 0;">${item.short_note || item.description || ''}</p>
+              ${item.best_time ? `<div style="font-size: 11px; color: #475569;">Best Time: ${item.best_time}</div>` : ''}
+              ${item.entry_fee ? `<div style="font-size: 11px; color: #16A34A; font-weight: 700;">Entry Fee: ${item.entry_fee}</div>` : ''}
+              <p style="font-size: 11.5px; color: #334155; line-height: 1.4; margin: 4px 0 8px 0;">${item.short_note || item.description || ''}</p>
+              <div style="display: flex; gap: 6px; align-items: center; border-top: 1px solid #E2E8F0; padding-top: 6px;">
+                <a href="${searchUrl}" target="_blank" rel="noopener" class="btn-search-book">Search & Book ↗</a>
+              </div>
             </div>
           `);
 
@@ -1955,7 +1956,7 @@
             if (res.ok) {
               modal.style.display = 'none';
               window.showAppModal({
-                title: '🎉 Guided Tour Confirmed!',
+                title: ' Guided Tour Confirmed!',
                 message: `Tracking Code: ${tracking}\nRoute: ${origin} to ${dest}\nTotal Paid: ₹${budgetNum.toLocaleString('en-IN')} (All-inclusive)\nDedicated AC commercial vehicle & chauffeur reserved.`,
                 type: 'success'
               });
@@ -2067,7 +2068,7 @@
                   if (res.ok) {
                     modal.style.display = 'none';
                     window.showAppModal({
-                      title: '🚗 Self-Drive Vehicle Reserved!',
+                      title: ' Self-Drive Vehicle Reserved!',
                       message: `Tracking Code: ${tracking}\nVehicle: ${carModel}\nPickup: ${origin} Hub\nDrop: ${dest} Terminal\nTotal Fare: ₹${totalCost.toLocaleString('en-IN')} (Saved ₹${(budgetNum - totalCost).toLocaleString('en-IN')})\nKey handover awaits at pickup hub.`,
                       type: 'success'
                     });
@@ -2262,7 +2263,7 @@
               if (map.getLayer('esri-satellite-layer')) {
                 map.setLayoutProperty('esri-satellite-layer', 'visibility', isSatelliteMap ? 'visible' : 'none');
               }
-              btnToggleMapStyle.innerHTML = isSatelliteMap ? '🗺️ Map' : '🛰️ Satellite';
+              btnToggleMapStyle.innerHTML = isSatelliteMap ? ' Map' : ' Satellite';
               btnToggleMapStyle.title = isSatelliteMap ? 'Switch to Street Map' : 'Switch to Satellite View';
             });
           }
@@ -2397,6 +2398,34 @@
           refreshMapWithPinnedStops(false);
         });
       });
+    }
+
+    
+    function syncPinnedStopsToConcierge() {
+      if (!userPinnedStops || userPinnedStops.length === 0) return;
+      const stopNames = userPinnedStops.map(s => s.name);
+      const promptInput = document.getElementById('conciergePromptInput');
+      const pickupInput = document.getElementById('cabPickupInput');
+      const dropInput = document.getElementById('cabDropInput');
+      const durationInput = document.getElementById('conciergeDurationInput');
+
+      if (promptInput) {
+        if (stopNames.length === 1) {
+          promptInput.value = `Plan a complete travel and sightseeing itinerary in ${stopNames[0]} with verified local attractions, dining, and top-rated stays.`;
+        } else {
+          promptInput.value = `Plan a complete multi-stop trip from ${stopNames.join(' to ')} with optimized corridor transit stops, local sightseeing, dining, and top-rated stays.`;
+        }
+      }
+
+      if (pickupInput && stopNames.length > 0) {
+        pickupInput.value = stopNames[0];
+      }
+      if (dropInput && stopNames.length > 1) {
+        dropInput.value = stopNames[stopNames.length - 1];
+      }
+      if (durationInput) {
+        durationInput.value = Math.max(1, stopNames.length);
+      }
     }
 
     function refreshMapWithPinnedStops(flyToNewest = true) {
@@ -2610,6 +2639,7 @@
     if (btnClearMapPins) {
       btnClearMapPins.addEventListener('click', () => {
         userPinnedStops = [];
+        const pInput = document.getElementById('conciergePromptInput'); if (pInput) pInput.value = '';
         clearRoutePolyline();
         currentMarkers.forEach(m => m.remove());
         currentMarkers = [];
@@ -3521,8 +3551,8 @@
       if (item.type === 'START_POINT') { tagClass = 'tag-default'; tagText = '🚩 Start: Nanakheda'; }
       else if (item.type === 'FOOD_BREAK') { tagClass = 'tag-dhaba'; tagText = '🍲 Food & Dhaba Break'; }
       else if (item.type === 'WASHROOM_BREAK') { tagClass = 'tag-refresh'; tagText = '🚻 Washroom & Snacks'; }
-      else if (item.type === 'HOTEL_STAY') { tagClass = 'tag-rest'; tagText = '🏨 Hotel Stay'; }
-      else if (item.type === 'SIGHTSEEING') { tagClass = 'tag-default'; tagText = '🏛️ Sightseeing & Heritage'; }
+      else if (item.type === 'HOTEL_STAY') { tagClass = 'tag-rest'; tagText = ' Hotel Stay'; }
+      else if (item.type === 'SIGHTSEEING') { tagClass = 'tag-default'; tagText = ' Sightseeing & Heritage'; }
       else if (item.type === 'RETURN_JOURNEY') { tagClass = 'tag-refresh'; tagText = '🔄 Return to Nanakheda'; }
 
       card.innerHTML = `
@@ -4118,8 +4148,8 @@
         toggleCash.style.borderColor = '#E2E8F0';
         toggleCash.style.color = '#1E293B';
         const info = document.getElementById('modalPaymentInfoBox');
-        if (info) info.innerHTML = '📱 Pay Online by scanning the Driver\'s dynamic ride QR code with instant wallet escrow settlement.';
-        btnConfirm.textContent = '📱 Scan Driver QR to Pay →';
+        if (info) info.innerHTML = ' Pay Online by scanning the Driver\'s dynamic ride QR code with instant wallet escrow settlement.';
+        btnConfirm.textContent = ' Scan Driver QR to Pay →';
       });
     }
 
@@ -4943,7 +4973,7 @@
           } else if (isOnline) {
             badgeColor = '#10B981';
             badgeBg = '#ECFDF5';
-            badgeText = '💳 ONLINE';
+            badgeText = ' ONLINE';
             amountColor = '#10B981';
             amountSign = '+';
             amountVal = (l.net_change || 184).toFixed(2);
@@ -5067,7 +5097,7 @@
                 </div>
                 ${!isHandedOver ? `
                   <button type="button" class="m3-button-primary" style="padding: 6px 14px; font-size: 12px; background: #059669;" onclick="window.confirmVehicleHandover('${r.tracking_code}')">
-                    🔑 Confirm Vehicle Handed Over
+                     Confirm Vehicle Handed Over
                   </button>
                 ` : `
                   <span style="font-size: 12px; font-weight: 700; color: #059669;">✓ Verified & In Possession</span>
@@ -5644,7 +5674,7 @@
       const rawFare = parseFloat(String(t.price || '4800').replace(/[^\d.]/g, '')) || 4800;
       allTrips.push({
         type: 'tour',
-        category: '🏛️ Tour Package',
+        category: ' Tour Package',
         trackingCode: tracking,
         title: t.tour_title || 'Pilgrimage Circuit',
         subtitle: `Date: ${t.travel_date || 'Flexible'} • ${t.travelers || 2} Travelers`,
@@ -5661,7 +5691,7 @@
       const isCancelled = r.handover_status === 'CANCELLED';
       allTrips.push({
         type: 'rental',
-        category: '🚗 Self-Drive Car',
+        category: ' Self-Drive Car',
         trackingCode: r.tracking_code,
         title: r.car_model || 'Mahindra Thar 4x4',
         subtitle: `${r.pickup_location} → ${r.drop_location} (${r.days || r.total_days || 1} Days)`,
@@ -5680,7 +5710,7 @@
       const isCompleted = c.status === 'completed';
       allTrips.push({
         type: 'cab',
-        category: '🚖 City Cab',
+        category: ' City Cab',
         trackingCode: tracking,
         title: `${c.car_model || c.car || 'Prime Sedan'} (${c.driver_name || c.driver || 'Driver'})`,
         subtitle: `${c.pickup_location || 'Pickup'} → ${c.drop_location || 'Drop'}`,
@@ -6326,3 +6356,36 @@
   });
 
 })();   
+
+    // Wire Traveler Count Quick Pills
+    const travelerPillsGroup = document.getElementById('travelerQuickPillsGroup');
+    const travelerCountInput = document.getElementById('travelerCountInput');
+    const hiddenTravelersInput = document.getElementById('conciergeTravelersInput');
+
+    if (travelerPillsGroup) {
+      travelerPillsGroup.querySelectorAll('.traveler-quick-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+          travelerPillsGroup.querySelectorAll('.traveler-quick-pill').forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          const val = pill.getAttribute('data-travelers');
+          if (travelerCountInput) travelerCountInput.value = val;
+          if (hiddenTravelersInput) hiddenTravelersInput.value = val;
+        });
+      });
+    }
+
+    if (travelerCountInput) {
+      travelerCountInput.addEventListener('input', () => {
+        const val = travelerCountInput.value;
+        if (hiddenTravelersInput) hiddenTravelersInput.value = val;
+        if (travelerPillsGroup) {
+          travelerPillsGroup.querySelectorAll('.traveler-quick-pill').forEach(pill => {
+            if (pill.getAttribute('data-travelers') === String(val)) {
+              pill.classList.add('active');
+            } else {
+              pill.classList.remove('active');
+            }
+          });
+        }
+      });
+    }

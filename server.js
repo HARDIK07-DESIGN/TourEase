@@ -84,7 +84,7 @@ const pool = new Pool({
 pool.on('error', (err) => console.error('PostgreSQL pool error:', err.message));
 
 // Initialize Gemini AI SDK
-const ai = new GoogleGenAI();
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY });
 
 // --- Embedded Production SVG Assets (Stored in PostgreSQL, Zero External Unsplash Dependency) ---
 const SUV_THAR_SVG = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 360" width="100%" height="100%"><rect width="600" height="360" fill="#F1F5F9"/><rect x="70" y="140" width="460" height="120" rx="20" fill="#1E293B"/><polygon points="120,140 180,60 410,60 470,140" fill="#334155"/><rect x="190,75" width="95" height="55" rx="6" fill="#93C5FD"/><rect x="300,75" width="100" height="55" rx="6" fill="#93C5FD"/><circle cx="170" cy="260" r="46" fill="#0F172A"/><circle cx="170" cy="260" r="22" fill="#94A3B8"/><circle cx="430" cy="260" r="46" fill="#0F172A"/><circle cx="430" cy="260" r="22" fill="#94A3B8"/><rect x="495" y="110" width="30" height="80" rx="12" fill="#0F172A"/><text x="300" y="335" font-family="sans-serif" font-size="20" font-weight="bold" fill="#475569" text-anchor="middle">MAHINDRA THAR 4x4 (HARD TOP)</text></svg>`);
@@ -2374,18 +2374,18 @@ app.post('/api/ai/plan-trip', async (req, res) => {
   const costUpgrade = Math.round(numBudget + 4000); // strictly B + ₹3k to ₹5k
 
   try {
-    const aiPrompt = `You are India's premier travel architect. Create a realistic, highly detailed ${targetDays} travel itinerary from "${originCity}" to "${targetDestination}" for ${travelerCount} with a baseline user budget B = ₹${numBudget}.
-You MUST generate 3 budget-calibrated plan options:
+    const aiPrompt = `You are India's premier travel architect. Create a realistic, highly detailed ${targetDays} multi-stop travel itinerary covering "${targetDestination}" (starting from "${originCity}") for ${travelerCount} with a baseline user budget B = ₹${numBudget}.
+Cover EVERY stop, intermediate waypoint, and city along the corridor (e.g. Ujjain, Indore, Goa, Mumbai) with real, verifiable commercial/official names and [lat, lng] coordinates:
 1. "under_budget": Total cost strictly between 75% and 90% of B (around ₹${costUnder}, save ₹${numBudget - costUnder}).
 2. "exact_budget": Total cost strictly <= B (around ₹${costExact}).
 3. "smart_upgrade": Total cost strictly B + ₹3,000 to B + ₹5,000 (around ₹${costUpgrade}), including an explicit "upgrade_perks" array explaining what the extra ₹4,000 unlocks.
 
 For EACH of the 3 options, provide REAL, VERIFIABLE places with exact decimal [lat, lng] coordinates (NO generic placeholders):
-- "en_route_spots": 3 to 4 real highway/midpoint heritage, viewpoint, or rest stops between ${originCity} and ${targetDestination} with name, lat (float), lng (float), type, and description.
-- "destination_spots": 5 to 7 real famous tourist attractions inside ${targetDestination} with name, lat (float), lng (float), best_time, entry_fee, and short_note.
-- "restaurants": 3 to 4 real named restaurants or cafes in ${targetDestination} with name, lat (float), lng (float), cuisine, rating, and price_for_two.
-- "hotels": 2 to 3 real named hotels in ${targetDestination} with name, lat (float), lng (float), rating, price_per_night, and amenities.
-- "itinerary": Day-by-day markdown text describing morning, afternoon, and evening activities.
+- "en_route_spots": 3 to 5 real tourist attractions, viewpoints, and scenic heritage stops along the corridor and intermediate cities with: name (exact official name), city, lat (float), lng (float), type, description.
+- "destination_spots": 5 to 7 real famous tourist attractions and landmarks at the destination(s) with: name (exact official name), city, lat (float), lng (float), best_time, entry_fee, short_note.
+- "restaurants": 4 to 6 real named restaurants, iconic local cafes, and legendary eateries across the stops with: name (exact commercial name), city, lat (float), lng (float), cuisine, rating (e.g. '4.6★'), price_for_two (e.g. '₹600').
+- "hotels": 4 to 6 real named hotels, luxury resorts, and verified Airbnbs/homestays across the stops with: name (exact hotel/resort/Airbnb name), city, lat (float), lng (float), rating, price_per_night, amenities, type ('hotel' or 'airbnb').
+- "itinerary": Day-by-day markdown text describing morning, afternoon, and evening activities covering each stop.
 
 Provide the response strictly in JSON format with top-level key "options" containing "under_budget", "exact_budget", "smart_upgrade".`;
 
