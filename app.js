@@ -780,7 +780,7 @@
     }
 
     // 3. Real Google Identity Services (OAuth 2.0)
-    let googleClientId = '641997788141-t76ucjc54qh95svlpchribs35q737rec8.apps.googleusercontent.com';
+    let googleClientId = '641997788141-t76ucjc54qh95svlpchnbs35q737rac8.apps.googleusercontent.com';
 
     async function initGoogleIdentityServices() {
       try {

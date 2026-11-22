@@ -378,7 +378,7 @@ app.get('/api/config', (req, res) => {
   res.json({
     mapboxToken: process.env.MAPBOX_TOKEN || process.env.MAPBOX_ACCESS_TOKEN || '',
     razorpayKeyId: process.env.RAZORPAY_KEY_ID || '',
-    googleClientId: (process.env.GOOGLE_CLIENT_ID || '641997788141-t76ucjc54qh95svlpchribs35q737rec8.apps.googleusercontent.com').trim()
+    googleClientId: (process.env.GOOGLE_CLIENT_ID || '641997788141-t76ucjc54qh95svlpchnbs35q737rac8.apps.googleusercontent.com').trim()
   });
 });
 
