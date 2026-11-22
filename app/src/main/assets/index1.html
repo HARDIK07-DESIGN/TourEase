@@ -1055,6 +1055,117 @@
       color: var(--text-muted);
       margin-top: 4px;
     }
+
+    /* Mobile Responsive Polish (max-width: 480px) */
+    @media (max-width: 480px) {
+      .android-top-bar {
+        padding: 10px 10px 8px 10px;
+        gap: 6px;
+      }
+      .brand-section {
+        gap: 6px;
+        flex-shrink: 0;
+        white-space: nowrap;
+      }
+      .brand-icon-wrap {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+      }
+      .brand-icon-wrap svg {
+        width: 16px;
+        height: 16px;
+      }
+      .brand-titles h1 {
+        font-size: 16px;
+        white-space: nowrap;
+      }
+      .brand-titles .subtitle,
+      #headerRoleBadge {
+        display: none !important;
+      }
+      .header-actions-group {
+        gap: 5px;
+        flex-shrink: 1;
+        min-width: 0;
+      }
+      .role-switcher-select {
+        padding: 5px 22px 5px 8px !important;
+        font-size: 11.5px !important;
+        max-width: 106px;
+        text-overflow: ellipsis;
+      }
+      .role-switcher-arrow {
+        right: 6px;
+        font-size: 8px;
+      }
+      .user-profile-pill-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 11px;
+        flex-shrink: 0;
+      }
+      .btn-track-trip,
+      #btnOpenPublicTrackModal {
+        padding: 6px 8px !important;
+        font-size: 11.5px !important;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .btn-universal-logout,
+      #btnUniversalLogout {
+        padding: 6px 8px !important;
+        font-size: 11.5px !important;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
+      /* Map Search Bar on Mobile */
+      .map-search-bar {
+        padding: 4px 8px !important;
+        gap: 4px !important;
+      }
+      .map-search-input {
+        min-width: 60px;
+        font-size: 12px !important;
+        text-overflow: ellipsis;
+      }
+      .map-action-btn,
+      .map-toggle-btn {
+        padding: 5px 8px !important;
+        font-size: 11px !important;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
+      /* Concierge Total Budget / Duration / Travelers */
+      .budget-duration-grid {
+        gap: 6px !important;
+      }
+      .budget-duration-grid .m3-text-input {
+        padding: 9px 6px !important;
+        font-size: 12.5px !important;
+      }
+      #conciergeTravelersInput {
+        min-width: 86px;
+        padding: 9px 4px !important;
+        font-size: 12px !important;
+      }
+    }
+
+    /* Stack Pickup & Dropoff on narrow screens */
+    .cab-route-inputs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    @media (max-width: 420px) {
+      .cab-route-inputs-grid {
+        grid-template-columns: 1fr !important;
+        gap: 8px !important;
+      }
+    }
   </style>
 </head>
 
@@ -1087,7 +1198,7 @@
           <button type="button" class="btn-track-trip" id="btnOpenPublicTrackModal" title="Track Live Trip with TRK Code" style="background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; padding: 6px 10px; border-radius: 18px; font-size: 11.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s;">
             🛰️ Track
           </button>
-          <button type="button" class="btn-universal-logout" id="btnUniversalLogout" title="Sign out of TourEase" style="background: #FEE2E2; color: #991B1B; border: 1px solid #FECACA; padding: 6px 12px; border-radius: 18px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s;">
+          <button type="button" class="btn-universal-logout" id="btnUniversalLogout" title="Sign out of TourEase" style="background: #FEE2E2; color: #991B1B; border: 1px solid #FECACA; padding: 6px 10px; border-radius: 18px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s;">
             🚪 Logout
           </button>
         </div>
@@ -1265,7 +1376,7 @@
             <!-- Cab Route Selector Card -->
             <div class="aura-card" id="cabRouteConfigCard" style="margin-bottom: 16px; border: 1px solid var(--border);">
               <div style="font-size: 12px; font-weight: 800; color: var(--primary); text-transform: uppercase; margin-bottom: 10px;">📍 Route & Travel Estimation</div>
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+              <div class="cab-route-inputs-grid">
                 <div class="m3-input-wrapper" style="margin-bottom: 0;">
                   <label class="m3-label">Pickup Location</label>
                   <input type="text" id="cabPickupInput" class="m3-text-input" value="Mahakaleshwar Temple, Ujjain" placeholder="Enter pickup city/landmark">

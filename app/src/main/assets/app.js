@@ -53,7 +53,7 @@
 
   const SUV_CRETA_SVG = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="600" height="360" viewBox="0 0 600 360"><rect width="600" height="360" fill="#EFF6FF"/><rect x="60" y="140" width="480" height="130" rx="28" fill="#1D4ED8"/><path d="M140 140 L200 65 L400 65 L460 140 Z" fill="#1E40AF"/><circle cx="170" cy="270" r="45" fill="#0F172A"/><circle cx="170" cy="270" r="20" fill="#93C5FD"/><circle cx="430" cy="270" r="45" fill="#0F172A"/><circle cx="430" cy="270" r="20" fill="#93C5FD"/><text x="300" y="180" text-anchor="middle" fill="#FFFFFF" font-family="sans-serif" font-weight="800" font-size="22">Hyundai Creta SX(O)</text></svg>`);
 
-  const DEFAULT_TOUR_SVG = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="600" height="360" viewBox="0 0 600 360"><rect width="600" height="360" fill="#F0FDF4"/><path d="M60 280 L200 120 L320 230 L420 100 L540 280 Z" fill="#86EFAC" opacity="0.7"/><circle cx="450" cy="100" r="35" fill="#FDE047"/><text x="300" y="320" text-anchor="middle" fill="#166534" font-family="sans-serif" font-weight="800" font-size="22">TourEase Curated Experience</text></svg>`);
+  const DEFAULT_TOUR_SVG = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="600" height="360" viewBox="0 0 600 360"><rect width="600" height="360" fill="#F0FDF4"/><path d="M60 280 L200 120 L320 230 L420 100 L540 280 Z" fill="#86EFAC" opacity="0.7"/><circle cx="450" cy="100" r="35" fill="#FDE047"/><g transform="translate(150, 190)"><rect width="300" height="42" rx="21" fill="rgba(255,255,255,0.96)" stroke="#86EFAC" stroke-width="1.5"/><text x="150" y="27" text-anchor="middle" fill="#166534" font-family="sans-serif" font-weight="800" font-size="16">TourEase Curated Experience</text></g></svg>`);
 
   const FALLBACK_TRAVEL_SVG = "data:image/svg+xml;charset=utf-8," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="#1A73E8"><rect width="100" height="100" fill="#E8F0FE"/><path d="M50 20 C38 20 28 30 28 42 C28 58 50 80 50 80 C50 80 72 58 72 42 C72 30 62 20 50 20 Z" fill="#1A73E8"/><circle cx="50" cy="40" r="8" fill="#FFFFFF"/></svg>');
 
@@ -377,6 +377,18 @@
     }
 
     modal.style.display = 'flex';
+    if (typeof window.recordModalOpen === 'function') {
+      window.recordModalOpen('appNoticeModal');
+    }
+  };
+
+  // Helper for pushing modal / drawer state entry for back navigation
+  window.recordModalOpen = function (modalId) {
+    try {
+      history.pushState({ modal: modalId, tab: state.activeTravelerTab, role: state.activeRole }, '', '#modal-' + modalId);
+    } catch (e) {
+      console.warn('recordModalOpen error:', e);
+    }
   };
 
   // Override standard window.alert to always use native in-app confirmation modal
@@ -861,7 +873,7 @@
     }
   }
 
-  function switchRole(newRole) {
+  function switchRole(newRole, skipPush = false) {
     state.activeRole = newRole;
     setStorage(STORAGE_KEYS.ROLE, newRole);
 
@@ -905,6 +917,17 @@
       renderRentalVendorDashboard();
       showToast('Switched to Rental Vendor Dashboard', 'info');
     }
+
+    if (!skipPush) {
+      try {
+        const hashName = newRole === 'traveler'
+          ? (state.activeTravelerTab ? state.activeTravelerTab.replace('tab-', '') : 'concierge')
+          : newRole;
+        history.pushState({ tab: state.activeTravelerTab, role: newRole }, '', '#' + hashName);
+      } catch (e) {
+        console.warn('switchRole pushState error:', e);
+      }
+    }
   }
 
   /* ==========================================================================
@@ -914,41 +937,124 @@
     const navButtons = document.querySelectorAll('.traveler-nav-btn');
     const travelerTabPanes = document.querySelectorAll('.traveler-tab-pane');
 
+    window.switchTravelerTab = function (targetTab, skipPush = false) {
+      state.activeTravelerTab = targetTab;
+
+      navButtons.forEach(b => {
+        if (b.getAttribute('data-tab') === targetTab) {
+          b.classList.add('active');
+        } else {
+          b.classList.remove('active');
+        }
+      });
+
+      travelerTabPanes.forEach(pane => {
+        if (pane.id === targetTab) {
+          pane.classList.add('active');
+        } else {
+          pane.classList.remove('active');
+        }
+      });
+
+      if (targetTab === 'tab-cabs') {
+        if (typeof window.resetCabFleetView === 'function') {
+          window.resetCabFleetView();
+        }
+      }
+      if (targetTab === 'tab-tours') renderTourPackages();
+      if (targetTab === 'tab-rentals') renderTravelerRentalsCatalog();
+      if (targetTab === 'tab-sos') {
+        if (typeof window.resizeSosMap === 'function') {
+          window.resizeSosMap();
+        }
+      }
+      if (targetTab === 'tab-history') {
+        if (typeof window.renderTravelerTripsHistory === 'function') {
+          window.renderTravelerTripsHistory();
+        }
+      }
+
+      if (!skipPush) {
+        try {
+          const tabHash = targetTab.replace('tab-', '');
+          history.pushState({ tab: targetTab, role: state.activeRole }, '', '#' + tabHash);
+        } catch (e) {
+          console.warn('switchTravelerTab pushState error:', e);
+        }
+      }
+    };
+
     navButtons.forEach(btn => {
       btn.addEventListener('click', () => {
         const targetTab = btn.getAttribute('data-tab');
-        state.activeTravelerTab = targetTab;
-
-        navButtons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-
-        travelerTabPanes.forEach(pane => {
-          if (pane.id === targetTab) {
-            pane.classList.add('active');
-          } else {
-            pane.classList.remove('active');
-          }
-        });
-
-        if (targetTab === 'tab-cabs') {
-          if (typeof window.resetCabFleetView === 'function') {
-            window.resetCabFleetView();
-          }
-        }
-        if (targetTab === 'tab-tours') renderTourPackages();
-        if (targetTab === 'tab-rentals') renderTravelerRentalsCatalog();
-        if (targetTab === 'tab-sos') {
-          if (typeof window.resizeSosMap === 'function') {
-            window.resizeSosMap();
-          }
-        }
-        if (targetTab === 'tab-history') {
-          if (typeof window.renderTravelerTripsHistory === 'function') {
-            window.renderTravelerTripsHistory();
-          }
-        }
+        window.switchTravelerTab(targetTab);
       });
     });
+
+    // Popstate event listener for back button sequencing
+    window.addEventListener('popstate', (e) => {
+      // 1. Close any open modal overlay first
+      const modalIds = [
+        'publicTrackingModal', 'packageBookingModal', 'selfDriveBookingModal',
+        'routeFulfillmentModal', 'ridePaymentModal', 'digitalBillModal',
+        'cabQrScannerModal', 'directOnlinePaymentModal', 'googleAccountChooserModal',
+        'roleSelectionModal', 'appNoticeModal'
+      ];
+      let closedAnyModal = false;
+      for (const mId of modalIds) {
+        const el = document.getElementById(mId);
+        if (el && el.style.display !== 'none' && el.style.display !== '') {
+          el.style.display = 'none';
+          closedAnyModal = true;
+        }
+      }
+
+      // 2. Close any open tour accordion drawer
+      const openDrawers = document.querySelectorAll('.tour-expanded-drawer');
+      openDrawers.forEach(d => {
+        if (d.style.display === 'block') {
+          d.style.display = 'none';
+          const toggleBtn = d.parentElement ? d.parentElement.querySelector('.tour-timeline-toggle-btn') : null;
+          if (toggleBtn) toggleBtn.textContent = 'View Itinerary Timeline ▾';
+          closedAnyModal = true;
+        }
+      });
+
+      if (closedAnyModal) {
+        return;
+      }
+
+      // 3. Tab and Role navigation
+      const s = e.state;
+      if (!s) {
+        if (state.activeRole !== 'traveler') {
+          switchRole('traveler', true);
+        }
+        if (state.activeTravelerTab !== 'tab-concierge') {
+          window.switchTravelerTab('tab-concierge', true);
+        }
+        return;
+      }
+
+      if (s.role && s.role !== state.activeRole) {
+        switchRole(s.role, true);
+      }
+      if (s.tab && s.tab !== state.activeTravelerTab) {
+        window.switchTravelerTab(s.tab, true);
+      }
+    });
+
+    try {
+      const initialHash = window.location.hash || '#concierge';
+      const initialTab = initialHash.startsWith('#tab-')
+        ? initialHash.replace('#', '')
+        : (initialHash.startsWith('#') && initialHash.length > 1 && !initialHash.startsWith('#modal-')
+          ? 'tab-' + initialHash.replace('#', '')
+          : 'tab-concierge');
+      history.replaceState({ tab: initialTab, role: state.activeRole || 'traveler' }, '', initialHash);
+    } catch (err) {
+      console.warn('History replaceState initialization error:', err);
+    }
 
     initAiConciergeWithOfflineMap();
     initIntercityCabBooking();
@@ -1354,6 +1460,9 @@
       const btnClose = document.getElementById('btnCloseRouteFulfillmentModal');
 
       if (!modal) return;
+      if (typeof window.recordModalOpen === 'function') {
+        window.recordModalOpen('routeFulfillmentModal');
+      }
 
       const origin = originName || route.origin?.name || 'Bhopal';
       const dest = destName || route.destination?.name || 'Mumbai';
@@ -1545,6 +1654,9 @@
       const btnClose = document.getElementById('btnClosePlaceModal');
 
       if (!modal) return;
+      if (typeof window.recordModalOpen === 'function') {
+        window.recordModalOpen('placeImageModal');
+      }
 
       if (img) {
         img.src = loc.imageFull || loc.imageThumb || FALLBACK_TRAVEL_SVG;
@@ -3122,6 +3234,9 @@
     const isHidden = drawer.style.display === 'none';
     drawer.style.display = isHidden ? 'block' : 'none';
     if (btn) btn.textContent = isHidden ? 'Hide Timeline ▴' : 'View Itinerary Timeline ▾';
+    if (isHidden && typeof window.recordModalOpen === 'function') {
+      window.recordModalOpen('drawer-' + tourId);
+    }
   };
 
   let activeBookingTour = null;
@@ -3129,6 +3244,9 @@
   window.openTourBookingDrawer = function (tourId, title, priceStr, duration) {
     const modal = document.getElementById('packageBookingModal');
     if (!modal) return;
+    if (typeof window.recordModalOpen === 'function') {
+      window.recordModalOpen('packageBookingModal');
+    }
 
     let rawPrice = 4800;
     if (typeof priceStr === 'number') {
@@ -3163,6 +3281,9 @@
     }
 
     modal.style.display = 'flex';
+    if (typeof window.recordModalOpen === 'function') {
+      window.recordModalOpen('packageBookingModal');
+    }
   };
 
   const btnClosePkg = document.getElementById('btnClosePackageBookingModal');
@@ -3503,6 +3624,9 @@
         if (modal) {
           modal.style.display = 'flex';
           modal.classList.add('visible');
+          if (typeof window.recordModalOpen === 'function') {
+            window.recordModalOpen('ridePaymentModal');
+          }
         }
       });
     }
@@ -3903,6 +4027,9 @@
   window.openSelfDriveBookingModal = function (carId, model, dailyRate, meta, plate) {
     const modal = document.getElementById('selfDriveBookingModal');
     if (!modal) return;
+    if (typeof window.recordModalOpen === 'function') {
+      window.recordModalOpen('selfDriveBookingModal');
+    }
 
     activeSelfDriveCar = { carId, model, dailyRate, plate: plate || 'MP-09-TH-2024' };
     document.getElementById('sdModalModel').textContent = model;
@@ -3936,6 +4063,9 @@
     calcTotal();
 
     modal.style.display = 'flex';
+    if (typeof window.recordModalOpen === 'function') {
+      window.recordModalOpen('selfDriveBookingModal');
+    }
   };
 
   const btnCloseSd = document.getElementById('btnCloseSelfDriveModal');
@@ -5237,6 +5367,9 @@
     }
 
     modal.style.display = 'flex';
+    if (typeof window.recordModalOpen === 'function') {
+      window.recordModalOpen('digitalBillModal');
+    }
   };
 
   const btnCloseBill = document.getElementById('btnCloseDigitalBillModal');
@@ -5593,6 +5726,9 @@
 
     function openModal() {
       if (modal) modal.style.display = 'flex';
+      if (typeof window.recordModalOpen === 'function') {
+        window.recordModalOpen('publicTrackingModal');
+      }
       if (errorBox) errorBox.style.display = 'none';
       if (input) {
         input.value = '';

@@ -7,14 +7,30 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
 public class MainActivity extends AppCompatActivity {
     private WebView webView;
+    private long backPressedTime = 0;
+    private Toast exitToast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Configure clean daytime status bar appearance (white with dark icons, fits system windows)
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+        WindowInsetsControllerCompat insetsController = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
+        if (insetsController != null) {
+            insetsController.setAppearanceLightStatusBars(true);
+            insetsController.setAppearanceLightNavigationBars(true);
+            insetsController.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+        }
+
         setContentView(R.layout.activity_main);
 
         webView = findViewById(R.id.webView);
@@ -85,6 +101,28 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Register modern OnBackPressedCallback for webView history and double-back guard
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (webView != null && webView.canGoBack()) {
+                    webView.goBack();
+                } else {
+                    if (backPressedTime + 2000 > System.currentTimeMillis()) {
+                        if (exitToast != null) {
+                            exitToast.cancel();
+                        }
+                        setEnabled(false);
+                        getOnBackPressedDispatcher().onBackPressed();
+                    } else {
+                        exitToast = Toast.makeText(MainActivity.this, "Press back again to exit", Toast.LENGTH_SHORT);
+                        exitToast.show();
+                        backPressedTime = System.currentTimeMillis();
+                    }
+                }
+            }
+        });
+
         // Load live Render deployment target (with fallback to bundled assets on error)
         webView.loadUrl("https://tourease-zocf.onrender.com/index1.html");
     }
@@ -94,7 +132,16 @@ public class MainActivity extends AppCompatActivity {
         if (webView != null && webView.canGoBack()) {
             webView.goBack();
         } else {
-            super.onBackPressed();
+            if (backPressedTime + 2000 > System.currentTimeMillis()) {
+                if (exitToast != null) {
+                    exitToast.cancel();
+                }
+                super.onBackPressed();
+            } else {
+                exitToast = Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT);
+                exitToast.show();
+                backPressedTime = System.currentTimeMillis();
+            }
         }
     }
 }
