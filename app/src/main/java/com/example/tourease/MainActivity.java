@@ -20,7 +20,8 @@ public class MainActivity extends AppCompatActivity {
     private Toast exitToast;
 
     private void hideSystemStatusBar() {
-        WindowInsetsControllerCompat controller = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
+        WindowInsetsControllerCompat controller = WindowCompat.getInsetsController(getWindow(),
+                getWindow().getDecorView());
         if (controller != null) {
             controller.setAppearanceLightStatusBars(true);
             controller.setAppearanceLightNavigationBars(true);
@@ -63,16 +64,18 @@ public class MainActivity extends AppCompatActivity {
 
         webView.setWebChromeClient(new android.webkit.WebChromeClient() {
             @Override
-            public void onGeolocationPermissionsShowPrompt(String origin, android.webkit.GeolocationPermissions.Callback callback) {
+            public void onGeolocationPermissionsShowPrompt(String origin,
+                    android.webkit.GeolocationPermissions.Callback callback) {
                 callback.invoke(origin, true, false);
             }
         });
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            if (checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{
-                    android.Manifest.permission.ACCESS_FINE_LOCATION,
-                    android.Manifest.permission.ACCESS_COARSE_LOCATION
+            if (checkSelfPermission(
+                    android.Manifest.permission.ACCESS_FINE_LOCATION) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[] {
+                        android.Manifest.permission.ACCESS_FINE_LOCATION,
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION
                 }, 101);
             }
         }
@@ -86,8 +89,8 @@ public class MainActivity extends AppCompatActivity {
 
                 // Open telephone, mailto, and external intent links in system apps
                 if (url.startsWith("tel:") ||
-                    url.startsWith("mailto:") ||
-                    url.startsWith("intent:")) {
+                        url.startsWith("mailto:") ||
+                        url.startsWith("intent:")) {
                     try {
                         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                         startActivity(intent);
@@ -120,14 +123,16 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-                // If remote cloud instance is spinning up or offline, fallback to bundled offline asset
+                // If remote cloud instance is spinning up or offline, fallback to bundled
+                // offline asset
                 if (failingUrl != null && failingUrl.startsWith("https://tourease-zocf.onrender.com")) {
                     view.loadUrl("file:///android_asset/index1.html");
                 }
             }
         });
 
-        // Register modern OnBackPressedCallback for webView history and double-back guard
+        // Register modern OnBackPressedCallback for webView history and double-back
+        // guard
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
