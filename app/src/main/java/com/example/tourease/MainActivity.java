@@ -1,8 +1,10 @@
 package com.example.tourease;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -57,10 +59,11 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
         webSettings.setSupportMultipleWindows(false);
 
-        // Customize User-Agent so Google OAuth doesn't trigger disallowed_useragent
+        // Customize User-Agent so Google OAuth doesn't trigger disallowed_useragent and app detects native wrapper
         String defaultUa = webSettings.getUserAgentString();
-        String cleanUa = defaultUa.replace("; wv", "").replace("Version/4.0 ", "");
+        String cleanUa = defaultUa.replace("; wv", "").replace("Version/4.0 ", "") + " TourEaseApp";
         webSettings.setUserAgentString(cleanUa);
+        webView.addJavascriptInterface(new WebAppInterface(this), "TourEaseNative");
 
         webView.setWebChromeClient(new android.webkit.WebChromeClient() {
             @Override
@@ -81,11 +84,21 @@ public class MainActivity extends AppCompatActivity {
         }
 
         webView.setWebViewClient(new WebViewClient() {
+            @SuppressWarnings("deprecation")
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                return handleUrlNavigation(view, url != null ? Uri.parse(url) : null);
+            }
+
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                Uri uri = request.getUrl();
-                String url = uri != null ? uri.toString() : "";
-                String host = uri != null && uri.getHost() != null ? uri.getHost().toLowerCase() : "";
+                return handleUrlNavigation(view, request != null ? request.getUrl() : null);
+            }
+
+            private boolean handleUrlNavigation(WebView view, Uri uri) {
+                if (uri == null) return false;
+                String url = uri.toString();
+                String host = uri.getHost() != null ? uri.getHost().toLowerCase() : "";
 
                 // Open telephone, mailto, and external intent links in system apps
                 if (url.startsWith("tel:") ||
@@ -100,11 +113,21 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
+                // Never load Google OAuth inside embedded WebView (Google OAuth 2.0 policy strictly blocks WebViews with Error 400: invalid_request)
+                if (host.contains("accounts.google.com") || url.contains("accounts.google.com")) {
+                    try {
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, uri);
+                        startActivity(browserIntent);
+                        return true;
+                    } catch (Exception e) {
+                        return false;
+                    }
+                }
+
                 // Intercept external search/web links (e.g. google.com/search) to open in system browser
-                // Keep TourEase backend and Google OAuth in WebView
+                // Keep TourEase backend in WebView
                 if (url.startsWith("http://") || url.startsWith("https://")) {
                     boolean isInternal = host.equals("tourease-zocf.onrender.com") ||
-                                         host.equals("accounts.google.com") ||
                                          host.equals("localhost") ||
                                          host.equals("10.0.2.2") ||
                                          host.isEmpty();
@@ -181,6 +204,29 @@ public class MainActivity extends AppCompatActivity {
                 exitToast.show();
                 backPressedTime = System.currentTimeMillis();
             }
+        }
+    }
+
+    public class WebAppInterface {
+        Context mContext;
+
+        WebAppInterface(Context c) {
+            mContext = c;
+        }
+
+        @JavascriptInterface
+        public void openInBrowser(String url) {
+            try {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                mContext.startActivity(intent);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        @JavascriptInterface
+        public boolean isNativeApp() {
+            return true;
         }
     }
 }

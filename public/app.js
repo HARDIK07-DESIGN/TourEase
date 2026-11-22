@@ -474,6 +474,14 @@
 
     let activeAuthMethod = 'email';
 
+    function isRunningInAndroidApp() {
+      return !!window.TourEaseNative ||
+             navigator.userAgent.includes('TourEaseApp') ||
+             window.location.protocol === 'file:' ||
+             /Android.*wv/.test(navigator.userAgent) ||
+             /Android.*Version\/[0-9.]+\s+Chrome\/[0-9.]+\s+Mobile/.test(navigator.userAgent);
+    }
+
     function switchAuthTab(method) {
       activeAuthMethod = method;
       if (tabAuthEmailBtn && tabAuthGoogleBtn) {
@@ -488,6 +496,21 @@
 
       if (authEmailSection) authEmailSection.style.display = method === 'email' ? 'block' : 'none';
       if (authGoogleSection) authGoogleSection.style.display = method === 'google' ? 'block' : 'none';
+
+      if (method === 'google') {
+        const inAndroid = isRunningInAndroidApp();
+        const googleAppNotice = document.getElementById('googleAppNotice');
+        const btnGoogleLoginEl = document.getElementById('btnGoogleLogin');
+        if (googleAppNotice && btnGoogleLoginEl) {
+          if (inAndroid) {
+            googleAppNotice.style.display = 'block';
+            btnGoogleLoginEl.style.display = 'none';
+          } else {
+            googleAppNotice.style.display = 'none';
+            btnGoogleLoginEl.style.display = 'flex';
+          }
+        }
+      }
     }
 
     if (tabAuthEmailBtn) tabAuthEmailBtn.addEventListener('click', () => switchAuthTab('email'));
@@ -827,8 +850,36 @@
 
     initGoogleIdentityServices();
 
+    const btnSwitchToEmailFromGoogle = document.getElementById('btnSwitchToEmailFromGoogle');
+    if (btnSwitchToEmailFromGoogle) {
+      btnSwitchToEmailFromGoogle.addEventListener('click', () => {
+        switchAuthTab('email');
+      });
+    }
+
+    const btnOpenGoogleChrome = document.getElementById('btnOpenGoogleChrome');
+    if (btnOpenGoogleChrome) {
+      btnOpenGoogleChrome.addEventListener('click', () => {
+        if (window.TourEaseNative && window.TourEaseNative.openInBrowser) {
+          window.TourEaseNative.openInBrowser('https://tourease-zocf.onrender.com/index1.html');
+        } else {
+          window.open('https://tourease-zocf.onrender.com/index1.html', '_system');
+        }
+      });
+    }
+
     if (btnGoogleLogin) {
       btnGoogleLogin.addEventListener('click', () => {
+        if (isRunningInAndroidApp()) {
+          showToast('Opening Google Sign-In in browser...', 'info');
+          if (window.TourEaseNative && window.TourEaseNative.openInBrowser) {
+            window.TourEaseNative.openInBrowser('https://tourease-zocf.onrender.com/index1.html');
+          } else {
+            window.open('https://tourease-zocf.onrender.com/index1.html', '_system');
+          }
+          return;
+        }
+
         if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
           google.accounts.id.prompt((notification) => {
             if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
