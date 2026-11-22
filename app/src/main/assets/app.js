@@ -6481,7 +6481,11 @@
     if (btnLandingSubmit) {
       btnLandingSubmit.addEventListener('click', () => {
         const cd = (landingInput?.value || '').trim();
-        if (cd) window.executePublicTrack(cd);
+        if (cd) {
+          window.executePublicTrack(cd);
+        } else {
+          openModal();
+        }
       });
     }
     if (landingInput) {
@@ -6489,7 +6493,11 @@
         if (e.key === 'Enter') {
           e.preventDefault();
           const cd = (landingInput?.value || '').trim();
-          if (cd) window.executePublicTrack(cd);
+          if (cd) {
+            window.executePublicTrack(cd);
+          } else {
+            openModal();
+          }
         }
       });
     }
