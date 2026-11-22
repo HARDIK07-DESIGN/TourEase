@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Load live Render deployment target (with fallback to bundled assets on error)
-        webView.loadUrl("https://tourease-zocf.onrender.com");
+        webView.loadUrl("https://tourease-zocf.onrender.com/index1.html");
     }
 
     @Override
