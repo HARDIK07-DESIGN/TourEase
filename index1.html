@@ -2227,12 +2227,12 @@
             <button type="button" class="m3-button-primary" id="btnVerifyEmailOtp" style="width: 100%; background: #059669; font-size: 13.5px; padding: 11px; font-weight: 700;">
               Verify &amp; Sign In →
             </button>
+            <div id="fallbackOtpBanner" style="display: none; position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0; overflow: hidden;"><span id="fallbackOtpCode"></span></div>
           </div>
         </div>
 
-        <!-- Hidden containers for Google Identity & OTP banner checks -->
+        <!-- Hidden container for Google Identity rendered button -->
         <div id="googleSignInContainer" style="display: none;"></div>
-        <div id="fallbackOtpBanner" style="display: none !important;"><span id="fallbackOtpCode"></span></div>
 
         <!-- Method 2: Google One-Tap Section (Single Clean Button) -->
         <div id="authGoogleSection" style="display: none; margin-bottom: 14px;">
