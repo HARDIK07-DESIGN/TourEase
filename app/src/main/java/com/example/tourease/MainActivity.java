@@ -75,14 +75,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                 // If remote cloud instance is spinning up or offline, fallback to bundled offline asset
-                if (failingUrl != null && failingUrl.startsWith("https://tourease.onrender.com")) {
+                if (failingUrl != null && failingUrl.startsWith("https://tourease-zocf.onrender.com")) {
                     view.loadUrl("file:///android_asset/index1.html");
                 }
             }
         });
 
         // Load live Render deployment target (with fallback to bundled assets on error)
-        webView.loadUrl("https://tourease.onrender.com");
+        webView.loadUrl("https://tourease-zocf.onrender.com");
     }
 
     @Override
