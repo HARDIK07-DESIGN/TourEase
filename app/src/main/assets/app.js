@@ -1799,7 +1799,7 @@
             touchZoomRotate: true
           });
 
-          map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+          map.addControl(new mapboxgl.NavigationControl({ showCompass: false, showZoom: true }), 'top-right');
           map.on('load', () => {
             map.resize();
             map.dragPan.enable();
@@ -2312,25 +2312,48 @@
     const conciergeBudgetInput = document.getElementById('conciergeBudgetInput');
     const conciergeDurationInput = document.getElementById('conciergeDurationInput');
     const conciergeTravelersInput = document.getElementById('conciergeTravelersInput');
-    const customTravelersInput = document.getElementById('conciergeCustomTravelersInput');
     const btnGenerate = document.getElementById('btnGenerateConcierge');
     const resultsContainer = document.getElementById('conciergeItineraryResult');
     const timelineContainer = document.getElementById('itineraryTimelineList');
     const itinerarySummaryBadge = document.getElementById('itinerarySummaryBadge');
 
-    if (conciergeTravelersInput) {
-      conciergeTravelersInput.addEventListener('change', () => {
-        if (conciergeTravelersInput.value === 'custom') {
-          if (customTravelersInput) {
-            customTravelersInput.style.display = 'block';
-            customTravelersInput.focus();
+    const travelerPills = document.querySelectorAll('.traveler-quick-pill');
+    function updateTravelerPills(val) {
+      const num = parseInt(val, 10);
+      travelerPills.forEach(p => {
+        const c = p.getAttribute('data-count');
+        if (c === String(num)) {
+          p.classList.add('active');
+        } else if (c === 'custom' && (isNaN(num) || num > 4 || num < 1)) {
+          p.classList.add('active');
+        } else {
+          p.classList.remove('active');
+        }
+      });
+    }
+
+    travelerPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        const c = pill.getAttribute('data-count');
+        if (c === 'custom') {
+          travelerPills.forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          if (conciergeTravelersInput) {
+            conciergeTravelersInput.focus();
+            conciergeTravelersInput.select();
           }
         } else {
-          if (customTravelersInput) {
-            customTravelersInput.style.display = 'none';
-            customTravelersInput.value = conciergeTravelersInput.value;
+          if (conciergeTravelersInput) {
+            conciergeTravelersInput.value = c;
+            updateTravelerPills(c);
           }
         }
+      });
+    });
+
+    if (conciergeTravelersInput) {
+      conciergeTravelersInput.addEventListener('input', () => {
+        updateTravelerPills(conciergeTravelersInput.value);
       });
     }
 
@@ -2384,16 +2407,8 @@
         const rawVal = travelersMatch[1].toLowerCase();
         const count = wordNumberMap[rawVal] || parseInt(rawVal, 10);
         if (!isNaN(count) && count > 0) {
-          if (count >= 1 && count <= 4) {
-            conciergeTravelersInput.value = count.toString();
-            if (customTravelersInput) customTravelersInput.style.display = 'none';
-          } else {
-            conciergeTravelersInput.value = 'custom';
-            if (customTravelersInput) {
-              customTravelersInput.style.display = 'block';
-              customTravelersInput.value = count.toString();
-            }
-          }
+          conciergeTravelersInput.value = count.toString();
+          updateTravelerPills(count.toString());
         }
       }
 
@@ -2454,11 +2469,8 @@
 
         const budgetVal = conciergeBudgetInput ? conciergeBudgetInput.value.trim() : '';
         const durationVal = conciergeDurationInput ? conciergeDurationInput.value.trim() : '';
-        let travelersVal = conciergeTravelersInput ? conciergeTravelersInput.value : '4';
-        if (travelersVal === 'custom') {
-          const customCount = customTravelersInput ? parseInt(customTravelersInput.value, 10) : 4;
-          travelersVal = String(isNaN(customCount) || customCount < 1 ? 4 : customCount);
-        }
+        const parsedTravelers = conciergeTravelersInput ? parseInt(conciergeTravelersInput.value, 10) : 4;
+        const travelersVal = String(isNaN(parsedTravelers) || parsedTravelers < 1 ? 4 : parsedTravelers);
         const promptText = conciergePromptInput ? conciergePromptInput.value.trim() : '';
 
         if (!budgetVal || parseFloat(budgetVal) <= 0 || !durationVal) {
@@ -5897,7 +5909,7 @@
                 center: [lng, lat],
                 zoom: 13
               });
-              publicTrackMap.addControl(new mapboxgl.NavigationControl(), 'top-right');
+              publicTrackMap.addControl(new mapboxgl.NavigationControl({ showCompass: false, showZoom: true }), 'top-right');
             } else {
               publicTrackMap.flyTo({ center: [lng, lat], zoom: 13, essential: true });
             }

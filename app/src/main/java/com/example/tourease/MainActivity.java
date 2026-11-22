@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
             webView = new WebView(this);
             setContentView(webView);
         }
+        webView.clearCache(true);
         WebSettings webSettings = webView.getSettings();
 
         webSettings.setJavaScriptEnabled(true);

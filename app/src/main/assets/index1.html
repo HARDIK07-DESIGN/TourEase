@@ -1136,63 +1136,79 @@
       margin-top: 4px;
     }
 
-    /* Mobile Responsive Polish (max-width: 480px) */
-    @media (max-width: 480px) {
+    /* Mobile Top Bar & Header Polish (max-width: 600px) */
+    @media (max-width: 600px) {
       .android-top-bar {
-        padding: 10px 10px 8px 10px;
-        gap: 6px;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 6px !important;
+        padding: 8px 10px !important;
+        padding-top: calc(8px + env(safe-area-inset-top, 0px)) !important;
       }
       .brand-section {
-        gap: 6px;
-        flex-shrink: 0;
-        white-space: nowrap;
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        flex-shrink: 0 !important;
+        white-space: nowrap !important;
       }
       .brand-icon-wrap {
-        width: 30px;
-        height: 30px;
-        border-radius: 8px;
+        width: 28px !important;
+        height: 28px !important;
+        border-radius: 7px !important;
       }
       .brand-icon-wrap svg {
-        width: 16px;
-        height: 16px;
+        width: 15px !important;
+        height: 15px !important;
       }
       .brand-titles h1 {
-        font-size: 16px;
-        white-space: nowrap;
+        font-size: 15.5px !important;
+        font-weight: 800 !important;
+        white-space: nowrap !important;
+        margin: 0 !important;
+        line-height: 1 !important;
       }
       .brand-titles .subtitle,
       #headerRoleBadge {
         display: none !important;
       }
       .header-actions-group {
-        gap: 5px;
-        flex-shrink: 1;
-        min-width: 0;
+        display: flex !important;
+        align-items: center !important;
+        gap: 5px !important;
+        flex-shrink: 0 !important;
       }
       .role-switcher-btn {
         padding: 5px 8px !important;
         font-size: 11.5px !important;
         gap: 4px !important;
-      }
-      .user-profile-pill-btn {
-        width: 28px;
-        height: 28px;
-        font-size: 11px;
-        flex-shrink: 0;
+        border-radius: 16px !important;
+        white-space: nowrap !important;
+        flex-shrink: 0 !important;
       }
       .btn-track-trip,
       #btnOpenPublicTrackModal {
-        padding: 6px 8px !important;
-        font-size: 11.5px !important;
-        white-space: nowrap;
-        flex-shrink: 0;
+        padding: 5px 8px !important;
+        font-size: 11px !important;
+        white-space: nowrap !important;
+        flex-shrink: 0 !important;
+        border-radius: 16px !important;
       }
       .btn-universal-logout,
       #btnUniversalLogout {
-        padding: 6px 8px !important;
-        font-size: 11.5px !important;
-        white-space: nowrap;
-        flex-shrink: 0;
+        padding: 5px 8px !important;
+        font-size: 11px !important;
+        white-space: nowrap !important;
+        flex-shrink: 0 !important;
+        border-radius: 16px !important;
+      }
+      .user-profile-pill-btn {
+        display: none !important;
+      }
+      .custom-role-popover {
+        right: 0 !important;
+        width: 220px !important;
       }
 
       /* Map Search Bar on Mobile */
@@ -1201,16 +1217,16 @@
         gap: 4px !important;
       }
       .map-search-input {
-        min-width: 60px;
+        min-width: 60px !important;
         font-size: 12px !important;
-        text-overflow: ellipsis;
+        text-overflow: ellipsis !important;
       }
       .map-action-btn,
       .map-toggle-btn {
         padding: 5px 8px !important;
         font-size: 11px !important;
-        white-space: nowrap;
-        flex-shrink: 0;
+        white-space: nowrap !important;
+        flex-shrink: 0 !important;
       }
 
       /* Concierge Total Budget / Duration / Travelers */
@@ -1218,62 +1234,39 @@
         gap: 6px !important;
       }
       .budget-duration-grid .m3-text-input {
-        padding: 9px 6px !important;
+        padding: 8px 6px !important;
         font-size: 12.5px !important;
-      }
-      #conciergeTravelersInput {
-        min-width: 86px;
-        padding: 9px 4px !important;
-        font-size: 12px !important;
       }
     }
 
-    /* Polish for screens <= 420px */
-    @media (max-width: 420px) {
-      .android-top-bar {
-        padding: 8px 8px 6px 8px !important;
-        gap: 4px !important;
-      }
-      .brand-section {
-        gap: 4px !important;
-      }
-      .brand-icon-wrap {
-        width: 26px !important;
-        height: 26px !important;
-        border-radius: 7px !important;
-      }
-      .brand-icon-wrap svg {
-        width: 14px !important;
-        height: 14px !important;
-      }
-      .brand-titles h1 {
-        font-size: 14.5px !important;
-      }
-      .header-actions-group {
-        gap: 4px !important;
-      }
-      .role-switcher-btn {
-        padding: 5px 6px !important;
-        font-size: 11px !important;
-        gap: 3px !important;
-      }
-      .btn-track-trip,
-      #btnOpenPublicTrackModal {
-        padding: 5px 6px !important;
-        font-size: 11px !important;
-      }
-      .btn-universal-logout,
-      #btnUniversalLogout {
-        padding: 5px 6px !important;
-        font-size: 11px !important;
-      }
-      .user-profile-pill-btn {
-        display: none !important;
-      }
-      .custom-role-popover {
-        right: -30px !important;
-        width: 215px !important;
-      }
+    /* Hide compass from Mapbox NavigationControl */
+    .mapboxgl-ctrl-compass {
+      display: none !important;
+    }
+
+    /* Quick Travelers Pills */
+    .traveler-quick-pill {
+      flex: 1;
+      background: #F1F5F9;
+      border: 1px solid #CBD5E1;
+      color: #334155;
+      border-radius: 8px;
+      padding: 7px 2px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+    .traveler-quick-pill:hover {
+      background: #E2E8F0;
+    }
+    .traveler-quick-pill.active {
+      background: #1A73E8;
+      color: #FFFFFF;
+      border-color: #1A73E8;
+      box-shadow: 0 1px 3px rgba(26, 115, 232, 0.3);
     }
 
     /* Stack Pickup & Dropoff on narrow screens */
@@ -1435,16 +1428,16 @@
                   <input type="text" id="conciergeDurationInput" class="m3-text-input" placeholder="e.g. 3 Days" value="3 Days">
                 </div>
                 <div class="m3-input-wrapper" style="margin-bottom: 0;" id="conciergeTravelersWrapper">
-                  <label class="m3-label">Travelers</label>
-                  <div style="display: flex; gap: 4px; align-items: center;">
-                    <select id="conciergeTravelersInput" class="m3-text-input" style="background: #FFFFFF; font-weight: 600; flex: 1; min-width: 80px;">
-                      <option value="1">1 Person</option>
-                      <option value="2">2 People</option>
-                      <option value="3">3 People</option>
-                      <option value="4" selected>4 People</option>
-                      <option value="custom">Custom...</option>
-                    </select>
-                    <input type="number" id="conciergeCustomTravelersInput" class="m3-text-input" min="1" max="100" placeholder="Count" value="4" style="display: none; width: 64px; padding: 10px 4px; font-weight: 700; text-align: center; font-size: 13px;" title="Enter exact number of travelers">
+                  <label class="m3-label">Travelers (People) *</label>
+                  <div style="display: flex; gap: 6px; align-items: center;">
+                    <input type="number" id="conciergeTravelersInput" class="m3-text-input" min="1" max="100" value="4" style="width: 68px; padding: 8px 6px; font-size: 14px; font-weight: 800; text-align: center; color: var(--primary);" placeholder="Count">
+                    <div class="traveler-pills-row" style="display: flex; gap: 4px; flex: 1;">
+                      <button type="button" class="traveler-quick-pill" data-count="1">1</button>
+                      <button type="button" class="traveler-quick-pill" data-count="2">2</button>
+                      <button type="button" class="traveler-quick-pill" data-count="3">3</button>
+                      <button type="button" class="traveler-quick-pill active" data-count="4">4</button>
+                      <button type="button" class="traveler-quick-pill" data-count="custom">Custom</button>
+                    </div>
                   </div>
                 </div>
               </div>
