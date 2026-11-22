@@ -1136,8 +1136,8 @@
       margin-top: 4px;
     }
 
-    /* Mobile Top Bar & Header Polish (max-width: 600px) */
-    @media (max-width: 600px) {
+    /* Mobile Top Bar & Header Polish (max-width: 768px) */
+    @media (max-width: 768px) {
       .android-top-bar {
         display: flex !important;
         align-items: center !important;
@@ -1145,6 +1145,9 @@
         gap: 6px !important;
         padding: 8px 10px !important;
         padding-top: calc(8px + env(safe-area-inset-top, 0px)) !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        position: relative !important;
       }
       .brand-section {
         display: flex !important;
@@ -1157,13 +1160,14 @@
         width: 28px !important;
         height: 28px !important;
         border-radius: 7px !important;
+        flex-shrink: 0 !important;
       }
       .brand-icon-wrap svg {
         width: 15px !important;
         height: 15px !important;
       }
       .brand-titles h1 {
-        font-size: 15.5px !important;
+        font-size: 16px !important;
         font-weight: 800 !important;
         white-space: nowrap !important;
         margin: 0 !important;
@@ -1178,9 +1182,18 @@
         align-items: center !important;
         gap: 5px !important;
         flex-shrink: 0 !important;
+        position: static !important;
+        transform: none !important;
+      }
+      .role-switcher-wrap {
+        position: relative !important;
+        transform: none !important;
+        flex-shrink: 0 !important;
       }
       .role-switcher-btn {
-        padding: 5px 8px !important;
+        position: static !important;
+        transform: none !important;
+        padding: 5px 9px !important;
         font-size: 11.5px !important;
         gap: 4px !important;
         border-radius: 16px !important;
@@ -1190,7 +1203,7 @@
       .btn-track-trip,
       #btnOpenPublicTrackModal {
         padding: 5px 8px !important;
-        font-size: 11px !important;
+        font-size: 11.5px !important;
         white-space: nowrap !important;
         flex-shrink: 0 !important;
         border-radius: 16px !important;
@@ -1198,7 +1211,7 @@
       .btn-universal-logout,
       #btnUniversalLogout {
         padding: 5px 8px !important;
-        font-size: 11px !important;
+        font-size: 11.5px !important;
         white-space: nowrap !important;
         flex-shrink: 0 !important;
         border-radius: 16px !important;
@@ -1207,6 +1220,8 @@
         display: none !important;
       }
       .custom-role-popover {
+        position: absolute !important;
+        top: calc(100% + 6px) !important;
         right: 0 !important;
         width: 220px !important;
       }
@@ -1339,10 +1354,10 @@
             </div>
           </div>
           <button class="user-profile-pill-btn" id="userProfileBtn" title="Account Details">HC</button>
-          <button type="button" class="btn-track-trip" id="btnOpenPublicTrackModal" title="Track Live Trip with TRK Code" style="background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; padding: 6px 10px; border-radius: 18px; font-size: 11.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s;">
+          <button type="button" class="btn-track-trip" id="btnOpenPublicTrackModal" title="Track Live Trip with TRK Code" style="background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; padding: 5px 8px; border-radius: 18px; font-size: 11.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s;">
             🛰️ Track
           </button>
-          <button type="button" class="btn-universal-logout" id="btnUniversalLogout" title="Sign out of TourEase" style="background: #FEE2E2; color: #991B1B; border: 1px solid #FECACA; padding: 6px 10px; border-radius: 18px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s;">
+          <button type="button" class="btn-universal-logout" id="btnUniversalLogout" title="Sign out of TourEase" style="background: #FEE2E2; color: #991B1B; border: 1px solid #FECACA; padding: 5px 8px; border-radius: 18px; font-size: 11.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s;">
             🚪 Logout
           </button>
         </div>
@@ -2217,7 +2232,7 @@
           <option value="2" selected>2 People</option>
           <option value="3">3 People</option>
           <option value="4">4 People</option>
-          <option value="5">5+ Group (Special Van)</option>
+          <option value="5">5 People</option>
         </select>
       </div>
       <div style="display: flex; justify-content: space-between; align-items: center; background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 10px; padding: 12px; margin-bottom: 16px;">
