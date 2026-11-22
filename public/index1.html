@@ -109,63 +109,70 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 16px 16px 12px 16px;
-      padding-top: calc(14px + env(safe-area-inset-top, 0px));
+      padding: 10px 14px;
+      padding-top: calc(10px + env(safe-area-inset-top, 0px));
       background: var(--surface);
       border-bottom: 1px solid var(--border);
       z-index: 100;
       box-shadow: var(--shadow-sm);
+      width: 100%;
+      box-sizing: border-box;
+      gap: 8px;
     }
 
     .brand-section {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       cursor: pointer;
       user-select: none;
+      flex-shrink: 0;
     }
 
     .brand-icon-wrap {
-      width: 34px;
-      height: 34px;
-      border-radius: 9px;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
       background: var(--primary);
       display: flex;
       align-items: center;
       justify-content: center;
       box-shadow: 0 2px 6px rgba(26, 115, 232, 0.3);
+      flex-shrink: 0;
     }
 
     .brand-icon-wrap svg {
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
       fill: #FFFFFF;
     }
 
     .brand-titles h1 {
       margin: 0;
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 800;
       color: var(--text-main);
-      line-height: 1.1;
+      line-height: 1;
+      white-space: nowrap;
+      letter-spacing: -0.02em;
     }
 
-    .brand-titles .subtitle {
-      font-size: 10px;
-      color: var(--text-muted);
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
+    .brand-titles .subtitle,
+    #headerRoleBadge {
+      display: none !important;
     }
 
     .header-actions-group {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 6px;
+      flex-shrink: 0;
+      margin-left: auto;
     }
 
     .role-switcher-wrap {
       position: relative;
+      flex-shrink: 0;
     }
 
     .role-switcher-btn {
@@ -173,18 +180,72 @@
       -webkit-appearance: none;
       background: var(--surface-subtle);
       border: 1px solid var(--border-input);
-      padding: 6px 10px;
+      padding: 5px 9px;
       border-radius: var(--radius-pill);
-      font-size: 12px;
-      font-weight: 600;
+      font-size: 11.5px;
+      font-weight: 700;
       color: var(--text-main);
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
       transition: var(--transition);
       font-family: inherit;
       user-select: none;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .btn-track-trip,
+    #btnOpenPublicTrackModal {
+      appearance: none;
+      -webkit-appearance: none;
+      background: #EFF6FF;
+      border: 1px solid #BFDBFE;
+      padding: 5px 9px;
+      border-radius: var(--radius-pill);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #1D4ED8;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: var(--transition);
+      font-family: inherit;
+      user-select: none;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .btn-track-trip:hover,
+    #btnOpenPublicTrackModal:hover {
+      background: #DBEAFE;
+    }
+
+    .btn-universal-logout,
+    #btnUniversalLogout {
+      appearance: none;
+      -webkit-appearance: none;
+      background: #FEF2F2;
+      border: 1px solid #FECACA;
+      padding: 5px 9px;
+      border-radius: var(--radius-pill);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #DC2626;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: var(--transition);
+      font-family: inherit;
+      user-select: none;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .btn-universal-logout:hover,
+    #btnUniversalLogout:hover {
+      background: #FEE2E2;
     }
 
     .role-switcher-btn:hover {
@@ -1187,6 +1248,7 @@
         flex-shrink: 0 !important;
         position: static !important;
         transform: none !important;
+        margin-left: auto !important;
       }
       .role-switcher-wrap {
         position: relative !important;
@@ -1196,7 +1258,7 @@
       .role-switcher-btn {
         position: static !important;
         transform: none !important;
-        padding: 5px 9px !important;
+        padding: 5px 8px !important;
         font-size: 11.5px !important;
         gap: 4px !important;
         border-radius: 16px !important;
@@ -1227,6 +1289,33 @@
         top: calc(100% + 6px) !important;
         right: 0 !important;
         width: 220px !important;
+      }
+
+      /* Map Search Bar on Mobile */
+      .map-search-bar {
+        padding: 4px 8px !important;
+        gap: 4px !important;
+      }
+      .map-search-input {
+        min-width: 60px !important;
+        font-size: 12px !important;
+        text-overflow: ellipsis !important;
+      }
+      .map-action-btn,
+      .map-toggle-btn {
+        padding: 5px 8px !important;
+        font-size: 11px !important;
+        white-space: nowrap !important;
+        flex-shrink: 0 !important;
+      }
+
+      /* Concierge Total Budget / Duration / Travelers */
+      .budget-duration-grid {
+        gap: 6px !important;
+      }
+      .budget-duration-grid .m3-text-input {
+        padding: 8px 6px !important;
+        font-size: 12.5px !important;
       }
     }
 
@@ -1261,31 +1350,24 @@
       }
     }
 
-      /* Map Search Bar on Mobile */
-      .map-search-bar {
-        padding: 4px 8px !important;
-        gap: 4px !important;
+    @media (max-width: 360px) {
+      .btn-text,
+      .btn-track-trip .btn-text,
+      #btnOpenPublicTrackModal .btn-text,
+      .btn-universal-logout .btn-text,
+      #btnUniversalLogout .btn-text {
+        display: none !important;
       }
-      .map-search-input {
-        min-width: 60px !important;
-        font-size: 12px !important;
-        text-overflow: ellipsis !important;
+      .btn-track-trip,
+      #btnOpenPublicTrackModal,
+      .btn-universal-logout,
+      #btnUniversalLogout {
+        padding: 4px 7px !important;
+        font-size: 13px !important;
       }
-      .map-action-btn,
-      .map-toggle-btn {
-        padding: 5px 8px !important;
-        font-size: 11px !important;
-        white-space: nowrap !important;
-        flex-shrink: 0 !important;
-      }
-
-      /* Concierge Total Budget / Duration / Travelers */
-      .budget-duration-grid {
-        gap: 6px !important;
-      }
-      .budget-duration-grid .m3-text-input {
-        padding: 8px 6px !important;
-        font-size: 12.5px !important;
+      .role-switcher-btn {
+        padding: 4px 6px !important;
+        font-size: 10.5px !important;
       }
     }
 
@@ -1347,7 +1429,7 @@
             </svg></div>
           <div class="brand-titles">
             <h1>TourEase</h1>
-            <span class="subtitle" id="headerRoleBadge">Traveler</span>
+            <span id="headerRoleBadge" style="display: none !important;"></span>
           </div>
         </div>
 
@@ -1389,11 +1471,13 @@
             </div>
           </div>
           <button class="user-profile-pill-btn" id="userProfileBtn" title="Account Details">HC</button>
-          <button type="button" class="btn-track-trip" id="btnOpenPublicTrackModal" title="Track Live Trip with TRK Code" style="background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; padding: 5px 8px; border-radius: 18px; font-size: 11.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s;">
-            🛰️ Track
+          <button type="button" class="btn-track-trip" id="btnOpenPublicTrackModal" title="Track Live Trip with TRK Code">
+            <span class="btn-icon">🛰️</span>
+            <span class="btn-text">Track</span>
           </button>
-          <button type="button" class="btn-universal-logout" id="btnUniversalLogout" title="Sign out of TourEase" style="background: #FEE2E2; color: #991B1B; border: 1px solid #FECACA; padding: 5px 8px; border-radius: 18px; font-size: 11.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s;">
-            🚪 Logout
+          <button type="button" class="btn-universal-logout" id="btnUniversalLogout" title="Sign out of TourEase">
+            <span class="btn-icon">🚪</span>
+            <span class="btn-text">Logout</span>
           </button>
         </div>
       </header>
