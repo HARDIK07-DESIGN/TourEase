@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TourEase Operations & Admin Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.1.2/mapbox-gl.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.1.2/mapbox-gl.js"></script>
+  <style>
+    :root {
+      --bg: #F4F6F9;
+      --surface: #FFFFFF;
+      --primary: #1A73E8;
+      --primary-hover: #1557B0;
+      --primary-light: #E8F0FE;
+      --text: #1E293B;
+      --text-muted: #64748B;
+      --border: #E2E8F0;
+      --success: #059669;
+      --success-light: #ECFDF5;
+      --danger: #DC2626;
+      --danger-light: #FEF2F2;
+      --warning: #D97706;
+      --warning-light: #FFFBEB;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+      --shadow-lg: 0 10px 25px -5px rgba(15, 23, 42, 0.1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Admin Top Navigation */
+    .admin-nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      background: var(--primary);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 18px;
+      font-weight: 800;
+    }
+    .brand-title h1 {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .admin-pill {
+      font-size: 11px;
+      font-weight: 700;
+      background: #7C3AED;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .admin-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--success);
+      background: var(--success-light);
+      padding: 5px 12px;
+      border-radius: 20px;
+      border: 1px solid #A7F3D0;
+    }
+    .btn-lock {
+      background: var(--danger-light);
+      color: var(--danger);
+      border: 1px solid #FCA5A5;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-lock:hover {
+      background: #FEE2E2;
+    }
+
+    /* Tabs Bar */
+    .admin-tabs-bar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+    }
+    .admin-tab-btn {
+      padding: 12px 18px;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      border: none;
+      background: none;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .admin-tab-btn:hover {
+      color: var(--primary);
+    }
+    .admin-tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+    .tab-counter {
+      background: #EF4444;
+      color: white;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 12px;
+    }
+
+    /* Main Container */
+    .admin-main {
+      max-width: 1200px;
+      width: 100%;
+      margin: 24px auto;
+      padding: 0 20px;
+      flex: 1;
+    }
+    .admin-section {
+      display: none;
+    }
+    .admin-section.active {
+      display: block;
+    }
+
+    /* Section Header */
+    .section-header {
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .section-header h2 {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .section-header p {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* KPI Cards */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+    .kpi-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    .kpi-value {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .kpi-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Tables & Cards */
+    .card-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+    th {
+      background: #F8FAFC;
+      color: #475569;
+      font-weight: 700;
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      vertical-align: middle;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    tr:hover td {
+      background: #F8FAFC;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+    .badge-success { background: var(--success-light); color: var(--success); }
+    .badge-danger { background: var(--danger-light); color: var(--danger); }
+    .badge-warning { background: var(--warning-light); color: var(--warning); }
+    .badge-primary { background: var(--primary-light); color: var(--primary); }
+
+    /* Action Buttons */
+    .btn-action-primary {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-action-primary:hover {
+      background: var(--primary-hover);
+    }
+    .btn-action-danger {
+      background: var(--danger-light);
+      color: var(--danger);
+      border: 1px solid #FCA5A5;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-action-danger:hover {
+      background: #FEE2E2;
+    }
+    .btn-refresh {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Lock Gate Modal */
+    .gate-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(6px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .gate-card {
+      background: var(--surface);
+      max-width: 420px;
+      width: 100%;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+    .gate-icon {
+      width: 56px;
+      height: 56px;
+      background: var(--primary-light);
+      color: var(--primary);
+      border-radius: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      margin-bottom: 16px;
+    }
+    .gate-card h2 {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .gate-card p {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+    .gate-input {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 14px;
+      font-family: 'JetBrains Mono', monospace;
+      text-align: center;
+      outline: none;
+    }
+    .gate-input:focus {
+      border-color: var(--primary);
+    }
+    .btn-gate-submit {
+      width: 100%;
+      padding: 12px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .gate-error {
+      color: var(--danger);
+      font-size: 12.5px;
+      margin-top: 10px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Admin Gate Modal (Shown if unauthorized) -->
+  <div class="gate-overlay" id="adminGateModal" style="display: none;">
+    <div class="gate-card">
+      <div class="gate-icon">🛡️</div>
+      <h2>TourEase Admin Gate</h2>
+      <p>Enter the master Administrator Secret Key to manage community packages, fleet safety, and audit logs.</p>
+      <input type="password" id="gateKeyInput" class="gate-input" placeholder="Enter ADMIN_SECRET_KEY" autocomplete="current-password">
+      <button type="button" id="btnGateLogin" class="btn-gate-submit">Authenticate as Admin →</button>
+      <div id="gateErrorText" class="gate-error">Invalid Secret Key. Access denied.</div>
+    </div>
+  </div>
+
+  <!-- Top Navigation Header -->
+  <header class="admin-nav">
+    <div class="brand-wrap">
+      <div class="brand-logo">TE</div>
+      <div class="brand-title">
+        <h1>TourEase <span class="admin-pill">Admin & Operations</span></h1>
+      </div>
+    </div>
+    <div class="admin-meta">
+      <div class="status-badge">
+        <span style="font-size: 10px;">🟢</span> Live PostgreSQL
+      </div>
+      <button type="button" class="btn-lock" id="btnAdminLogout" title="Lock Admin Portal">
+        🔒 Lock Portal
+      </button>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="admin-tabs-bar">
+    <button type="button" class="admin-tab-btn active" data-tab="tab-packages" id="tabBtnPackages">
+      📦 Package Moderation <span class="tab-counter" id="badgePendingPackages" style="display: none;">0</span>
+    </button>
+    <button type="button" class="admin-tab-btn" data-tab="tab-partners" id="tabBtnPartners">
+      🤝 Partner Onboarding
+    </button>
+    <button type="button" class="admin-tab-btn" data-tab="tab-vehicles" id="tabBtnVehicles">
+      📋 Vehicle Verification
+    </button>
+    <button type="button" class="admin-tab-btn" data-tab="tab-fleet" id="tabBtnFleet">
+      🚗 Fleet Safety & Compliance
+    </button>
+    <button type="button" class="admin-tab-btn" data-tab="tab-users" id="tabBtnUsers">
+      👥 User Governance
+    </button>
+    <button type="button" class="admin-tab-btn" data-tab="tab-live-track" id="tabBtnLiveTrack">
+      🛰️ Live TRK GPS Tracking
+    </button>
+    <button type="button" class="admin-tab-btn" data-tab="tab-financials" id="tabBtnFinancials">
+      💰 Platform Financials
+    </button>
+    <button type="button" class="admin-tab-btn" data-tab="tab-audit" id="tabBtnAudit">
+      🛡️ Auth Audit Logs
+    </button>
+  </nav>
+
+  <!-- Main Content Area -->
+  <main class="admin-main">
+
+    <!-- 1. AI Community Package Moderation Tab -->
+    <section class="admin-section active" id="tab-packages">
+      <div class="section-header">
+        <div>
+          <h2>Community AI Package Moderation</h2>
+          <p>Review customer-generated itineraries. Approving publishes them directly into the public Tour Catalog.</p>
+        </div>
+        <button type="button" class="btn-refresh" onclick="loadPendingPackages()">🔄 Refresh Queue</button>
+      </div>
+
+      <div id="packagesContainer" style="display: flex; flex-direction: column; gap: 14px;">
+        <!-- Dynamic list of pending packages -->
+      </div>
+    </section>
+
+    <!-- 2. Fleet Safety & Compliance Tab -->
+    <section class="admin-section" id="tab-fleet">
+      <div class="section-header">
+        <div>
+          <h2>Fleet Safety & 5-Year Age Compliance</h2>
+          <p>Enforce commercial safety guidelines. Vehicles older than 5 years are flagged for review or mandatory de-listing.</p>
+        </div>
+        <button type="button" class="btn-refresh" onclick="loadFleetCompliance()">🔄 Refresh Fleet</button>
+      </div>
+
+      <div class="card-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Vehicle ID</th>
+              <th>Model</th>
+              <th>Reg Plate</th>
+              <th>Year</th>
+              <th>Age</th>
+              <th>Safety Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="fleetTableBody">
+            <!-- Dynamic rows -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 3. Platform Financials Tab -->
+    <section class="admin-section" id="tab-financials">
+      <div class="section-header">
+        <div>
+          <h2>Platform Revenue & Partner Commissions</h2>
+          <p>Overview of Gross Merchandise Value (GMV) and silent backend platform commission retainers.</p>
+        </div>
+        <button type="button" class="btn-refresh" onclick="loadFinancials()">🔄 Refresh Financials</button>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-title">Gross Booking Volume</div>
+          <div class="kpi-value" id="kpiGrossGmv">₹ 0</div>
+          <div class="kpi-sub">Total customer booking transactions</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-title">Net Platform Retained</div>
+          <div class="kpi-value" id="kpiNetRevenue" style="color: var(--primary);">₹ 0</div>
+          <div class="kpi-sub">Combined platform maintenance cuts</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-title">City Cabs (8%)</div>
+          <div class="kpi-value" id="kpiCabCut" style="font-size: 20px;">₹ 0</div>
+          <div class="kpi-sub">Driver wallet deductions</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-title">Self-Drive Rentals (30%)</div>
+          <div class="kpi-value" id="kpiRentalCut" style="font-size: 20px;">₹ 0</div>
+          <div class="kpi-sub">Vendor fleet reservations</div>
+        </div>
+      </div>
+
+      <div class="card-wrap">
+        <div style="padding: 16px; border-bottom: 1px solid var(--border); font-weight: 700;">
+          Recent Platform Transactions
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Role</th>
+              <th>Transaction Label</th>
+              <th>Gross Amount</th>
+              <th>Platform Cut</th>
+              <th>Net Credited</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="financialsTableBody">
+            <!-- Dynamic rows -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 4. Security & Auth Audit Logs Tab -->
+    <section class="admin-section" id="tab-audit">
+      <div class="section-header">
+        <div>
+          <h2>Authentication & Security Audit Logs</h2>
+          <p>Immutable PostgreSQL audit trail of all customer and partner logins and logouts with client IP tracking.</p>
+        </div>
+        <button type="button" class="btn-refresh" onclick="loadAuditLogs()">🔄 Refresh Logs</button>
+      </div>
+
+      <div class="card-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Timestamp (IST)</th>
+              <th>User Email</th>
+              <th>Role</th>
+              <th>Auth Method</th>
+              <th>Action</th>
+              <th>IP Address</th>
+            </tr>
+          </thead>
+          <tbody id="auditTableBody">
+            <!-- Dynamic rows -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 5. Partner Onboarding & KYC Approvals Tab -->
+    <section class="admin-section" id="tab-partners">
+      <div class="section-header">
+        <div>
+          <h2>Partner Onboarding & KYC Approvals</h2>
+          <p>Review Chauffeurs (Cab Owners) and Rental Vendors. Verify driver license, vehicle RC, bank account, and car photo before approving.</p>
+        </div>
+        <button type="button" class="btn-refresh" onclick="loadPartnerProfiles()">🔄 Refresh Partners</button>
+      </div>
+
+      <div id="partnersContainer" style="display: flex; flex-direction: column; gap: 16px;">
+        <!-- Dynamic partner KYC cards -->
+      </div>
+    </section>
+
+    <!-- 6. Per-Vehicle Document Verification Tab -->
+    <section class="admin-section" id="tab-vehicles">
+      <div class="section-header">
+        <div>
+          <h2>Per-Vehicle Document Verification</h2>
+          <p>Commercial registration and insurance validation. Vehicles remain PENDING until approved by Administrator.</p>
+        </div>
+        <button type="button" class="btn-refresh" onclick="loadPendingVehicleVerifications()">🔄 Refresh Queue</button>
+      </div>
+
+      <div class="card-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Vehicle ID</th>
+              <th>Model</th>
+              <th>Plate No</th>
+              <th>Year</th>
+              <th>Daily Rate</th>
+              <th>Verification Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="vehicleVerifyTableBody">
+            <!-- Dynamic rows -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 7. User Governance & Security Management Tab -->
+    <section class="admin-section" id="tab-users">
+      <div class="section-header">
+        <div>
+          <h2>User Governance & Security Management</h2>
+          <p>Directory of registered platform users. Review status, temporarily suspend abusive users, or remove profiles.</p>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <input type="text" id="userFilterInput" placeholder="Filter by email or name..." style="padding: 7px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; outline: none; width: 220px;" oninput="filterUserTable()">
+          <button type="button" class="btn-refresh" onclick="loadUserGovernance()">🔄 Refresh Users</button>
+        </div>
+      </div>
+
+      <div class="card-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Auth Provider</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="userTableBody">
+            <!-- Dynamic rows -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 8. Live TRK Fleet GPS Tracking Tab -->
+    <section class="admin-section" id="tab-live-track">
+      <div class="section-header">
+        <div>
+          <h2>Live Fleet & Passenger GPS Tracking Console</h2>
+          <p>Real-time Mapbox telemetry for active rides, self-drive rentals, and tour expeditions across India.</p>
+        </div>
+      </div>
+
+      <div class="card-wrap" style="padding: 18px; margin-bottom: 20px;">
+        <label style="font-size: 11.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 6px;">Lookup Active Trip by Tracking Code (TRK-XXXX / CAB-XXXX)</label>
+        <div style="display: flex; gap: 10px; max-width: 500px; margin-bottom: 12px;">
+          <input type="text" id="adminTrkInput" placeholder="e.g. TRK-4821 or CAB-7891" style="flex: 1; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 14px; font-family: 'JetBrains Mono', monospace; text-transform: uppercase; font-weight: 700; outline: none;">
+          <button type="button" class="btn-action-primary" id="btnAdminTrackSubmit" onclick="submitAdminTrack()">🛰️ Locate Vehicle</button>
+        </div>
+
+        <div id="adminTrackResultCard" style="display: none; background: #F8FAFC; border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-top: 10px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <strong id="adminTrackTitle" style="font-size: 15px; color: var(--text);">Mahakaleshwar to Freeganj</strong>
+            <span id="adminTrackStatus" class="badge badge-success">IN_TRANSIT</span>
+          </div>
+          <div id="adminTrackSubtitle" style="font-size: 13px; color: var(--text-muted);">Vehicle: Dzire (MP-09-CB-4491) • Driver: Ramesh Verma</div>
+          <div id="adminTrackMeta" style="font-size: 12px; color: var(--primary); margin-top: 6px; font-weight: 600;">Fare: ₹ 240.00 • Coordinates: 75.7682, 23.1824</div>
+        </div>
+      </div>
+
+      <div class="card-wrap" style="height: 480px; position: relative;">
+        <div id="adminLiveTrackingMap" style="width: 100%; height: 100%; border-radius: var(--radius); background: #E2E8F0;"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    const STORAGE_KEY = 'tourease_admin_key';
+    let adminKey = sessionStorage.getItem(STORAGE_KEY) || '';
+
+    // Relative Routing API Helper
+    function getAdminHeaders() {
+      return {
+        'Content-Type': 'application/json',
+        'x-admin-key': adminKey
+      };
+    }
+
+    // Gate & Auth Handler
+    const gateModal = document.getElementById('adminGateModal');
+    const gateKeyInput = document.getElementById('gateKeyInput');
+    const btnGateLogin = document.getElementById('btnGateLogin');
+    const gateErrorText = document.getElementById('gateErrorText');
+    const btnAdminLogout = document.getElementById('btnAdminLogout');
+
+    async function verifyAndUnlock(keyToTest) {
+      if (!keyToTest) {
+        showGate();
+        return;
+      }
+      try {
+        const resp = await fetch('/api/admin/verify-key', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ admin_key: keyToTest })
+        });
+        if (resp.ok) {
+          adminKey = keyToTest;
+          sessionStorage.setItem(STORAGE_KEY, adminKey);
+          gateModal.style.display = 'none';
+          gateErrorText.style.display = 'none';
+          loadActiveTabData();
+        } else {
+          showGate('Invalid Admin Secret Key. Access denied.');
+        }
+      } catch (err) {
+        showGate('Unable to connect to backend server: ' + err.message);
+      }
+    }
+
+    function showGate(errMsg) {
+      gateModal.style.display = 'flex';
+      if (errMsg) {
+        gateErrorText.textContent = errMsg;
+        gateErrorText.style.display = 'block';
+      } else {
+        gateErrorText.style.display = 'none';
+      }
+      if (gateKeyInput) gateKeyInput.focus();
+    }
+
+    if (btnGateLogin) {
+      btnGateLogin.addEventListener('click', () => {
+        const key = (gateKeyInput.value || '').trim();
+        verifyAndUnlock(key);
+      });
+    }
+
+    if (gateKeyInput) {
+      gateKeyInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') btnGateLogin.click();
+      });
+    }
+
+    if (btnAdminLogout) {
+      btnAdminLogout.addEventListener('click', () => {
+        sessionStorage.removeItem(STORAGE_KEY);
+        adminKey = '';
+        showGate('Admin portal locked. Re-authenticate to access.');
+      });
+    }
+
+    // Tab Navigation
+    const tabBtns = document.querySelectorAll('.admin-tab-btn');
+    const tabSections = document.querySelectorAll('.admin-section');
+    let activeTabId = 'tab-packages';
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.getAttribute('data-tab');
+        activeTabId = target;
+        tabBtns.forEach(b => b.classList.remove('active'));
+        tabSections.forEach(s => s.classList.remove('active'));
+        btn.classList.add('active');
+        const activeSection = document.getElementById(target);
+        if (activeSection) activeSection.classList.add('active');
+        loadActiveTabData();
+      });
+    });
+
+    function loadActiveTabData() {
+      if (!adminKey) return;
+      if (activeTabId === 'tab-packages') loadPendingPackages();
+      else if (activeTabId === 'tab-partners') loadPartnerProfiles();
+      else if (activeTabId === 'tab-vehicles') loadPendingVehicleVerifications();
+      else if (activeTabId === 'tab-fleet') loadFleetCompliance();
+      else if (activeTabId === 'tab-users') loadUserGovernance();
+      else if (activeTabId === 'tab-live-track') loadLiveTrackViewer();
+      else if (activeTabId === 'tab-financials') loadFinancials();
+      else if (activeTabId === 'tab-audit') loadAuditLogs();
+    }
+
+    // 1. Pending Package Moderation
+    async function loadPendingPackages() {
+      const container = document.getElementById('packagesContainer');
+      const badge = document.getElementById('badgePendingPackages');
+      if (!container) return;
+      container.innerHTML = '<div style="padding: 24px; text-align: center; color: #64748B;">Loading pending itineraries...</div>';
+
+      try {
+        const resp = await fetch('/api/admin/packages', { headers: getAdminHeaders() });
+        if (resp.status === 401) return showGate('Session expired. Please re-enter Admin Key.');
+        const data = await resp.json();
+        const packages = data.packages || [];
+
+        if (badge) {
+          if (packages.length > 0) {
+            badge.textContent = packages.length;
+            badge.style.display = 'inline-block';
+          } else {
+            badge.style.display = 'none';
+          }
+        }
+
+        if (packages.length === 0) {
+          container.innerHTML = `
+            <div style="background: white; border: 1px dashed var(--border); border-radius: var(--radius); padding: 40px 20px; text-align: center; color: var(--text-muted);">
+              <div style="font-size: 32px; margin-bottom: 8px;">🎉</div>
+              <strong style="font-size: 16px; color: var(--text); display: block;">Queue is completely clear!</strong>
+              <p style="font-size: 13px; margin-top: 4px;">Zero user-submitted custom AI packages awaiting moderation.</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = packages.map(pkg => `
+          <div style="background: white; border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+              <div>
+                <strong style="font-size: 16px; color: var(--text);">${escapeHtml(pkg.title)}</strong>
+                <div style="font-size: 12.5px; color: var(--text-muted); margin-top: 2px;">
+                  ${escapeHtml(pkg.route_summary || '')} • Duration: <strong>${pkg.duration_days} Days</strong>
+                </div>
+              </div>
+              <span style="font-size: 16px; font-weight: 800; color: var(--primary);">₹ ${Number(pkg.budget || 0).toLocaleString('en-IN')}</span>
+            </div>
+            <div style="background: #F8FAFC; border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin: 12px 0; font-size: 13px; color: #334155; line-height: 1.5;">
+              ${escapeHtml(typeof pkg.itinerary_json === 'string' ? pkg.itinerary_json.slice(0, 200) : JSON.stringify(pkg.itinerary_json || {}).slice(0, 200))}...
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+              <button type="button" class="btn-action-primary" onclick="approvePackage(${pkg.id})">✓ Approve & Publish</button>
+              <button type="button" class="btn-action-danger" onclick="rejectPackage(${pkg.id})">✕ Reject</button>
+            </div>
+          </div>
+        `).join('');
+      } catch (err) {
+        container.innerHTML = `<div style="padding: 20px; color: var(--danger);">Failed to load packages: ${err.message}</div>`;
+      }
+    }
+
+    async function approvePackage(id) {
+      if (!confirm('Approve this AI package and publish to public catalog?')) return;
+      try {
+        const resp = await fetch(`/api/admin/packages/${id}/approve`, {
+          method: 'POST',
+          headers: getAdminHeaders()
+        });
+        const d = await resp.json();
+        if (d.success) {
+          alert('Package approved and published!');
+          loadPendingPackages();
+        } else {
+          alert('Failed to approve: ' + (d.error || 'Server error'));
+        }
+      } catch (e) {
+        alert('Network error: ' + e.message);
+      }
+    }
+
+    async function rejectPackage(id) {
+      if (!confirm('Discard this package submission?')) return;
+      try {
+        const resp = await fetch(`/api/admin/packages/${id}/reject`, {
+          method: 'POST',
+          headers: getAdminHeaders()
+        });
+        const d = await resp.json();
+        if (d.success) {
+          loadPendingPackages();
+        } else {
+          alert('Failed to reject: ' + (d.error || 'Server error'));
+        }
+      } catch (e) {
+        alert('Network error: ' + e.message);
+      }
+    }
+
+    // 2. Fleet Safety & Compliance
+    async function loadFleetCompliance() {
+      const tbody = document.getElementById('fleetTableBody');
+      if (!tbody) return;
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #64748B;">Checking fleet compliance...</td></tr>';
+
+      try {
+        const resp = await fetch('/api/admin/compliance', { headers: getAdminHeaders() });
+        if (resp.status === 401) return showGate();
+        const data = await resp.json();
+        const fleet = data.fleet || [];
+
+        if (fleet.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #64748B;">No vehicles listed in rental fleet.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = fleet.map(car => `
+          <tr style="${car.is_compliant ? '' : 'background: #FEF2F2;'}">
+            <td><code>${escapeHtml(car.id)}</code></td>
+            <td><strong>${escapeHtml(car.model)}</strong></td>
+            <td><code>${escapeHtml(car.reg_number || 'N/A')}</code></td>
+            <td>${car.year}</td>
+            <td>${car.age} yrs</td>
+            <td>
+              ${car.is_compliant 
+                ? '<span class="badge badge-success">✓ Compliant</span>' 
+                : `<span class="badge badge-danger">⚠️ ${escapeHtml(car.violation_reason)}</span>`}
+            </td>
+            <td>
+              <button type="button" class="btn-action-danger" onclick="delistVehicle('${car.id}')">De-list</button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="7" style="color: var(--danger);">Failed to load fleet: ${err.message}</td></tr>`;
+      }
+    }
+
+    async function delistVehicle(carId) {
+      if (!confirm(`Are you sure you want to de-list vehicle ${carId}?`)) return;
+      try {
+        const resp = await fetch(`/api/admin/vehicles/${encodeURIComponent(carId)}/delist`, {
+          method: 'POST',
+          headers: getAdminHeaders()
+        });
+        const d = await resp.json();
+        if (d.success) {
+          alert('Vehicle de-listed successfully.');
+          loadFleetCompliance();
+        } else {
+          alert('De-list failed: ' + (d.error || 'Server error'));
+        }
+      } catch (e) {
+        alert('Network error: ' + e.message);
+      }
+    }
+
+    // 3. Platform Financials
+    async function loadFinancials() {
+      const tbody = document.getElementById('financialsTableBody');
+      try {
+        const resp = await fetch('/api/admin/financials', { headers: getAdminHeaders() });
+        if (resp.status === 401) return showGate();
+        const data = await resp.json();
+        const summary = data.summary || {};
+        const txs = data.transactions || [];
+
+        document.getElementById('kpiGrossGmv').textContent = `₹ ${(summary.total_gmv || 0).toLocaleString('en-IN')}`;
+        document.getElementById('kpiNetRevenue').textContent = `₹ ${(summary.total_platform_revenue || 0).toLocaleString('en-IN')}`;
+        document.getElementById('kpiCabCut').textContent = `₹ ${(summary.breakdown?.cab_commission_8pct || 0).toLocaleString('en-IN')}`;
+        document.getElementById('kpiRentalCut').textContent = `₹ ${(summary.breakdown?.rental_commission_30pct || 0).toLocaleString('en-IN')}`;
+
+        if (txs.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #64748B;">No transactions recorded.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = txs.map(t => `
+          <tr>
+            <td><code>#${t.id}</code></td>
+            <td><span class="badge badge-primary">${escapeHtml(t.role)}</span></td>
+            <td>${escapeHtml(t.label || t.tx_type)}</td>
+            <td>₹ ${Number(t.gross_amount || 0).toLocaleString('en-IN')}</td>
+            <td style="color: var(--success); font-weight: 700;">+₹ ${Number(t.commission_amount || 0).toLocaleString('en-IN')}</td>
+            <td style="color: #2563EB; font-weight: 700;">₹ ${Number(t.net_amount || 0).toLocaleString('en-IN')}</td>
+            <td>${new Date(t.created_at).toLocaleString('en-IN')}</td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="7" style="color: var(--danger);">Failed to load financials: ${err.message}</td></tr>`;
+      }
+    }
+
+    // 4. Security & Auth Audit Logs
+    async function loadAuditLogs() {
+      const tbody = document.getElementById('auditTableBody');
+      if (!tbody) return;
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #64748B;">Fetching PostgreSQL audit logs...</td></tr>';
+
+      try {
+        const resp = await fetch('/api/admin/audit-logs', { headers: getAdminHeaders() });
+        if (resp.status === 401) return showGate();
+        const data = await resp.json();
+        const logs = data.logs || [];
+
+        if (logs.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #64748B;">No audit log records yet.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = logs.map(l => `
+          <tr>
+            <td><code>#${l.id}</code></td>
+            <td>${new Date(l.created_at).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} IST</td>
+            <td><strong>${escapeHtml(l.user_email || 'anonymous')}</strong></td>
+            <td><span class="badge badge-primary">${escapeHtml((l.role || 'traveler').toUpperCase())}</span></td>
+            <td><code>${escapeHtml(l.auth_method || 'session')}</code></td>
+            <td>
+              ${l.action === 'LOGIN' 
+                ? '<span class="badge badge-success">✓ LOGIN</span>' 
+                : '<span class="badge badge-warning">🚪 LOGOUT</span>'}
+            </td>
+            <td><code>${escapeHtml(l.ip_address || '127.0.0.1')}</code></td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="7" style="color: var(--danger);">Failed to load audit logs: ${err.message}</td></tr>`;
+      }
+    }
+
+    // 5. Partner Onboarding & KYC Approvals
+    async function loadPartnerProfiles() {
+      const container = document.getElementById('partnersContainer');
+      if (!container) return;
+      container.innerHTML = '<div style="padding: 24px; text-align: center; color: #64748B;">Fetching partner KYC submissions...</div>';
+
+      try {
+        const resp = await fetch('/api/admin/partners', { headers: getAdminHeaders() });
+        if (resp.status === 401) return showGate();
+        const data = await resp.json();
+        const partners = data.partners || [];
+
+        if (partners.length === 0) {
+          container.innerHTML = '<div style="padding: 24px; text-align: center; color: #64748B; background: white; border-radius: 12px; border: 1px solid var(--border);">No partner KYC profiles found.</div>';
+          return;
+        }
+
+        container.innerHTML = partners.map(p => `
+          <div style="background: white; border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+              <div>
+                <span class="badge badge-primary" style="text-transform: uppercase;">${escapeHtml(p.role)}</span>
+                <strong style="font-size: 16px; color: var(--text); display: block; margin-top: 4px;">${escapeHtml(p.driver_name || 'Partner Profile')}</strong>
+                <div style="font-size: 12.5px; color: var(--text-muted);">Contact: ${escapeHtml(p.phone || 'N/A')}</div>
+              </div>
+              <div>
+                ${p.verified 
+                  ? '<span class="badge badge-success">✓ APPROVED</span>' 
+                  : '<span class="badge badge-warning">⏳ PENDING REVIEW</span>'}
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; background: #F8FAFC; border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 14px; font-size: 12.5px;">
+              <div><strong>License / Reg No:</strong><br><code>${escapeHtml(p.dl_number || 'N/A')}</code></div>
+              <div><strong>Vehicle Details:</strong><br>${escapeHtml(p.car_model || 'Standard')} (<code>${escapeHtml(p.plate_number || 'N/A')}</code>)</div>
+              <div><strong>Bank Account:</strong><br><code>${escapeHtml(p.bank_account || 'SBI-***4921')}</code></div>
+              <div><strong>IFSC Code:</strong><br><code>${escapeHtml(p.ifsc_code || 'SBIN0004921')}</code></div>
+            </div>
+
+            ${p.vehicle_photo ? `
+              <div style="margin-bottom: 14px;">
+                <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 4px;">Vehicle / Partner Photo Proof</span>
+                <img src="${p.vehicle_photo}" alt="Partner Proof" style="max-height: 120px; border-radius: 8px; border: 1px solid var(--border); object-fit: cover;">
+              </div>
+            ` : ''}
+
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+              <button type="button" class="btn-action-primary" onclick="approvePartner('${p.role}')">✓ Approve Partner Onboarding</button>
+              <button type="button" class="btn-action-danger" onclick="rejectPartner('${p.role}')">✕ Reject KYC</button>
+            </div>
+          </div>
+        `).join('');
+      } catch (err) {
+        container.innerHTML = `<div style="padding: 20px; color: var(--danger);">Failed to load partners: ${err.message}</div>`;
+      }
+    }
+
+    async function approvePartner(role) {
+      if (!confirm(`Approve KYC and onboarding for partner role "${role}"?`)) return;
+      try {
+        const resp = await fetch(`/api/admin/partners/${encodeURIComponent(role)}/approve`, {
+          method: 'POST',
+          headers: getAdminHeaders()
+        });
+        const d = await resp.json();
+        if (d.success) {
+          alert('Partner approved successfully.');
+          loadPartnerProfiles();
+        } else {
+          alert('Failed to approve partner: ' + (d.error || 'Server error'));
+        }
+      } catch (e) {
+        alert('Network error: ' + e.message);
+      }
+    }
+
+    async function rejectPartner(role) {
+      if (!confirm(`Reject KYC for partner role "${role}"?`)) return;
+      try {
+        const resp = await fetch(`/api/admin/partners/${encodeURIComponent(role)}/reject`, {
+          method: 'POST',
+          headers: getAdminHeaders()
+        });
+        const d = await resp.json();
+        if (d.success) {
+          alert('Partner KYC rejected.');
+          loadPartnerProfiles();
+        } else {
+          alert('Failed to reject partner: ' + (d.error || 'Server error'));
+        }
+      } catch (e) {
+        alert('Network error: ' + e.message);
+      }
+    }
+
+    // 6. Per-Vehicle Document Verification
+    async function loadPendingVehicleVerifications() {
+      const tbody = document.getElementById('vehicleVerifyTableBody');
+      if (!tbody) return;
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #64748B;">Checking vehicle verification queue...</td></tr>';
+
+      try {
+        const resp = await fetch('/api/admin/compliance', { headers: getAdminHeaders() });
+        if (resp.status === 401) return showGate();
+        const data = await resp.json();
+        const fleet = data.fleet || [];
+
+        if (fleet.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #64748B;">No vehicles requiring verification.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = fleet.map(car => `
+          <tr>
+            <td><code>${escapeHtml(car.id)}</code></td>
+            <td><strong>${escapeHtml(car.model)}</strong></td>
+            <td><code>${escapeHtml(car.reg_number || 'N/A')}</code></td>
+            <td>${car.year}</td>
+            <td>₹ ${Number(car.daily_rate || 2500).toLocaleString('en-IN')}/day</td>
+            <td>
+              ${car.verification_status === 'APPROVED' 
+                ? '<span class="badge badge-success">✓ APPROVED</span>' 
+                : car.verification_status === 'REJECTED'
+                ? '<span class="badge badge-danger">✕ REJECTED</span>'
+                : '<span class="badge badge-warning">⏳ PENDING</span>'}
+            </td>
+            <td>
+              <div style="display: flex; gap: 6px;">
+                <button type="button" class="btn-action-primary" onclick="verifyVehicle('${car.id}')">✓ Verify</button>
+                <button type="button" class="btn-action-danger" onclick="rejectVehicle('${car.id}')">✕ Reject</button>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="7" style="color: var(--danger);">Failed to load vehicles: ${err.message}</td></tr>`;
+      }
+    }
+
+    async function verifyVehicle(id) {
+      try {
+        const resp = await fetch(`/api/admin/vehicles/${encodeURIComponent(id)}/verify`, {
+          method: 'POST',
+          headers: getAdminHeaders()
+        });
+        const d = await resp.json();
+        if (d.success) {
+          alert('Vehicle documents verified and approved!');
+          loadPendingVehicleVerifications();
+        } else {
+          alert('Failed to verify: ' + (d.error || 'Server error'));
+        }
+      } catch (e) {
+        alert('Network error: ' + e.message);
+      }
+    }
+
+    async function rejectVehicle(id) {
+      if (!confirm(`Reject vehicle ${id}?`)) return;
+      try {
+        const resp = await fetch(`/api/admin/vehicles/${encodeURIComponent(id)}/reject`, {
+          method: 'POST',
+          headers: getAdminHeaders()
+        });
+        const d = await resp.json();
+        if (d.success) {
+          alert('Vehicle marked as rejected.');
+          loadPendingVehicleVerifications();
+        } else {
+          alert('Failed to reject vehicle: ' + (d.error || 'Server error'));
+        }
+      } catch (e) {
+        alert('Network error: ' + e.message);
+      }
+    }
+
+    // 7. User Governance
+    let allUsersCache = [];
+
+    async function loadUserGovernance() {
+      const tbody = document.getElementById('userTableBody');
+      if (!tbody) return;
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #64748B;">Loading registered user directory...</td></tr>';
+
+      try {
+        const resp = await fetch('/api/admin/users', { headers: getAdminHeaders() });
+        if (resp.status === 401) return showGate();
+        const data = await resp.json();
+        allUsersCache = data.users || [];
+        renderUserTable(allUsersCache);
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="7" style="color: var(--danger);">Failed to load users: ${err.message}</td></tr>`;
+      }
+    }
+
+    function renderUserTable(users) {
+      const tbody = document.getElementById('userTableBody');
+      if (!tbody) return;
+
+      if (!users || users.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #64748B;">No users found matching query.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = users.map(u => `
+        <tr style="${u.is_banned ? 'background: #FEF2F2;' : ''}">
+          <td><code>#${u.id}</code></td>
+          <td><strong>${escapeHtml(u.name || 'Anonymous')}</strong></td>
+          <td>${escapeHtml(u.email || u.phone || 'N/A')}</td>
+          <td><span class="badge badge-primary">${escapeHtml((u.role || 'traveler').toUpperCase())}</span></td>
+          <td><code>${escapeHtml(u.auth_provider || 'local')}</code></td>
+          <td>
+            ${u.is_banned 
+              ? '<span class="badge badge-danger">⛔ SUSPENDED</span>' 
+              : '<span class="badge badge-success">✓ ACTIVE</span>'}
+          </td>
+          <td>
+            <div style="display: flex; gap: 6px;">
+              ${u.is_banned 
+                ? `<button type="button" class="btn-action-primary" onclick="unbanUser(${u.id})">Reinstate</button>` 
+                : `<button type="button" class="btn-action-danger" onclick="banUser(${u.id})">Suspend</button>`}
+              <button type="button" class="btn-action-danger" onclick="deleteUser(${u.id})">Delete</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function filterUserTable() {
+      const q = (document.getElementById('userFilterInput')?.value || '').toLowerCase().trim();
+      if (!q) {
+        renderUserTable(allUsersCache);
+        return;
+      }
+      const filtered = allUsersCache.filter(u => 
+        (u.email && u.email.toLowerCase().includes(q)) || 
+        (u.name && u.name.toLowerCase().includes(q)) ||
+        (u.role && u.role.toLowerCase().includes(q))
+      );
+      renderUserTable(filtered);
+    }
+
+    async function banUser(id) {
+      if (!confirm(`Are you sure you want to suspend User #${id}?`)) return;
+      try {
+        const resp = await fetch(`/api/admin/users/${id}/ban`, {
+          method: 'POST',
+          headers: getAdminHeaders()
+        });
+        const d = await resp.json();
+        if (d.success) {
+          alert('User account suspended.');
+          loadUserGovernance();
+        } else {
+          alert('Failed to suspend user: ' + (d.error || 'Server error'));
+        }
+      } catch (e) {
+        alert('Network error: ' + e.message);
+      }
+    }
+
+    async function unbanUser(id) {
+      try {
+        const resp = await fetch(`/api/admin/users/${id}/unban`, {
+          method: 'POST',
+          headers: getAdminHeaders()
+        });
+        const d = await resp.json();
+        if (d.success) {
+          alert('User account reinstated.');
+          loadUserGovernance();
+        } else {
+          alert('Failed to reinstate user: ' + (d.error || 'Server error'));
+        }
+      } catch (e) {
+        alert('Network error: ' + e.message);
+      }
+    }
+
+    async function deleteUser(id) {
+      if (!confirm(`Permanently delete User #${id}? This action cannot be undone.`)) return;
+      try {
+        const resp = await fetch(`/api/admin/users/${id}`, {
+          method: 'DELETE',
+          headers: getAdminHeaders()
+        });
+        const d = await resp.json();
+        if (d.success) {
+          alert('User profile permanently deleted.');
+          loadUserGovernance();
+        } else {
+          alert('Failed to delete user: ' + (d.error || 'Server error'));
+        }
+      } catch (e) {
+        alert('Network error: ' + e.message);
+      }
+    }
+
+    // 8. Live TRK GPS Tracking Viewer
+    let adminMap = null;
+    let adminMapMarker = null;
+
+    async function loadLiveTrackViewer() {
+      const mapContainer = document.getElementById('adminLiveTrackingMap');
+      if (!mapContainer || adminMap) return;
+
+      try {
+        const cfgRes = await fetch('/api/config');
+        const cfg = await cfgRes.json();
+        const token = cfg.mapboxToken || '';
+        if (window.mapboxgl && token) {
+          mapboxgl.accessToken = token;
+          adminMap = new mapboxgl.Map({
+            container: 'adminLiveTrackingMap',
+            style: 'mapbox://styles/mapbox/streets-v12',
+            center: [78.9629, 20.5937],
+            zoom: 4.5
+          });
+          adminMap.addControl(new mapboxgl.NavigationControl(), 'top-right');
+        }
+      } catch (e) {
+        console.warn('Admin map init warning:', e.message);
+      }
+    }
+
+    async function submitAdminTrack(targetCode) {
+      const code = (targetCode || document.getElementById('adminTrkInput')?.value || '').trim();
+      const card = document.getElementById('adminTrackResultCard');
+      if (!code) {
+        alert('Please enter a TRK code (e.g. TRK-4821 or CAB-7891)');
+        return;
+      }
+
+      try {
+        const resp = await fetch(`/api/track/${encodeURIComponent(code)}`);
+        const data = await resp.json();
+
+        if (!resp.ok || !data.success || !data.trip) {
+          alert(data.error || `No active trip found for code "${code}"`);
+          if (card) card.style.display = 'none';
+          return;
+        }
+
+        const t = data.trip;
+        if (card) {
+          document.getElementById('adminTrackTitle').textContent = `${t.origin || 'Origin'} → ${t.destination || 'Destination'}`;
+          document.getElementById('adminTrackStatus').textContent = (t.status || 'ACTIVE').toUpperCase();
+          document.getElementById('adminTrackSubtitle').textContent = `Service: ${t.service_type || 'Fleet'} • Vehicle: ${t.vehicle || 'Tour Car'} • Chauffeur: ${t.driver_name || 'Driver'}`;
+          document.getElementById('adminTrackMeta').textContent = `Fare: ₹ ${Number(t.fare || 0).toLocaleString('en-IN')} • Passenger: ${t.customer_name || 'Guest'} • GPS: ${t.lng}, ${t.lat}`;
+          card.style.display = 'block';
+        }
+
+        if (adminMap && t.lng && t.lat) {
+          adminMap.flyTo({ center: [t.lng, t.lat], zoom: 13, essential: true });
+          if (adminMapMarker) adminMapMarker.remove();
+          adminMapMarker = new mapboxgl.Marker({ color: '#1A73E8' })
+            .setLngLat([t.lng, t.lat])
+            .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(`<strong>${escapeHtml(t.service_type)}</strong><br>${escapeHtml(t.vehicle)}`))
+            .addTo(adminMap);
+          adminMapMarker.togglePopup();
+        }
+      } catch (err) {
+        alert('Tracking request failed: ' + err.message);
+      }
+    }
+
+    // Initial check on load
+    window.addEventListener('DOMContentLoaded', () => {
+      verifyAndUnlock(adminKey);
+    });
+  </script>
+</body>
+</html>

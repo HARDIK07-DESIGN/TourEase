@@ -1,4 +1,5 @@
 require('dotenv').config();
+const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
@@ -9,7 +10,8 @@ const nodemailer = require('nodemailer');
 const QRCode = require('qrcode');
 
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
+const port = PORT;
 const JWT_SECRET = process.env.JWT_SECRET || 'tourease_secret_key_2026';
 
 // Email transporter for real verification & security notifications
@@ -41,13 +43,32 @@ async function sendNotificationEmail(to, subject, html) {
   }
 }
 
+async function recordAuditLog(userEmail, role, authMethod, action, req) {
+  try {
+    const rawIp = req ? (req.headers['x-forwarded-for'] || req.socket?.remoteAddress || '127.0.0.1') : '127.0.0.1';
+    const ip = rawIp.toString().split(',')[0].trim();
+    await pool.query(
+      'INSERT INTO auth_audit_logs (user_email, role, auth_method, action, ip_address) VALUES ($1, $2, $3, $4, $5)',
+      [userEmail || 'anonymous', role || 'traveler', authMethod || 'session', action, ip]
+    );
+    console.log(`[AUTH AUDIT LOG] ${action} | User: ${userEmail || 'anonymous'} | Role: ${role || 'traveler'} | Method: ${authMethod} | IP: ${ip}`);
+  } catch (err) {
+    console.warn('[AUDIT LOG INSERT ERROR]', err.message);
+  }
+}
+
 app.use(cors());
 app.use(express.json({ limit: '15mb' }));
 app.use(express.urlencoded({ limit: '15mb', extended: true }));
 app.use(express.static('app/src/main/assets'));
 
+const isLocalDb = !process.env.DATABASE_URL || 
+  process.env.DATABASE_URL.includes('localhost') || 
+  process.env.DATABASE_URL.includes('127.0.0.1');
+
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
+  ...(isLocalDb ? {} : { ssl: { rejectUnauthorized: false } })
 });
 
 pool.on('error', (err) => console.error('PostgreSQL pool error:', err.message));
@@ -218,6 +239,16 @@ async function initDb() {
         created_at TIMESTAMP DEFAULT NOW()
       );
 
+      CREATE TABLE IF NOT EXISTS auth_audit_logs (
+        id SERIAL PRIMARY KEY,
+        user_email TEXT,
+        role VARCHAR(32),
+        auth_method VARCHAR(32),
+        action VARCHAR(16),
+        ip_address TEXT,
+        created_at TIMESTAMP DEFAULT NOW()
+      );
+
       ALTER TABLE users ADD COLUMN IF NOT EXISTS phone VARCHAR(32);
       ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR(32) DEFAULT 'traveler';
       ALTER TABLE users ADD COLUMN IF NOT EXISTS auth_provider VARCHAR(32) DEFAULT 'local';
@@ -229,7 +260,11 @@ async function initDb() {
       ALTER TABLE kyc_profiles ADD COLUMN IF NOT EXISTS doc_pdf_name TEXT;
       ALTER TABLE kyc_profiles ADD COLUMN IF NOT EXISTS doc_pdf_data TEXT;
       ALTER TABLE kyc_profiles ADD COLUMN IF NOT EXISTS model_year INT DEFAULT 2024;
+      ALTER TABLE kyc_profiles ADD COLUMN IF NOT EXISTS bank_account TEXT;
+      ALTER TABLE kyc_profiles ADD COLUMN IF NOT EXISTS ifsc_code TEXT;
       ALTER TABLE rental_fleet ADD COLUMN IF NOT EXISTS image_data TEXT;
+      ALTER TABLE rental_fleet ADD COLUMN IF NOT EXISTS verification_status VARCHAR(24) DEFAULT 'APPROVED';
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS is_banned BOOLEAN DEFAULT FALSE;
     `);
 
     // Ensure package title is updated in DB
@@ -471,7 +506,13 @@ app.post('/api/auth/verify-otp', async (req, res) => {
     }
 
     const user = userRes.rows[0];
+    if (user.is_banned) {
+      return res.status(403).json({ error: 'Your account has been suspended by administration. Please contact support@tourease.in.' });
+    }
     const token = jwt.sign({ id: user.id, role: user.role, name: user.name }, JWT_SECRET, { expiresIn: '7d' });
+
+    // Record login in audit logs
+    await recordAuditLog(user.email || cleanTarget, user.role || assignedRole, isEmail ? 'email_otp' : 'phone_otp', 'LOGIN', req);
 
     res.json({
       success: true,
@@ -535,6 +576,9 @@ app.post('/api/auth/google', async (req, res) => {
     }
 
     const user = userRes.rows[0];
+    if (user.is_banned) {
+      return res.status(403).json({ error: 'Your account has been suspended by administration. Please contact support@tourease.in.' });
+    }
     const token = jwt.sign({ id: user.id, role: user.role, name: user.name }, JWT_SECRET, { expiresIn: '7d' });
 
     // Send real sign-in notification email to the user's Gmail address
@@ -559,6 +603,9 @@ app.post('/api/auth/google', async (req, res) => {
     `;
     sendNotificationEmail(cleanEmail, 'New Sign-In to TourEase on Android/Web', notifyHtml).catch(e => console.warn('Email notify error:', e));
 
+    // Record login in audit logs
+    await recordAuditLog(cleanEmail, user.role || assignedRole, 'google', 'LOGIN', req);
+
     res.json({
       success: true,
       message: 'Google authentication successful',
@@ -575,6 +622,13 @@ app.post('/api/auth/google', async (req, res) => {
     console.error('Google auth error:', err.message);
     res.status(500).json({ error: 'Failed to authenticate with Google', details: err.message });
   }
+});
+
+// Logout API & Audit Logger
+app.post('/api/auth/logout', async (req, res) => {
+  const { email, role, auth_method } = req.body || {};
+  await recordAuditLog(email, role, auth_method || 'session', 'LOGOUT', req);
+  res.json({ success: true, message: 'Logged out successfully' });
 });
 
 // --- Dynamic Ride Payment QR Code & Settle Endpoints ---
@@ -1659,7 +1713,37 @@ app.post('/api/packages/ai-submit', async (req, res) => {
   }
 });
 
-app.post('/api/admin/packages/:id/approve', async (req, res) => {
+// --- Dedicated Standalone Admin Portal APIs (Protected by ADMIN_SECRET_KEY) ---
+const adminAuthMiddleware = (req, res, next) => {
+  const adminKey = req.headers['x-admin-key'] || req.query.admin_key;
+  const expectedKey = process.env.ADMIN_SECRET_KEY || 'tourease_admin_2026';
+  if (!adminKey || adminKey !== expectedKey) {
+    return res.status(401).json({ error: 'Unauthorized: Invalid or missing Admin Secret Key' });
+  }
+  next();
+};
+
+app.post('/api/admin/verify-key', (req, res) => {
+  const { admin_key } = req.body || {};
+  const expectedKey = process.env.ADMIN_SECRET_KEY || 'tourease_admin_2026';
+  if (admin_key && admin_key === expectedKey) {
+    return res.json({ success: true, message: 'Admin authentication verified' });
+  }
+  return res.status(401).json({ error: 'Invalid Admin Secret Key' });
+});
+
+app.get('/api/admin/packages', adminAuthMiddleware, async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT * FROM custom_ai_packages WHERE admin_status = 'pending' ORDER BY created_at DESC`
+    );
+    res.json({ success: true, packages: result.rows });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch pending packages', details: err.message });
+  }
+});
+
+app.post('/api/admin/packages/:id/approve', adminAuthMiddleware, async (req, res) => {
   const { id } = req.params;
   const client = await pool.connect();
   try {
@@ -1712,7 +1796,7 @@ app.post('/api/admin/packages/:id/approve', async (req, res) => {
   }
 });
 
-app.post('/api/admin/packages/:id/reject', async (req, res) => {
+app.post('/api/admin/packages/:id/reject', adminAuthMiddleware, async (req, res) => {
   const { id } = req.params;
   try {
     const result = await pool.query(`
@@ -1728,6 +1812,298 @@ app.post('/api/admin/packages/:id/reject', async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: 'Failed to reject package', details: err.message });
   }
+});
+
+app.get('/api/admin/compliance', adminAuthMiddleware, async (req, res) => {
+  try {
+    const currentYear = new Date().getFullYear();
+    const result = await pool.query(`SELECT * FROM rental_fleet ORDER BY id ASC`);
+    const flagged = result.rows.map(car => {
+      const year = parseInt(car.year || 2024, 10);
+      const age = currentYear - year;
+      const isOverAge = age >= 5;
+      return {
+        ...car,
+        age,
+        is_compliant: !isOverAge,
+        violation_reason: isOverAge ? `Exceeds 5-Year Age Limit (${age} years old)` : null
+      };
+    });
+    res.json({ success: true, fleet: flagged });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch fleet compliance', details: err.message });
+  }
+});
+
+app.post('/api/admin/vehicles/:id/delist', adminAuthMiddleware, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query('DELETE FROM rental_fleet WHERE id = $1 RETURNING *', [id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Vehicle not found' });
+    }
+    res.json({ success: true, message: 'Vehicle de-listed successfully', vehicle: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to de-list vehicle', details: err.message });
+  }
+});
+
+app.get('/api/admin/financials', adminAuthMiddleware, async (req, res) => {
+  try {
+    const txRes = await pool.query(
+      `SELECT * FROM wallet_transactions ORDER BY created_at DESC LIMIT 50`
+    );
+    let totalGross = 0;
+    let cabCut = 0;
+    let rentalCut = 0;
+    let tourCut = 0;
+
+    txRes.rows.forEach(tx => {
+      const amt = parseFloat(tx.gross_amount || tx.amount || 0);
+      const comm = parseFloat(tx.commission_amount || 0);
+      totalGross += amt;
+      const role = (tx.role || '').toLowerCase();
+      if (role === 'cab_owner') cabCut += (comm > 0 ? comm : amt * 0.08);
+      else if (role === 'rental_vendor') rentalCut += (comm > 0 ? comm : amt * 0.30);
+      else tourCut += (comm > 0 ? comm : amt * 0.12);
+    });
+
+    res.json({
+      success: true,
+      summary: {
+        total_gmv: Math.round(totalGross),
+        total_platform_revenue: Math.round(cabCut + rentalCut + tourCut),
+        breakdown: {
+          cab_commission_8pct: Math.round(cabCut),
+          rental_commission_30pct: Math.round(rentalCut),
+          tour_commission_12pct: Math.round(tourCut)
+        }
+      },
+      transactions: txRes.rows
+    });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch platform financials', details: err.message });
+  }
+});
+
+app.get('/api/admin/audit-logs', adminAuthMiddleware, async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT * FROM auth_audit_logs ORDER BY created_at DESC LIMIT 100`
+    );
+    res.json({ success: true, logs: result.rows });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch audit logs', details: err.message });
+  }
+});
+
+// Partner Onboarding & Document Verification
+app.get('/api/admin/partners', adminAuthMiddleware, async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM kyc_profiles ORDER BY updated_at DESC');
+    res.json({ success: true, partners: result.rows });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch partner KYC profiles', details: err.message });
+  }
+});
+
+app.post('/api/admin/partners/:role/approve', adminAuthMiddleware, async (req, res) => {
+  const { role } = req.params;
+  try {
+    const result = await pool.query(
+      'UPDATE kyc_profiles SET verified = TRUE, updated_at = NOW() WHERE role = $1 RETURNING *',
+      [role]
+    );
+    if (result.rows.length === 0) return res.status(404).json({ error: 'Partner KYC profile not found' });
+    res.json({ success: true, message: `Partner onboarding approved for ${role}`, partner: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to approve partner', details: err.message });
+  }
+});
+
+app.post('/api/admin/partners/:role/reject', adminAuthMiddleware, async (req, res) => {
+  const { role } = req.params;
+  try {
+    const result = await pool.query(
+      'UPDATE kyc_profiles SET verified = FALSE, updated_at = NOW() WHERE role = $1 RETURNING *',
+      [role]
+    );
+    if (result.rows.length === 0) return res.status(404).json({ error: 'Partner KYC profile not found' });
+    res.json({ success: true, message: `Partner onboarding rejected for ${role}`, partner: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to reject partner', details: err.message });
+  }
+});
+
+// Per-Vehicle Document Verification
+app.post('/api/admin/vehicles/:id/verify', adminAuthMiddleware, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query(
+      `UPDATE rental_fleet SET verification_status = 'APPROVED', is_compliant = TRUE WHERE id = $1 RETURNING *`,
+      [id]
+    );
+    if (result.rows.length === 0) return res.status(404).json({ error: 'Vehicle not found' });
+    res.json({ success: true, message: 'Vehicle documents verified and approved', vehicle: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to verify vehicle', details: err.message });
+  }
+});
+
+app.post('/api/admin/vehicles/:id/reject', adminAuthMiddleware, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query(
+      `UPDATE rental_fleet SET verification_status = 'REJECTED' WHERE id = $1 RETURNING *`,
+      [id]
+    );
+    if (result.rows.length === 0) return res.status(404).json({ error: 'Vehicle not found' });
+    res.json({ success: true, message: 'Vehicle rejected', vehicle: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to reject vehicle', details: err.message });
+  }
+});
+
+// User Governance (List, Ban, Unban, Delete)
+app.get('/api/admin/users', adminAuthMiddleware, async (req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT id, name, email, phone, role, is_banned, auth_provider, created_at FROM users ORDER BY created_at DESC LIMIT 100'
+    );
+    res.json({ success: true, users: result.rows });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch users', details: err.message });
+  }
+});
+
+app.post('/api/admin/users/:id/ban', adminAuthMiddleware, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query(
+      'UPDATE users SET is_banned = TRUE WHERE id = $1 RETURNING id, name, email, is_banned',
+      [id]
+    );
+    if (result.rows.length === 0) return res.status(404).json({ error: 'User not found' });
+    res.json({ success: true, message: `User ${result.rows[0].email || result.rows[0].name} has been suspended`, user: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to ban user', details: err.message });
+  }
+});
+
+app.post('/api/admin/users/:id/unban', adminAuthMiddleware, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query(
+      'UPDATE users SET is_banned = FALSE WHERE id = $1 RETURNING id, name, email, is_banned',
+      [id]
+    );
+    if (result.rows.length === 0) return res.status(404).json({ error: 'User not found' });
+    res.json({ success: true, message: `User ${result.rows[0].email || result.rows[0].name} has been reinstated`, user: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to unban user', details: err.message });
+  }
+});
+
+app.delete('/api/admin/users/:id', adminAuthMiddleware, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query(
+      'DELETE FROM users WHERE id = $1 RETURNING id, name, email',
+      [id]
+    );
+    if (result.rows.length === 0) return res.status(404).json({ error: 'User not found' });
+    res.json({ success: true, message: `User deleted successfully`, user: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to delete user', details: err.message });
+  }
+});
+
+// Public "Track a Loved One's Trip" API (No auth required)
+app.get('/api/track/:code', async (req, res) => {
+  const code = (req.params.code || '').trim();
+  if (!code) return res.status(400).json({ error: 'Tracking code is required' });
+
+  try {
+    // 1. Check cab_rides
+    const cabRes = await pool.query('SELECT * FROM cab_rides WHERE tracking_code ILIKE $1 LIMIT 1', [code]);
+    if (cabRes.rows.length > 0) {
+      const r = cabRes.rows[0];
+      return res.json({
+        success: true,
+        trip: {
+          code: r.tracking_code,
+          service_type: 'City Cab',
+          status: r.status,
+          customer_name: r.customer_name,
+          driver_name: r.driver_name || 'Assigned Chauffeur',
+          vehicle: `${r.car_model || 'TourEase Cab'} (${r.plate_number || 'Commercial'})`,
+          origin: r.pickup_location,
+          destination: r.drop_location,
+          lat: r.pickup_lat || 23.1824,
+          lng: r.pickup_lng || 75.7682,
+          fare: r.fare,
+          payment_method: r.payment_method,
+          updated_at: r.created_at
+        }
+      });
+    }
+
+    // 2. Check tour_bookings
+    const tourRes = await pool.query('SELECT * FROM tour_bookings WHERE tracking_code ILIKE $1 LIMIT 1', [code]);
+    if (tourRes.rows.length > 0) {
+      const t = tourRes.rows[0];
+      return res.json({
+        success: true,
+        trip: {
+          code: t.tracking_code,
+          service_type: 'Guided Tour',
+          status: t.status,
+          customer_name: t.customer_name || 'Tour Traveler',
+          driver_name: 'TourEase Corridor Chauffeur & Guide',
+          vehicle: t.package_title,
+          origin: 'Corridor Departure Point',
+          destination: t.package_title,
+          lat: 23.1764,
+          lng: 75.7828,
+          fare: t.total_amount,
+          payment_method: t.payment_method,
+          updated_at: t.created_at
+        }
+      });
+    }
+
+    // 3. Check rental_bookings
+    const rntRes = await pool.query('SELECT * FROM rental_bookings WHERE tracking_code ILIKE $1 LIMIT 1', [code]);
+    if (rntRes.rows.length > 0) {
+      const rb = rntRes.rows[0];
+      return res.json({
+        success: true,
+        trip: {
+          code: rb.tracking_code,
+          service_type: 'Self-Drive Rental',
+          status: rb.handover_status,
+          customer_name: rb.customer_name,
+          driver_name: 'Self-Drive Traveler',
+          vehicle: `${rb.car_model} (${rb.plate_number})`,
+          origin: 'Authorized Rental Hub',
+          destination: 'Corridor Highway Route',
+          lat: 23.1824,
+          lng: 75.7682,
+          fare: rb.total_price,
+          payment_method: rb.payment_method,
+          updated_at: rb.created_at
+        }
+      });
+    }
+
+    return res.status(404).json({ error: `No active trip found for tracking code "${code}"` });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to look up tracking code', details: err.message });
+  }
+});
+
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, 'app/src/main/assets/admin.html'));
 });
 
 // --- Multi-Stage Landmark & Region Photo Lookup ---
@@ -1903,7 +2279,7 @@ async function geocodeMapbox(query, mapboxToken) {
   if (!query || !mapboxToken) return null;
   try {
     const cleanQ = query.replace(/\(.*?\)/g, '').trim();
-    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(cleanQ)}.json?country=IN&limit=1&access_token=${mapboxToken}`;
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(cleanQ)}.json?country=IN&proximity=75.7682,23.1824&types=place,locality,poi,address&limit=1&access_token=${mapboxToken}`;
     const r = await fetch(url);
     if (!r.ok) return null;
     const d = await r.json();
@@ -2140,14 +2516,14 @@ app.post('/api/concierge/routes', async (req, res) => {
 
 const HOST = process.env.HOST || '0.0.0.0';
 
-const server = app.listen(port, HOST, () => {
-  console.log(`Server is running on http://${HOST}:${port} with PostgreSQL connection`);
+const server = app.listen(PORT, HOST, () => {
+  console.log(`Server is running on http://${HOST}:${PORT} with PostgreSQL connection`);
 });
 
-// Also serve static assets on 5500 for testing & preview tools
+// Also serve full app & APIs on 5500 for testing & preview tools
 const staticApp = express();
 staticApp.use(cors());
-staticApp.use(express.static('app/src/main/assets'));
+staticApp.use(app);
 const staticServer = staticApp.listen(5500, HOST, () => {
   console.log(`Static preview server running on http://${HOST}:5500`);
 });

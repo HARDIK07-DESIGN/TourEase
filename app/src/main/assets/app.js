@@ -31,10 +31,8 @@
     ACTIVE_RIDE: 'tourease_active_ride'
   };
 
-  // Android WebView + Browser API Base Helper
-  const API_BASE = (window.location.protocol === 'file:' || navigator.userAgent.includes('wv'))
-    ? 'http://10.0.2.2:3000'
-    : (window.location.port === '3000' ? '' : 'http://localhost:3000');
+  // Deployment-Ready Relative Routing (Zero hardcoded localhost:3000)
+  const API_BASE = (window.location.protocol === 'file:') ? 'http://10.0.2.2:3000' : '';
 
   // Hardcoded User Profile
   const DEFAULT_USER = {
@@ -391,34 +389,6 @@
     });
   };
 
-  // 5-Tap Gesture on Brand Logo to Reveal Admin Moderation Panel
-  let logoTapCount = 0;
-  let lastLogoTapTime = 0;
-  setTimeout(() => {
-    const logoTrigger = document.getElementById('appMainLogoTrigger');
-    if (logoTrigger) {
-      logoTrigger.addEventListener('click', () => {
-        const now = Date.now();
-        if (now - lastLogoTapTime > 1500) {
-          logoTapCount = 1;
-        } else {
-          logoTapCount++;
-        }
-        lastLogoTapTime = now;
-        if (logoTapCount === 5) {
-          logoTapCount = 0;
-          const adminBtn = document.getElementById('btnOpenAdminModeration');
-          if (adminBtn) adminBtn.style.display = 'flex';
-          window.showAppModal({
-            title: '🛡️ Admin Mode Unlocked',
-            message: 'Admin Community Package Moderation is now visible in the top header for presentation review.',
-            type: 'success'
-          });
-        }
-      });
-    }
-  }, 300);
-
   // Audio tone generator for alert/emergency
   function playBeep(freq = 600, duration = 0.2) {
     try {
@@ -453,22 +423,11 @@
     const authSignInSubtitle = document.getElementById('authSignInSubtitle');
 
     // 3-Method Auth Tabs & Sections
-    const tabAuthPhoneBtn = document.getElementById('tabAuthPhoneBtn');
     const tabAuthEmailBtn = document.getElementById('tabAuthEmailBtn');
     const tabAuthGoogleBtn = document.getElementById('tabAuthGoogleBtn');
 
-    const authPhoneSection = document.getElementById('authPhoneSection');
     const authEmailSection = document.getElementById('authEmailSection');
     const authGoogleSection = document.getElementById('authGoogleSection');
-
-    // Phone Elements
-    const authPhoneInput = document.getElementById('authPhoneInput');
-    const btnSendAuthOtp = document.getElementById('btnSendAuthOtp');
-    const authOtpSection = document.getElementById('authOtpSection');
-    const simulatedOtpBanner = document.getElementById('simulatedOtpBanner');
-    const simulatedOtpCode = document.getElementById('simulatedOtpCode');
-    const authOtpInput = document.getElementById('authOtpInput');
-    const btnVerifyAuthOtp = document.getElementById('btnVerifyAuthOtp');
 
     // Email Elements
     const authEmailInput = document.getElementById('authEmailInput');
@@ -485,15 +444,11 @@
     const btnCloseGoogleChooser = document.getElementById('btnCloseGoogleChooser');
     const googleAccItems = document.querySelectorAll('.google-acc-item');
 
-    let activeAuthMethod = 'phone';
+    let activeAuthMethod = 'email';
 
     function switchAuthTab(method) {
       activeAuthMethod = method;
-      if (tabAuthPhoneBtn && tabAuthEmailBtn && tabAuthGoogleBtn) {
-        tabAuthPhoneBtn.style.background = method === 'phone' ? '#FFFFFF' : 'transparent';
-        tabAuthPhoneBtn.style.color = method === 'phone' ? '#1A73E8' : '#64748B';
-        tabAuthPhoneBtn.style.boxShadow = method === 'phone' ? '0 1px 3px rgba(0,0,0,0.08)' : 'none';
-
+      if (tabAuthEmailBtn && tabAuthGoogleBtn) {
         tabAuthEmailBtn.style.background = method === 'email' ? '#FFFFFF' : 'transparent';
         tabAuthEmailBtn.style.color = method === 'email' ? '#1A73E8' : '#64748B';
         tabAuthEmailBtn.style.boxShadow = method === 'email' ? '0 1px 3px rgba(0,0,0,0.08)' : 'none';
@@ -503,12 +458,10 @@
         tabAuthGoogleBtn.style.boxShadow = method === 'google' ? '0 1px 3px rgba(0,0,0,0.08)' : 'none';
       }
 
-      if (authPhoneSection) authPhoneSection.style.display = method === 'phone' ? 'block' : 'none';
       if (authEmailSection) authEmailSection.style.display = method === 'email' ? 'block' : 'none';
       if (authGoogleSection) authGoogleSection.style.display = method === 'google' ? 'block' : 'none';
     }
 
-    if (tabAuthPhoneBtn) tabAuthPhoneBtn.addEventListener('click', () => switchAuthTab('phone'));
     if (tabAuthEmailBtn) tabAuthEmailBtn.addEventListener('click', () => switchAuthTab('email'));
     if (tabAuthGoogleBtn) tabAuthGoogleBtn.addEventListener('click', () => switchAuthTab('google'));
 
@@ -590,9 +543,9 @@
 
     const roleSelector = document.getElementById('roleSelector');
     const userProfileBtn = document.getElementById('userProfileBtn');
+    const btnUniversalLogout = document.getElementById('btnUniversalLogout');
 
     let selectedRole = 'traveler';
-    let currentGeneratedOtp = '849201';
 
     function showAuthStep(step) {
       if (authStepRoleSelect) authStepRoleSelect.style.display = step === 'role' ? 'block' : 'none';
@@ -632,9 +585,7 @@
           authSignInTitle.textContent = role === 'traveler' ? 'Sign In as Traveler' : role === 'cab_owner' ? 'Cab Owner Verification' : 'Rental Vendor Sign-In';
         }
         if (authSignInSubtitle) {
-          authSignInSubtitle.textContent = role === 'traveler'
-            ? 'Sign in via Mobile OTP or One-Tap Google account.'
-            : 'Commercial partners require Google sign-in and mobile verification.';
+          authSignInSubtitle.textContent = 'Sign in via Gmail 6-digit OTP or Continue with Google.';
         }
 
         showAuthStep('signin');
@@ -653,63 +604,30 @@
       });
     }
 
-    // 1. Mobile Phone + SMS OTP verification
-    if (btnSendAuthOtp) {
-      btnSendAuthOtp.addEventListener('click', async () => {
-        const phone = (authPhoneInput?.value || '').trim();
-        if (phone.length < 10) {
-          showToast('Please enter a valid 10-digit mobile number', 'alert');
-          return;
-        }
+    // Universal Logout Button
+    if (btnUniversalLogout) {
+      btnUniversalLogout.addEventListener('click', async () => {
         try {
-          const resp = await fetch(`${API_BASE}/api/auth/send-phone-otp`, {
+          await fetch(`${API_BASE}/api/auth/logout`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ phone })
+            body: JSON.stringify({
+              email: state.user?.email || 'traveler@tourease.in',
+              role: state.activeRole || 'traveler',
+              auth_method: state.user?.auth_provider || 'session'
+            })
           });
-          const data = await resp.json();
-          if (!data.success) throw new Error(data.error || 'Failed to send SMS OTP');
-
-          currentGeneratedOtp = data.simulated_otp || '849201';
-          if (simulatedOtpCode) simulatedOtpCode.textContent = currentGeneratedOtp;
-          if (authOtpInput) authOtpInput.value = currentGeneratedOtp;
-          if (authOtpSection) authOtpSection.style.display = 'block';
-          showToast(`SMS OTP Dispatched: ${currentGeneratedOtp}`, 'info');
         } catch (e) {
-          console.warn('Phone OTP fallback:', e.message);
-          currentGeneratedOtp = Math.floor(100000 + Math.random() * 900000).toString();
-          if (simulatedOtpCode) simulatedOtpCode.textContent = currentGeneratedOtp;
-          if (authOtpInput) authOtpInput.value = currentGeneratedOtp;
-          if (authOtpSection) authOtpSection.style.display = 'block';
-          showToast(`Demo OTP Sent: ${currentGeneratedOtp}`, 'info');
+          console.warn('Logout notification note:', e.message);
         }
-      });
-    }
-
-    if (btnVerifyAuthOtp) {
-      btnVerifyAuthOtp.addEventListener('click', async () => {
-        const phone = (authPhoneInput?.value || '').trim();
-        const enteredOtp = (authOtpInput?.value || '').trim();
-        if (!enteredOtp) {
-          showToast('Please enter the 6-digit OTP code', 'alert');
-          return;
+        localStorage.removeItem(STORAGE_KEYS.USER);
+        localStorage.removeItem(STORAGE_KEYS.ROLE);
+        state.user = { ...DEFAULT_USER };
+        if (authModal) {
+          authModal.style.display = 'flex';
+          showAuthStep('role');
         }
-        try {
-          const resp = await fetch(`${API_BASE}/api/auth/verify-otp`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ target: phone, otp_code: enteredOtp, role: selectedRole })
-          });
-          const data = await resp.json();
-          if (!data.success) throw new Error(data.error || 'Invalid OTP');
-          handlePostAuthStep(data.user.name, data.user.email || `${phone}@tourease.in`, data.user.phone || phone);
-        } catch (e) {
-          if (enteredOtp === currentGeneratedOtp || enteredOtp === '849201') {
-            handlePostAuthStep('Phone User', `${phone || '9876543210'}@tourease.in`, phone || '9876543210');
-          } else {
-            showToast('Invalid OTP entered. Please try again.', 'alert');
-          }
-        }
+        showToast('Signed out of TourEase successfully.', 'info');
       });
     }
 
@@ -929,15 +847,8 @@
 
     if (userProfileBtn) {
       userProfileBtn.addEventListener('click', () => {
-        if (confirm(`Signed in as:\n${state.user.name} (${state.user.email})\nRole: ${state.activeRole.toUpperCase()}\n\nDo you want to Sign Out / Switch Account?`)) {
-          localStorage.removeItem(STORAGE_KEYS.USER);
-          localStorage.removeItem(STORAGE_KEYS.ROLE);
-          state.user = { ...DEFAULT_USER };
-          if (authModal) {
-            authModal.style.display = 'flex';
-            showAuthStep('role');
-          }
-          showToast('Signed out successfully. Choose a role to log in.', 'info');
+        if (btnUniversalLogout) {
+          btnUniversalLogout.click();
         }
       });
     }
@@ -2053,7 +1964,7 @@
 
         searchDebounceTimeout = setTimeout(async () => {
           try {
-            const geoUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?country=IN&limit=5&access_token=${mapboxgl.accessToken}`;
+            const geoUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?country=IN&proximity=75.7682,23.1824&types=place,locality,poi,address&limit=5&access_token=${mapboxgl.accessToken}`;
             const res = await fetch(geoUrl);
             if (res.ok) {
               const data = await res.json();
@@ -2079,7 +1990,7 @@
         if (!query) return;
 
         try {
-          const geoUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?country=IN&limit=5&access_token=${mapboxgl.accessToken}`;
+          const geoUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?country=IN&proximity=75.7682,23.1824&types=place,locality,poi,address&limit=5&access_token=${mapboxgl.accessToken}`;
           const res = await fetch(geoUrl);
           if (res.ok) {
             const data = await res.json();
@@ -2098,6 +2009,52 @@
           console.error('Geocoding search failed:', err);
           showToast('Search request failed.', 'alert');
         }
+      });
+    }
+
+    const btnUseMyLocation = document.getElementById('btnUseMyLocation');
+    if (btnUseMyLocation) {
+      btnUseMyLocation.addEventListener('click', () => {
+        if (!navigator.geolocation) {
+          showToast('Geolocation is not supported by your device.', 'alert');
+          return;
+        }
+        btnUseMyLocation.disabled = true;
+        btnUseMyLocation.textContent = '⏳ GPS';
+        navigator.geolocation.getCurrentPosition(
+          async (pos) => {
+            btnUseMyLocation.disabled = false;
+            btnUseMyLocation.textContent = '📍 GPS';
+            const lng = pos.coords.longitude;
+            const lat = pos.coords.latitude;
+            try {
+              const r = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?country=IN&types=place,locality,address,poi&limit=1&access_token=${mapboxgl.accessToken}`);
+              const d = await r.json();
+              const placeName = d.features?.[0]?.place_name || `My GPS Location (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
+              await addLocationToPinnedStops({
+                id: 'gps-user-loc',
+                text: 'My Location',
+                place_name: placeName,
+                center: [lng, lat],
+                geometry: { type: 'Point', coordinates: [lng, lat] },
+                properties: {}
+              });
+              if (conciergeMap) {
+                conciergeMap.flyTo({ center: [lng, lat], zoom: 14, essential: true });
+              }
+              showToast(`GPS Position Locked: ${placeName}`, 'success');
+            } catch (err) {
+              console.warn('Reverse geocode error:', err);
+              if (conciergeMap) conciergeMap.flyTo({ center: [lng, lat], zoom: 14 });
+            }
+          },
+          (err) => {
+            btnUseMyLocation.disabled = false;
+            btnUseMyLocation.textContent = '📍 GPS';
+            showToast('Unable to retrieve GPS location: ' + err.message, 'alert');
+          },
+          { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 }
+        );
       });
     }
 
@@ -3449,6 +3406,37 @@
       btnBackToFleetActive.addEventListener('click', () => {
         resetToNearbyFleet();
         showToast('Returned to available fleet', 'info');
+      });
+    }
+
+    const btnCopyRideTrk = document.getElementById('btnCopyRideTrk');
+    if (btnCopyRideTrk) {
+      btnCopyRideTrk.addEventListener('click', () => {
+        const code = state.activeRide?.trackingCode || 'CAB-4719';
+        navigator.clipboard.writeText(code).then(() => {
+          showToast(`Tracking Code "${code}" copied to clipboard!`, 'success');
+        }).catch(() => {
+          showToast(`Tracking Code: ${code}`, 'info');
+        });
+      });
+    }
+
+    const btnShareRideTrk = document.getElementById('btnShareRideTrk');
+    if (btnShareRideTrk) {
+      btnShareRideTrk.addEventListener('click', () => {
+        const code = state.activeRide?.trackingCode || 'CAB-4719';
+        const shareUrl = `${window.location.origin}/index1.html?track=${encodeURIComponent(code)}`;
+        if (navigator.share) {
+          navigator.share({
+            title: 'Track My TourEase Ride',
+            text: `Follow my live journey on TourEase with tracking code: ${code}`,
+            url: shareUrl
+          }).catch(() => {});
+        } else {
+          navigator.clipboard.writeText(shareUrl).then(() => {
+            showToast('Tracking link copied to clipboard!', 'success');
+          });
+        }
       });
     }
 
@@ -4848,97 +4836,6 @@
     }
   }
 
-  function initHiddenAdminPanel() {
-    const logoTrigger = document.getElementById('appMainLogoTrigger');
-    const adminModal = document.getElementById('hiddenAdminModal');
-    const btnCloseAdmin = document.getElementById('btnCloseAdminModal');
-
-    if (logoTrigger && adminModal) {
-      logoTrigger.addEventListener('click', () => {
-        state.logoTapCount++;
-        clearTimeout(state.logoTapTimer);
-
-        state.logoTapTimer = setTimeout(() => {
-          state.logoTapCount = 0;
-        }, 2200);
-
-        if (state.logoTapCount >= 5) {
-          state.logoTapCount = 0;
-          playBeep(950, 0.15);
-          adminModal.classList.add('visible');
-          renderHiddenAdminData();
-          showToast('🔓 Admin Debug Console Unlocked!', 'success');
-        }
-      });
-    }
-
-    if (btnCloseAdmin && adminModal) {
-      btnCloseAdmin.addEventListener('click', () => {
-        adminModal.classList.remove('visible');
-      });
-    }
-  }
-
-  function renderHiddenAdminData() {
-    const commissionTable = document.getElementById('adminCommissionLogsTable');
-    const complianceTable = document.getElementById('adminComplianceViolationsTable');
-
-    if (commissionTable) {
-      const logs = getStorage(STORAGE_KEYS.COMMISSION_LOGS, []);
-      if (logs.length === 0) {
-        commissionTable.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #94A3B8;">No commission deductions on record.</td></tr>`;
-      } else {
-        commissionTable.innerHTML = '';
-        logs.forEach(l => {
-          const tr = document.createElement('tr');
-          const isOnline = l.title === 'Online Ride Credited' || l.mode === 'ONLINE' || (l.net_change && l.net_change > 0);
-          const fare = l.gross_fare || l.ride_fare_cash || 200;
-          const fee = parseFloat(l.commission_fee || l.deducted_amount || 16);
-          tr.innerHTML = `
-            <td><strong>${l.id}</strong></td>
-            <td>₹ ${fare} (${isOnline ? 'Online' : 'Cash'})</td>
-            <td style="color: ${isOnline ? '#10B981' : '#0066FF'}; font-weight: 700;">
-              ${isOnline ? `+₹${parseFloat(l.net_change || 184).toFixed(2)} (92%)` : `-₹${fee.toFixed(2)} (8%)`}
-            </td>
-            <td>${l.timestamp}</td>
-          `;
-          commissionTable.appendChild(tr);
-        });
-      }
-    }
-
-    if (complianceTable) {
-      const fleet = getStorage(STORAGE_KEYS.RENTAL_FLEET, INITIAL_RENTAL_FLEET);
-      const violations = fleet.filter(c => (CURRENT_YEAR - c.year) >= 5);
-
-      if (violations.length === 0) {
-        complianceTable.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #10B981; font-weight: 700;">✓ 100% Fleet Compliant (No vehicles &ge; 5 years)</td></tr>`;
-      } else {
-        complianceTable.innerHTML = '';
-        violations.forEach(v => {
-          const age = CURRENT_YEAR - v.year;
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td><strong>${v.model}</strong></td>
-            <td>${v.reg_number}</td>
-            <td style="color: #EF4444; font-weight: 800;">${age} Years (${v.year})</td>
-            <td><button class="admin-delist-btn" onclick="window.adminDeListVehicle('${v.id}')">De-list</button></td>
-          `;
-          complianceTable.appendChild(tr);
-        });
-      }
-    }
-  }
-
-  window.adminDeListVehicle = function (carId) {
-    let fleet = getStorage(STORAGE_KEYS.RENTAL_FLEET, INITIAL_RENTAL_FLEET);
-    fleet = fleet.filter(c => c.id !== carId);
-    setStorage(STORAGE_KEYS.RENTAL_FLEET, fleet);
-    renderHiddenAdminData();
-    renderRentalVendorDashboard();
-    showToast('Admin forced de-listing of non-compliant vehicle.', 'alert');
-  };
-
   // Global Tracking Map Modal Handler (for Traveler GPS & Cab Owner Customer View)
   let trackingMapInstance = null;
   window.openTrackingModal = function (title, trackingCode, statusText, detailText, lat, lng) {
@@ -5624,12 +5521,6 @@
         if (Array.isArray(data.custom_ai_packages)) {
           setStorage('tourease_custom_ai_packages', data.custom_ai_packages);
           state.customAiPackages = data.custom_ai_packages;
-          const pendingCount = data.custom_ai_packages.filter(p => !p.is_approved).length;
-          const badge = document.getElementById('adminPendingCountBadge');
-          if (badge) badge.textContent = pendingCount;
-          if (typeof window.renderAdminModerationList === 'function') {
-            window.renderAdminModerationList();
-          }
         }
 
         // 6. Sync KYC Profiles
@@ -5670,123 +5561,6 @@
       });
   };
 
-  function initAdminPackageModeration() {
-    const btnOpen = document.getElementById('btnOpenAdminModeration');
-    const modal = document.getElementById('adminPackageModerationModal');
-    const btnClose = document.getElementById('btnCloseAdminModerationModal');
-    const listContainer = document.getElementById('adminPendingPackagesList');
-    const badge = document.getElementById('adminPendingCountBadge');
-
-    function updateBadge(count) {
-      if (badge) badge.textContent = count;
-    }
-
-    window.renderAdminModerationList = function () {
-      if (!listContainer) return;
-      const customAiPackages = (state && state.customAiPackages) || getStorage('tourease_custom_ai_packages', []);
-      const pending = customAiPackages.filter(p => !p.is_approved);
-      updateBadge(pending.length);
-
-      if (pending.length === 0) {
-        listContainer.innerHTML = `
-          <div style="text-align: center; padding: 24px 12px; color: #64748B; background: #F8FAFC; border: 1px dashed #CBD5E1; border-radius: 12px; font-size: 13px;">
-            🎉 Zero pending submissions! All user itineraries have been moderated.
-          </div>
-        `;
-        return;
-      }
-
-      listContainer.innerHTML = pending.map(pkg => `
-        <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.04);">
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
-            <strong style="font-size: 15px; color: #1E293B; flex: 1;">${pkg.title}</strong>
-            <span style="font-size: 13px; font-weight: 800; color: #1A73E8; margin-left: 8px;">₹${Number(pkg.price).toLocaleString('en-IN')}</span>
-          </div>
-          <div style="font-size: 12px; color: #64748B; margin-bottom: 8px;">
-            ${pkg.subtitle || ''} • Submitted by: <strong>${pkg.submitted_by || 'Traveler'}</strong>
-          </div>
-          <p style="font-size: 12.5px; color: #475569; margin: 0 0 12px 0; line-height: 1.45; background: #F8FAFC; padding: 8px 10px; border-radius: 8px;">
-            ${pkg.description || (pkg.itinerary ? pkg.itinerary.slice(0, 150) + '...' : 'Custom AI Tour')}
-          </p>
-          <div style="display: flex; gap: 8px;">
-            <button type="button" class="m3-button-primary" style="flex: 1.5; font-size: 12px; padding: 8px; border-radius: 8px;" onclick="window.approveAdminPackage(${pkg.id})">
-              ✅ Approve & Publish
-            </button>
-            <button type="button" style="flex: 1; font-size: 12px; padding: 8px; border-radius: 8px; background: #FEE2E2; border: 1px solid #FCA5A5; color: #991B1B; font-weight: 700; cursor: pointer;" onclick="window.rejectAdminPackage(${pkg.id})">
-              ❌ Reject
-            </button>
-          </div>
-        </div>
-      `).join('');
-    };
-
-    window.approveAdminPackage = async function (id) {
-      try {
-        const resp = await fetch(`${API_BASE}/api/admin/packages/${id}/approve`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' }
-        });
-        if (resp.ok) {
-          showToast('Itinerary approved and published to Tours catalog!', 'success');
-          if (typeof window.syncGlobalStateWithBackend === 'function') {
-            await window.syncGlobalStateWithBackend();
-          }
-          window.renderAdminModerationList();
-          if (typeof renderTourPackages === 'function') {
-            renderTourPackages();
-          }
-        } else {
-          throw new Error('Approval request failed');
-        }
-      } catch (err) {
-        window.showAppModal({
-          title: 'Approval Failed',
-          message: err.message,
-          type: 'error'
-        });
-      }
-    };
-
-    window.rejectAdminPackage = async function (id) {
-      try {
-        const resp = await fetch(`${API_BASE}/api/admin/packages/${id}/reject`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' }
-        });
-        if (resp.ok) {
-          showToast('Package rejected and removed from pending queue.', 'info');
-          if (typeof window.syncGlobalStateWithBackend === 'function') {
-            await window.syncGlobalStateWithBackend();
-          }
-          window.renderAdminModerationList();
-        } else {
-          throw new Error('Rejection request failed');
-        }
-      } catch (err) {
-        window.showAppModal({
-          title: 'Rejection Failed',
-          message: err.message,
-          type: 'error'
-        });
-      }
-    };
-
-    if (btnOpen) {
-      btnOpen.addEventListener('click', () => {
-        if (modal) {
-          modal.style.display = 'flex';
-          window.renderAdminModerationList();
-        }
-      });
-    }
-
-    if (btnClose) {
-      btnClose.addEventListener('click', () => {
-        if (modal) modal.style.display = 'none';
-      });
-    }
-  }
-
   window.fetchStatePoll = window.syncGlobalStateWithBackend;
   function fetchStatePoll() {
     if (typeof window.syncGlobalStateWithBackend === 'function') {
@@ -5798,11 +5572,161 @@
     window.syncGlobalStateWithBackend();
   }, 3000);
 
+  function initPublicTracking() {
+    const btnOpen = document.getElementById('btnOpenPublicTrackModal');
+    const btnGate = document.getElementById('btnGateTrackTrip');
+    const modal = document.getElementById('publicTrackingModal');
+    const backdrop = document.getElementById('publicTrackModalBackdrop');
+    const btnClose = document.getElementById('btnClosePublicTrackModal');
+    const input = document.getElementById('publicTrackCodeInput');
+    const btnSubmit = document.getElementById('btnPublicTrackSubmit');
+    const errorBox = document.getElementById('publicTrackError');
+    const resultCard = document.getElementById('publicTrackResultCard');
+    const typeBadge = document.getElementById('publicTrackTypeBadge');
+    const statusBadge = document.getElementById('publicTrackStatusBadge');
+    const titleText = document.getElementById('publicTrackTitle');
+    const subtitleText = document.getElementById('publicTrackSubtitle');
+    const lastUpdateText = document.getElementById('publicTrackLastUpdate');
+
+    let publicTrackMap = null;
+    let publicTrackMarker = null;
+
+    function openModal() {
+      if (modal) modal.style.display = 'flex';
+      if (errorBox) errorBox.style.display = 'none';
+      if (input) {
+        input.value = '';
+        input.focus();
+      }
+    }
+
+    function closeModal() {
+      if (modal) modal.style.display = 'none';
+      if (errorBox) errorBox.style.display = 'none';
+    }
+
+    if (btnOpen) btnOpen.addEventListener('click', openModal);
+    if (btnGate) btnGate.addEventListener('click', openModal);
+    if (btnClose) btnClose.addEventListener('click', closeModal);
+    if (backdrop) backdrop.addEventListener('click', closeModal);
+
+    async function executeTrack(codeToTrack) {
+      const code = (codeToTrack || input?.value || '').trim().toUpperCase();
+      if (!code) {
+        if (errorBox) {
+          errorBox.textContent = 'Please enter a valid tracking code (e.g. TRK-4821 or CAB-7891).';
+          errorBox.style.display = 'block';
+        }
+        return;
+      }
+      if (errorBox) errorBox.style.display = 'none';
+      if (btnSubmit) {
+        btnSubmit.disabled = true;
+        btnSubmit.textContent = 'Locating...';
+      }
+
+      try {
+        const resp = await fetch(`/api/track/${encodeURIComponent(code)}`);
+        const data = await resp.json();
+        if (btnSubmit) {
+          btnSubmit.disabled = false;
+          btnSubmit.textContent = 'Track';
+        }
+
+        if (!resp.ok || !data.success || !data.trip) {
+          if (errorBox) {
+            errorBox.textContent = data.error || `No active trip found for tracking code "${code}". Verify code with traveler.`;
+            errorBox.style.display = 'block';
+          }
+          if (resultCard) resultCard.style.display = 'none';
+          return;
+        }
+
+        const t = data.trip;
+        if (resultCard) resultCard.style.display = 'block';
+        if (typeBadge) typeBadge.textContent = (t.service_type || 'Fleet Trip').toUpperCase();
+        if (statusBadge) {
+          statusBadge.textContent = (t.status || 'Active').replace(/_/g, ' ');
+          if (t.status === 'in_transit' || t.status === 'en_route') {
+            statusBadge.style.background = '#DCFCE7';
+            statusBadge.style.color = '#15803D';
+          } else {
+            statusBadge.style.background = '#FEF3C7';
+            statusBadge.style.color = '#B45309';
+          }
+        }
+        if (titleText) titleText.textContent = `${t.origin || 'Origin'} → ${t.destination || 'Destination'}`;
+        if (subtitleText) {
+          subtitleText.textContent = `${t.vehicle || 'Tour Vehicle'} • Chauffeur: ${t.driver_name || 'Assigned Driver'} (${t.customer_name || 'Passenger'})`;
+        }
+        if (lastUpdateText) {
+          lastUpdateText.textContent = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        const lng = Number(t.lng) || 75.7682;
+        const lat = Number(t.lat) || 23.1824;
+
+        if (window.mapboxgl && mapboxgl.accessToken) {
+          const mapEl = document.getElementById('publicTrackingMap');
+          if (mapEl) {
+            if (!publicTrackMap) {
+              publicTrackMap = new mapboxgl.Map({
+                container: 'publicTrackingMap',
+                style: 'mapbox://styles/mapbox/streets-v12',
+                center: [lng, lat],
+                zoom: 13
+              });
+              publicTrackMap.addControl(new mapboxgl.NavigationControl(), 'top-right');
+            } else {
+              publicTrackMap.flyTo({ center: [lng, lat], zoom: 13, essential: true });
+            }
+
+            if (publicTrackMarker) publicTrackMarker.remove();
+            publicTrackMarker = new mapboxgl.Marker({ color: '#1A73E8' })
+              .setLngLat([lng, lat])
+              .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(`<strong>${escapeHtml(t.service_type)}</strong><br>${escapeHtml(t.vehicle)}`))
+              .addTo(publicTrackMap);
+            publicTrackMarker.togglePopup();
+          }
+        }
+      } catch (err) {
+        if (btnSubmit) {
+          btnSubmit.disabled = false;
+          btnSubmit.textContent = 'Track';
+        }
+        if (errorBox) {
+          errorBox.textContent = 'Network error while querying tracking service: ' + err.message;
+          errorBox.style.display = 'block';
+        }
+      }
+    }
+
+    if (btnSubmit) {
+      btnSubmit.addEventListener('click', () => executeTrack());
+    }
+    if (input) {
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          executeTrack();
+        }
+      });
+    }
+
+    // Auto-track if URL contains ?track=TRK-XXXX
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlTrack = urlParams.get('track');
+    if (urlTrack) {
+      openModal();
+      if (input) input.value = urlTrack;
+      executeTrack(urlTrack);
+    }
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
     initAuthAndRoleSwitcher();
     initTravelerDashboard();
-    initHiddenAdminPanel();
-    initAdminPackageModeration();
+    initPublicTracking();
     window.syncGlobalStateWithBackend();
   });
 
