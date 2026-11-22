@@ -2221,13 +2221,21 @@
               </button>
             </div>
 
+            <!-- In-App OTP banner (displayed if Render free-tier blocks outbound SMTP) -->
+            <div id="fallbackOtpBanner" style="display: none; background: #EFF6FF; border: 1.5px solid #3B82F6; border-radius: 10px; padding: 12px; margin-bottom: 12px; text-align: center;">
+              <div style="font-size: 11px; font-weight: 700; color: #1D4ED8; text-transform: uppercase; margin-bottom: 4px;">
+                Instant Verification Code
+              </div>
+              <div style="font-size: 26px; font-weight: 800; font-family: monospace; letter-spacing: 6px; color: #1E293B;" id="fallbackOtpCode">------</div>
+              <div style="font-size: 11px; color: #64748B; margin-top: 4px;">(Code generated — tap Verify &amp; Sign In below)</div>
+            </div>
+
             <label style="display: block; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; margin-bottom: 6px;">Enter 6-Digit Verification Code</label>
             <input type="text" id="authEmailOtpInput" class="m3-text-input" placeholder="••••••" maxlength="6" inputmode="numeric" pattern="[0-9]*" value="" style="background: white; font-family: monospace; letter-spacing: 6px; font-size: 18px; font-weight: 800; text-align: center; margin-bottom: 12px;">
 
             <button type="button" class="m3-button-primary" id="btnVerifyEmailOtp" style="width: 100%; background: #059669; font-size: 13.5px; padding: 11px; font-weight: 700;">
               Verify &amp; Sign In →
             </button>
-            <div id="fallbackOtpBanner" style="display: none; position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0; overflow: hidden;"><span id="fallbackOtpCode"></span></div>
           </div>
         </div>
 
