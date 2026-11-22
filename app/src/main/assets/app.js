@@ -31,8 +31,8 @@
     ACTIVE_RIDE: 'tourease_active_ride'
   };
 
-  // Deployment-Ready Relative Routing (Zero hardcoded localhost:3000)
-  const API_BASE = (window.location.protocol === 'file:') ? 'http://10.0.2.2:3000' : '';
+  // Deployment-Ready Relative Routing (Points to live Render backend when running offline/local APK asset)
+  const API_BASE = (window.location.protocol === 'file:') ? 'https://tourease-zocf.onrender.com' : '';
 
   // Hardcoded User Profile
   const DEFAULT_USER = {
@@ -1274,6 +1274,119 @@
       });
     }
 
+    let currentSightseeingMarkers = [];
+
+    function clearSightseeingMarkers() {
+      if (currentSightseeingMarkers && currentSightseeingMarkers.length) {
+        currentSightseeingMarkers.forEach(m => m.remove());
+      }
+      currentSightseeingMarkers = [];
+    }
+
+    function renderDestinationSightseeingMarkers(places) {
+      if (!map || !places || !places.length) return;
+      clearSightseeingMarkers();
+
+      places.forEach((p, idx) => {
+        const num = idx + 1;
+        const el = document.createElement('div');
+        el.className = 'sightseeing-map-marker';
+        el.setAttribute('data-sightseeing-index', idx);
+        el.innerHTML = `
+          <div style="cursor: pointer; display: flex; flex-direction: column; align-items: center; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.25)); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.12)'" onmouseout="this.style.transform='scale(1)'">
+            <div style="background: #1A73E8; color: #FFFFFF; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; border: 2.5px solid #FFFFFF; box-shadow: 0 1px 4px rgba(0,0,0,0.3); z-index: 2;">
+              ${num}
+            </div>
+            <div style="background: #FFFFFF; color: #0F172A; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 10px; border: 1px solid #CBD5E1; box-shadow: 0 1px 3px rgba(0,0,0,0.12); margin-top: 3px; white-space: nowrap; max-width: 120px; overflow: hidden; text-overflow: ellipsis; pointer-events: none;">
+              ${num}. ${p.name}
+            </div>
+          </div>
+        `;
+
+        const popup = new mapboxgl.Popup({ offset: 20, closeButton: true }).setHTML(`
+          <div style="padding: 6px; max-width: 220px; font-family: -apple-system, sans-serif;">
+            <div style="font-size: 10px; font-weight: 800; color: #1A73E8; text-transform: uppercase; letter-spacing: 0.5px;">DESTINATION ATTRACTION #${num}</div>
+            <div style="font-size: 14px; font-weight: 800; color: #0F172A; margin: 3px 0 4px 0;">${p.name}</div>
+            <div style="font-size: 11px; color: #475569; margin-bottom: 2px;">⏰ ${p.best_time || 'Open Daily'}</div>
+            <div style="font-size: 11px; color: #16A34A; font-weight: 700; margin-bottom: 4px;">🎟️ ${p.entry_fee || 'Free'}</div>
+            <p style="font-size: 12px; color: #334155; line-height: 1.4; margin: 0;">${p.short_note || p.description || ''}</p>
+          </div>
+        `);
+
+        const marker = new mapboxgl.Marker({ element: el })
+          .setLngLat([p.lng, p.lat])
+          .setPopup(popup)
+          .addTo(map);
+
+        currentSightseeingMarkers.push(marker);
+      });
+    }
+
+    function flyToSightseeingPins(places) {
+      if (!map || !places || !places.length) return;
+      const bounds = new mapboxgl.LngLatBounds();
+      places.forEach(p => {
+        if (p.lng && p.lat) bounds.extend([p.lng, p.lat]);
+      });
+      if (!bounds.isEmpty()) {
+        map.fitBounds(bounds, { padding: 70, maxZoom: 14, duration: 1500 });
+      }
+    }
+
+    function renderSightseeingChecklistHtml(places, destCity) {
+      if (!places || !places.length) return '';
+      return `
+        <div class="aura-card" style="background: #FFFFFF; border: 1px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 8px;">
+            <div>
+              <div style="font-size: 10px; font-weight: 800; color: #1A73E8; letter-spacing: 0.6px; text-transform: uppercase;">DESTINATION SIGHTSEEING</div>
+              <h4 style="font-size: 15px; font-weight: 800; color: #0F172A; margin: 2px 0 0 0;">Places to Visit in ${destCity || 'Destination'}</h4>
+            </div>
+            <button type="button" class="btn-fly-sightseeing-pins" style="background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; font-size: 11.5px; font-weight: 700; padding: 6px 10px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 4px; white-space: nowrap; flex-shrink: 0;">
+              🗺️ View Pins on Map
+            </button>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            ${places.map((p, idx) => `
+              <div class="sightseeing-item-row" data-place-index="${idx}" style="display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; border-radius: 8px; border: 1px solid #E2E8F0; background: #F8FAFC; cursor: pointer; transition: background 0.15s;">
+                <div style="display: flex; align-items: flex-start; gap: 8px; min-width: 0;">
+                  <span style="width: 22px; height: 22px; border-radius: 50%; background: #1A73E8; color: #FFFFFF; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; flex-shrink: 0; margin-top: 1px;">${idx + 1}</span>
+                  <div style="min-width: 0;">
+                    <div style="font-size: 13px; font-weight: 700; color: #0F172A;">${p.name}</div>
+                    <div style="font-size: 11.5px; color: #64748B; margin-top: 1px;">⏰ ${p.best_time || 'Open Daily'} • <span style="color: #16A34A; font-weight: 600;">${p.entry_fee || 'Free'}</span></div>
+                  </div>
+                </div>
+                <button type="button" class="btn-focus-sightseeing-pin" data-place-index="${idx}" style="background: #FFFFFF; border: 1px solid #CBD5E1; color: #1E293B; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 6px; cursor: pointer; white-space: nowrap; flex-shrink: 0; margin-left: 6px;">
+                  Focus Pin
+                </button>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function wireSightseeingChecklistEvents(container, places) {
+      if (!container || !places || !places.length) return;
+      const btnViewAll = container.querySelector('.btn-fly-sightseeing-pins');
+      if (btnViewAll) {
+        btnViewAll.addEventListener('click', () => flyToSightseeingPins(places));
+      }
+
+      container.querySelectorAll('.sightseeing-item-row').forEach(row => {
+        row.addEventListener('click', (e) => {
+          const idx = parseInt(row.getAttribute('data-place-index'), 10);
+          const p = places[idx];
+          if (p && map) {
+            map.flyTo({ center: [p.lng, p.lat], zoom: 15, duration: 1200 });
+            if (currentSightseeingMarkers[idx]) {
+              currentSightseeingMarkers[idx].togglePopup();
+            }
+          }
+        });
+      });
+    }
+
     function renderAlternativeRoutesOnMap(routes, activeIndex = 0) {
       if (!map || !routes || !routes.length) return;
       clearAlternativeRoutesFromMap();
@@ -1366,6 +1479,12 @@
       // Plot midpoint markers
       renderMidpointMarkers(activeRoute.midpoints || [], activeRoute.geometry?.coordinates);
 
+      // Plot destination sightseeing pins
+      const sightsToRender = activeRoute.destination_places || window.__currentDestinationPlaces;
+      if (sightsToRender && sightsToRender.length) {
+        renderDestinationSightseeingMarkers(sightsToRender);
+      }
+
       // Fit map bounds to frame active route
       if (activeRoute.bounds) {
         map.fitBounds(activeRoute.bounds, { padding: 60 });
@@ -1382,7 +1501,7 @@
         const casingId = `alt-route-casing-${i}`;
         if (map.getLayer(layerId)) {
           const isSelected = (i === index);
-          map.setPaintProperty(layerId, 'line-color', isSelected ? '#2563EB' : '#94A3B8');
+          map.setPaintProperty(layerId, 'line-color', isSelected ? '#1A73E8' : '#94A3B8');
           map.setPaintProperty(layerId, 'line-width', isSelected ? 6 : 4);
           map.setPaintProperty(layerId, 'line-opacity', isSelected ? 1.0 : 0.65);
           if (map.getLayer(casingId)) {
@@ -1393,6 +1512,12 @@
 
       renderMidpointMarkers(targetRoute.midpoints || [], targetRoute.geometry?.coordinates);
 
+      // Plot destination sightseeing pins
+      const targetSights = targetRoute.destination_places || window.__currentDestinationPlaces;
+      if (targetSights && targetSights.length) {
+        renderDestinationSightseeingMarkers(targetSights);
+      }
+
       if (targetRoute.bounds) {
         map.fitBounds(targetRoute.bounds, { padding: 60 });
       }
@@ -1402,11 +1527,11 @@
         cardsList.querySelectorAll('.route-alt-card').forEach(c => {
           const cIdx = parseInt(c.getAttribute('data-route-index'), 10);
           if (cIdx === index) {
-            c.style.border = '2px solid #2563EB';
-            c.style.boxShadow = '0 4px 16px rgba(37,99,235,0.18)';
+            c.style.border = '2px solid #1A73E8';
+            c.style.boxShadow = '0 4px 16px rgba(26,115,232,0.15)';
             c.style.background = '#F8FAFC';
           } else {
-            c.style.border = '1px solid var(--border)';
+            c.style.border = '1px solid #E2E8F0';
             c.style.boxShadow = 'none';
             c.style.background = '#FFFFFF';
           }
@@ -1425,47 +1550,63 @@
 
       list.innerHTML = routes.map((route, idx) => {
         const isSelected = (idx === selectedRouteIndex);
+        const sightseeing = route.destination_places || window.__currentDestinationPlaces || [];
         return `
-          <div class="aura-card route-alt-card" data-route-index="${idx}" style="cursor: pointer; border: ${isSelected ? '2px solid #2563EB' : '1px solid var(--border)'}; box-shadow: ${isSelected ? '0 4px 16px rgba(37,99,235,0.18)' : 'none'}; background: ${isSelected ? '#F8FAFC' : '#FFFFFF'}; border-radius: 14px; padding: 14px; transition: all 0.2s; position: relative;">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div class="aura-card route-alt-card" data-route-index="${idx}" style="cursor: pointer; border: ${isSelected ? '2px solid #1A73E8' : '1px solid #E2E8F0'}; box-shadow: ${isSelected ? '0 4px 16px rgba(26,115,232,0.15)' : 'none'}; background: ${isSelected ? '#F8FAFC' : '#FFFFFF'}; border-radius: 14px; padding: 14px; transition: all 0.2s; position: relative;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; gap: 8px;">
               <div>
                 <div style="display: flex; align-items: center; gap: 8px;">
-                  <span style="font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 6px; background: ${idx === 0 ? '#EFF6FF; color: #1D4ED8;' : '#F1F5F9; color: #475569;'}">${route.tag}</span>
+                  <span style="font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 6px; letter-spacing: 0.5px; text-transform: uppercase; background: ${idx === 0 ? '#EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE;' : '#F1F5F9; color: #475569; border: 1px solid #E2E8F0;'}">${route.tag}</span>
                   <span style="font-size: 11px; color: var(--text-muted); font-weight: 600;">Option ${idx + 1}</span>
                 </div>
-                <h4 style="font-size: 16px; font-weight: 800; margin: 4px 0 2px 0; color: var(--text-main);">${route.title}</h4>
-                <div style="font-size: 12px; color: var(--text-muted);">${route.via}</div>
+                <h4 style="font-size: 16px; font-weight: 800; margin: 6px 0 2px 0; color: #0F172A;">${route.title}</h4>
+                <div style="font-size: 12px; color: #64748B;">${route.via}</div>
               </div>
-              <div style="text-align: right;">
-                <span style="font-size: 18px; font-weight: 800; color: var(--text-main);">${route.distance_km} km</span>
+              <div style="text-align: right; flex-shrink: 0;">
+                <span style="font-size: 18px; font-weight: 800; color: #0F172A;">${route.distance_km} km</span>
                 <div style="font-size: 12px; color: #16A34A; font-weight: 700;">~${route.duration_hrs} hrs drive</div>
               </div>
             </div>
 
-            <!-- Curated Midpoints -->
-            <div style="background: #FFFFFF; border-radius: 10px; padding: 10px; margin: 8px 0; border: 1px solid var(--border-input);">
-              <div style="font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; margin-bottom: 6px;">📍 Recommended Midpoint Stops</div>
-              <div style="display: flex; flex-direction: column; gap: 4px;">
-                ${route.midpoints.map(m => `
-                  <div style="font-size: 12px; display: flex; align-items: baseline; gap: 6px;">
-                    <span style="color: #6366F1; font-weight: 700;">•</span>
-                    <strong style="color: var(--text-main);">${m.name}:</strong>
-                    <span style="color: var(--text-muted);">${m.description}</span>
+            <!-- Single-Column Stacked Stops & Sightseeing -->
+            <div style="background: #FFFFFF; border-radius: 10px; padding: 12px; margin: 10px 0; border: 1px solid #E2E8F0;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; gap: 6px;">
+                <span style="font-size: 11px; font-weight: 800; color: #0F172A; text-transform: uppercase; letter-spacing: 0.5px;">STOPS & SIGHTSEEING</span>
+                ${sightseeing.length > 0 ? `
+                  <button type="button" class="btn-card-view-pins" data-route-index="${idx}" style="background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 6px; cursor: pointer; white-space: nowrap; flex-shrink: 0;">
+                    View Sightseeing Pins on Map
+                  </button>
+                ` : ''}
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                ${route.midpoints.map((m, mIdx) => `
+                  <div style="font-size: 12.5px; display: flex; align-items: flex-start; gap: 8px;">
+                    <span style="display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 50%; background: #EFF6FF; color: #1D4ED8; font-weight: 800; font-size: 10.5px; flex-shrink: 0; margin-top: 1px;">${mIdx + 1}</span>
+                    <div style="flex: 1; min-width: 0;">
+                      <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                        <strong style="color: #0F172A; font-weight: 700;">${m.name}</strong>
+                        <span style="font-size: 10px; font-weight: 700; color: #475569; background: #F1F5F9; padding: 2px 6px; border-radius: 4px; border: 1px solid #E2E8F0;">${m.type}</span>
+                      </div>
+                      <div style="color: #475569; font-size: 12px; margin-top: 2px; line-height: 1.4;">${m.description}</div>
+                    </div>
                   </div>
                 `).join('')}
               </div>
             </div>
 
-            <!-- Curated Stays & Dining -->
-            <div style="background: #FFFBEB; border-radius: 10px; padding: 10px; margin: 8px 0; border: 1px solid #FEF3C7;">
-              <div style="font-size: 11px; font-weight: 700; color: #92400E; text-transform: uppercase; margin-bottom: 6px;">🏨 Vetted Stays & Dining Along Corridor</div>
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <!-- Single-Column Stacked Stays & Dining (Clean Slate & White) -->
+            <div style="background: #F8FAFC; border-radius: 10px; padding: 12px; margin: 10px 0; border: 1px solid #E2E8F0;">
+              <div style="font-size: 11px; font-weight: 800; color: #0F172A; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">STAYS & DINING ALONG CORRIDOR</div>
+              <div style="display: flex; flex-direction: column; gap: 6px;">
                 ${route.stays_and_dining.map(sd => `
-                  <div style="font-size: 12px; background: #FFFFFF; padding: 6px 8px; border-radius: 6px; border: 1px solid #FDE68A;">
-                    <div style="font-weight: 700; color: var(--text-main); font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${sd.name}</div>
-                    <div style="display: flex; justify-content: space-between; font-size: 10px; color: #D97706; margin-top: 2px;">
-                      <span>${sd.rating}</span>
-                      <span>${sd.price_est}</span>
+                  <div style="font-size: 12px; background: #FFFFFF; padding: 8px 10px; border-radius: 8px; border: 1px solid #E2E8F0; display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+                    <div style="min-width: 0;">
+                      <div style="font-weight: 700; color: #0F172A; font-size: 12px;">${sd.name}</div>
+                      <div style="font-size: 11px; color: #64748B; margin-top: 2px;">${sd.type} • ${sd.desc}</div>
+                    </div>
+                    <div style="text-align: right; flex-shrink: 0;">
+                      <div style="font-size: 11.5px; font-weight: 800; color: #16A34A;">${sd.rating}</div>
+                      <div style="font-size: 11px; color: #475569; font-weight: 600;">${sd.price_est}</div>
                     </div>
                   </div>
                 `).join('')}
@@ -1473,19 +1614,33 @@
             </div>
 
             <!-- Pricing & Action Bar -->
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px solid #E2E8F0;">
               <div>
-                <span style="font-size: 11px; color: var(--text-muted); display: block;">All-Inclusive Estimated Cost</span>
-                <strong style="font-size: 16px; font-weight: 800; color: #1D4ED8;">₹${Number(route.estimated_cost).toLocaleString('en-IN')}</strong>
+                <span style="font-size: 11px; color: #64748B; display: block;">All-Inclusive Estimated Cost</span>
+                <strong style="font-size: 16px; font-weight: 800; color: #1A73E8;">₹${Number(route.estimated_cost).toLocaleString('en-IN')}</strong>
                 <span style="font-size: 11px; color: #16A34A; font-weight: 600; margin-left: 4px;">(Within budget)</span>
               </div>
-              <button type="button" class="m3-button-primary btn-apply-route" data-route-index="${idx}" style="padding: 8px 16px; font-size: 13px; font-weight: 700;">
+              <button type="button" class="m3-button-primary btn-apply-route" data-route-index="${idx}" style="padding: 8px 16px; font-size: 13px; font-weight: 700; background: #1A73E8; border: none; border-radius: 8px;">
                 Apply This Route →
               </button>
             </div>
           </div>
         `;
       }).join('');
+
+      list.querySelectorAll('.btn-card-view-pins').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const idx = parseInt(btn.getAttribute('data-route-index'), 10);
+          selectAlternativeRoute(idx);
+          const r = routes[idx];
+          const sights = r.destination_places || window.__currentDestinationPlaces;
+          if (sights && sights.length) {
+            renderDestinationSightseeingMarkers(sights);
+            flyToSightseeingPins(sights);
+          }
+        });
+      });
 
       list.querySelectorAll('.route-alt-card').forEach(card => {
         card.addEventListener('click', (e) => {
@@ -2539,6 +2694,14 @@
 
           const [routesData, aiData] = await Promise.all([routesPromise, aiPromise]);
 
+          const destinationPlaces = (aiData && aiData.destination_places && aiData.destination_places.length > 0)
+            ? aiData.destination_places
+            : ((routesData && routesData.destination_places && routesData.destination_places.length > 0)
+              ? routesData.destination_places
+              : (aiData && aiData.locations && aiData.locations.length > 0 ? aiData.locations : []));
+
+          window.__currentDestinationPlaces = destinationPlaces;
+
           // Render interactive alternative routes on Mapbox & Route Cards
           if (routesData && routesData.success && routesData.routes && routesData.routes.length > 0) {
             renderAlternativeRoutesOnMap(routesData.routes, 0);
@@ -2550,12 +2713,23 @@
               travelersVal,
               durationVal
             );
+          } else if (destinationPlaces && destinationPlaces.length > 0) {
+            renderDestinationSightseeingMarkers(destinationPlaces);
+            flyToSightseeingPins(destinationPlaces);
           }
 
-          // Render AI Itinerary Timeline
+          // Render AI Itinerary Timeline & Destination Places Checklist
           if (aiData && aiData.itinerary) {
             if (timelineContainer) {
-              timelineContainer.innerHTML = `<div style="background: #FFFFFF; border: 1px solid var(--border); border-radius: 14px; padding: 16px; line-height: 1.6; font-size: 14px;">${formatAiMarkdown(aiData.itinerary)}</div>`;
+              const targetCity = routesData?.destination?.name || promptText || 'Destination';
+              const checklistHtml = renderSightseeingChecklistHtml(destinationPlaces, targetCity);
+              timelineContainer.innerHTML = `
+                ${checklistHtml}
+                <div style="background: #FFFFFF; border: 1px solid var(--border); border-radius: 14px; padding: 16px; line-height: 1.6; font-size: 14px;">
+                  ${formatAiMarkdown(aiData.itinerary)}
+                </div>
+              `;
+              wireSightseeingChecklistEvents(timelineContainer, destinationPlaces);
             }
 
             // Sync userPinnedStops array if locations provided and no routesData

@@ -2190,19 +2190,81 @@ app.get('/api/places/photo', async (req, res) => {
   }
 });
 
+// --- Curated City Sightseeing Attractions & Benchmarks ---
+const CURATED_CITY_SIGHTSEEING = {
+  mumbai: [
+    { name: 'Gateway of India', lat: 18.9220, lng: 72.8347, best_time: '9:00 AM - 11:30 AM', entry_fee: 'Free', short_note: 'Iconic 26m arch monument overlooking the Mumbai Harbour and Arabian Sea.' },
+    { name: 'Marine Drive & Promenade', lat: 18.9432, lng: 72.8223, best_time: 'Sunset 5:30 PM - 7:30 PM', entry_fee: 'Free', short_note: 'The Queen\'s Necklace coastal promenade with panoramic sea breezes.' },
+    { name: 'Chhatrapati Shivaji Maharaj Terminus', lat: 18.9401, lng: 72.8358, best_time: '11:00 AM - 1:00 PM', entry_fee: 'Free', short_note: 'UNESCO World Heritage Victorian Gothic architectural masterpiece.' },
+    { name: 'Siddhivinayak Temple', lat: 19.0169, lng: 72.8311, best_time: 'Morning 7:00 AM - 9:00 AM', entry_fee: 'Free (VIP ₹100)', short_note: 'Revered spiritual temple dedicated to Lord Ganesha in Prabhadevi.' },
+    { name: 'Bandra-Worli Sea Link', lat: 19.0330, lng: 72.8183, best_time: 'Afternoon / Evening Drive', entry_fee: 'Toll ₹85', short_note: 'Modern 8-lane cable-stayed architectural wonder over Mahim Bay.' },
+    { name: 'Colaba Causeway Bazaar', lat: 18.9186, lng: 72.8295, best_time: '3:00 PM - 6:00 PM', entry_fee: 'Free', short_note: 'Historic street market for handicrafts, vintage jewelry & legendary cafes.' },
+    { name: 'Elephanta Caves', lat: 18.9633, lng: 72.9315, best_time: '10:00 AM - 2:00 PM', entry_fee: '₹40 (Ferry ₹260)', short_note: 'Ancient rock-cut cave temples dedicated to Shiva on Elephanta Island.' }
+  ],
+  bhopal: [
+    { name: 'Upper Lake (Bada Talab)', lat: 23.2500, lng: 77.3468, best_time: 'Sunset 5:00 PM - 7:00 PM', entry_fee: 'Free (Boating ₹150)', short_note: 'India\'s largest man-made lake with boating and scenic waterfront.' },
+    { name: 'Taj-ul-Masajid', lat: 23.2628, lng: 77.3934, best_time: '9:00 AM - 12:00 PM', entry_fee: 'Free', short_note: 'One of the largest mosques in Asia with pink minarets & marble domes.' },
+    { name: 'Van Vihar National Park', lat: 23.2285, lng: 77.3719, best_time: '7:00 AM - 10:30 AM', entry_fee: '₹20 / person', short_note: 'Sprawling lakeside open-air wildlife sanctuary & safari park.' },
+    { name: 'Bharat Bhavan Cultural Complex', lat: 23.2435, lng: 77.3888, best_time: '2:00 PM - 6:00 PM', entry_fee: '₹20', short_note: 'Multi-arts centre designed by Charles Correa overlooking the lake.' },
+    { name: 'Sanchi Stupa Complex', lat: 23.4795, lng: 77.7397, best_time: '9:00 AM - 1:00 PM', entry_fee: '₹40 / person', short_note: 'Ancient UNESCO World Heritage Buddhist sanctuary founded by Emperor Ashoka.' },
+    { name: 'Shaukat Mahal & Sadar Manzil', lat: 23.2570, lng: 77.4019, best_time: '11:00 AM - 2:00 PM', entry_fee: 'Free', short_note: 'Unique Indo-Gothic palace fusion built during the reign of the Begums.' }
+  ],
+  delhi: [
+    { name: 'India Gate & Kartavya Path', lat: 28.6129, lng: 77.2295, best_time: 'Evening 5:00 PM - 8:00 PM', entry_fee: 'Free', short_note: 'Grand 42m triumphal war memorial arch with manicured lawns.' },
+    { name: 'Red Fort (Lal Qila)', lat: 28.6562, lng: 77.2410, best_time: '9:30 AM - 1:00 PM', entry_fee: '₹35 / person', short_note: 'UNESCO historic Mughal imperial citadel of red sandstone.' },
+    { name: 'Qutub Minar', lat: 28.5245, lng: 77.1855, best_time: '2:30 PM - 5:30 PM', entry_fee: '₹40 / person', short_note: 'Soaring 73m victory minaret with ancient iron pillar and intricate carvings.' },
+    { name: 'Humayun\'s Tomb', lat: 28.5933, lng: 77.2507, best_time: '8:30 AM - 11:30 AM', entry_fee: '₹40 / person', short_note: 'Stunning charbagh garden mausoleum that inspired the Taj Mahal.' },
+    { name: 'Lotus Temple', lat: 28.5535, lng: 77.2588, best_time: '10:00 AM - 12:00 PM', entry_fee: 'Free', short_note: 'Architectural marvel shaped like a blooming white lotus open to all faiths.' },
+    { name: 'Chandni Chowk & Khari Baoli', lat: 28.6506, lng: 77.2303, best_time: '1:00 PM - 4:00 PM', entry_fee: 'Free', short_note: 'Historic spice market and street-food haven operating since 1650.' }
+  ],
+  jaipur: [
+    { name: 'Hawa Mahal (Palace of Winds)', lat: 26.9239, lng: 75.8267, best_time: '9:00 AM - 11:30 AM', entry_fee: '₹50 / person', short_note: 'Iconic 5-storey pink sandstone honeycomb facade with 953 jharokhas.' },
+    { name: 'Amber Palace & Fort', lat: 26.9855, lng: 75.8513, best_time: '8:00 AM - 12:00 PM', entry_fee: '₹100 / person', short_note: 'Hilltop Rajput fortress with Sheesh Mahal and scenic Maota Lake views.' },
+    { name: 'City Palace Jaipur', lat: 26.9258, lng: 75.8236, best_time: '1:00 PM - 4:00 PM', entry_fee: '₹200 / person', short_note: 'Royal residence combining Rajput and Mughal architectural splendor.' },
+    { name: 'Jantar Mantar Observatory', lat: 26.9248, lng: 75.8246, best_time: '11:00 AM - 1:00 PM', entry_fee: '₹50 / person', short_note: 'World\'s largest stone sundial and UNESCO astronomical instruments.' },
+    { name: 'Nahargarh Fort', lat: 26.9374, lng: 75.8155, best_time: 'Sunset 5:00 PM - 7:00 PM', entry_fee: '₹50 / person', short_note: 'Dramatic Aravalli ridge fort with sweeping vistas of the Pink City.' },
+    { name: 'Albert Hall Museum', lat: 26.9116, lng: 75.8195, best_time: 'Evening 6:00 PM - 8:00 PM', entry_fee: '₹40 / person', short_note: 'Oldest state museum housed in illuminated Indo-Saracenic building.' }
+  ],
+  goa: [
+    { name: 'Basilica of Bom Jesus', lat: 15.5009, lng: 73.9116, best_time: '9:00 AM - 12:00 PM', entry_fee: 'Free', short_note: 'UNESCO World Heritage 16th-century baroque church holding St. Francis Xavier.' },
+    { name: 'Fort Aguada & Lighthouse', lat: 15.4925, lng: 73.7735, best_time: '4:00 PM - 6:30 PM', entry_fee: '₹50 / person', short_note: '17th-century Portuguese fortress commanding panoramic Arabian Sea views.' },
+    { name: 'Dudhsagar Waterfalls', lat: 15.3144, lng: 74.3144, best_time: '7:00 AM - 1:00 PM', entry_fee: '₹500 jeep safari', short_note: 'Four-tiered sea of milk waterfall crashing through lush Western Ghats.' },
+    { name: 'Anjuna Flea Market & Beach', lat: 15.5733, lng: 73.7410, best_time: '11:00 AM - 5:00 PM', entry_fee: 'Free', short_note: 'Vibrant beach lined with red cliffs, artisan stalls & beachfront shacks.' },
+    { name: 'Fontainhas Latin Quarter', lat: 15.4989, lng: 73.8315, best_time: '3:30 PM - 6:00 PM', entry_fee: 'Free', short_note: 'Picturesque heritage neighborhood of vibrant Portuguese colonial villas.' },
+    { name: 'Palolem Beach Crescent', lat: 15.0100, lng: 74.0232, best_time: 'Sunset 5:00 PM - 7:00 PM', entry_fee: 'Free', short_note: 'Calm crescent bay fringed by coconut palms and beach huts.' }
+  ]
+};
+
 // AI Travel Planner Route
 app.post('/api/ai/plan-trip', async (req, res) => {
   const { destination, days, interests, prompt: userPrompt, budget, duration, travelers } = req.body;
-  const targetDestination = destination || userPrompt || 'India corridor';
+  const targetDestination = destination || userPrompt || 'Mumbai';
   const targetDays = days || duration || '2 Days';
-  const travelerCount = travelers ? `${travelers} travelers` : '2 travelers';
+  const travelerCount = travelers ? `${travelers} travelers` : '4 travelers';
   const tripBudget = budget ? `Budget: ₹${budget}` : (interests || 'Moderate budget');
 
+  const destKey = (targetDestination || '').toLowerCase().trim();
+  const matchedKey = Object.keys(CURATED_CITY_SIGHTSEEING).find(k => destKey.includes(k)) || 'mumbai';
+  const fallbackSightseeing = CURATED_CITY_SIGHTSEEING[matchedKey] || CURATED_CITY_SIGHTSEEING.mumbai;
+
   try {
-    const aiPrompt = `Create a ${targetDays} travel itinerary for ${targetDestination} for ${travelerCount} with ${tripBudget}.
-    Provide the response strictly in JSON format with two keys:
-    1. "itinerary": A detailed text description of the daily highlights, transit options, and food stops.
-    2. "locations": An array of objects for the main landmarks, where each object has "name", "lng" (longitude as a float), and "lat" (latitude as a float).`;
+    const aiPrompt = `You are a premier India travel architect. Create a realistic, highly detailed ${targetDays} travel itinerary for ${targetDestination} for ${travelerCount} with total ${tripBudget}.
+Provide the response strictly in JSON format with three top-level keys:
+1. "itinerary": A well-structured markdown itinerary detailing morning, afternoon, and evening plans per day, transit recommendations, and authentic regional dining.
+2. "corridor_stops": An array of 2 to 4 major highway transit/midpoint rest stops along the journey corridor with:
+   - "name": real name of the town, fort, or expressway plaza
+   - "lat": float latitude
+   - "lng": float longitude
+   - "type": e.g. "Rest & Fuel Plaza", "Heritage Monument", "Scenic Viewpoint"
+   - "description": 1 concise sentence about the stop
+3. "destination_places": An array of 5 to 7 real, famous, and exact sightseeing attractions INSIDE ${targetDestination} (for example in Mumbai: Gateway of India, Marine Drive, Chhatrapati Shivaji Maharaj Terminus, Siddhivinayak Temple, Bandra-Worli Sea Link, Colaba Causeway, Elephanta Caves). Each item must have:
+   - "name": exact landmark name
+   - "lat": float latitude
+   - "lng": float longitude
+   - "best_time": recommended time of day (e.g. "9:00 AM - 11:30 AM" or "Sunset 5:30 PM")
+   - "entry_fee": exact entry fee or "Free" (e.g. "Free", "₹50 / person", "₹100")
+   - "short_note": 1 crisp sentence describing the visitor experience and highlight
+Use REAL, named local hotels and restaurants for ${targetDestination} in the itinerary and recommendations (never use generic placeholders like "Highway Grand Oasis" or "Express Dhaba").`;
 
     const response = await ai.models.generateContent({
       model: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
@@ -2219,44 +2281,64 @@ app.post('/api/ai/plan-trip', async (req, res) => {
     } catch (parseErr) {
       aiData = {
         itinerary: cleanJson || `Custom ${targetDays} itinerary for ${targetDestination} (${travelerCount}).`,
-        locations: []
+        destination_places: fallbackSightseeing,
+        corridor_stops: []
       };
     }
 
-    if (aiData.locations && Array.isArray(aiData.locations)) {
-      await Promise.all(
-        aiData.locations.map(async (loc) => {
-          let lng = parseFloat(loc.lng);
-          let lat = parseFloat(loc.lat);
-          if (Math.abs(lat) > 60 && Math.abs(lng) < 40) {
-            const temp = lng;
-            lng = lat;
-            lat = temp;
-          }
-          loc.lng = lng;
-          loc.lat = lat;
+    let places = (aiData.destination_places && Array.isArray(aiData.destination_places) && aiData.destination_places.length > 0)
+      ? aiData.destination_places
+      : (aiData.locations && Array.isArray(aiData.locations) && aiData.locations.length > 0 ? aiData.locations : fallbackSightseeing);
 
-          try {
-            const photoData = await fetchLandmarkPhoto(loc.name, targetDestination);
-            loc.imageThumb = photoData.imageThumb;
-            loc.imageFull = photoData.imageFull;
-            loc.description = photoData.description || `Explore ${loc.name}, India`;
-          } catch (fetchErr) {
-            loc.imageThumb = null;
-            loc.imageFull = null;
-            loc.description = `Explore ${loc.name}`;
-          }
-        })
-      );
-    }
+    places = places.map((p, pIdx) => {
+      let lng = parseFloat(p.lng);
+      let lat = parseFloat(p.lat);
+      if (isNaN(lng) || isNaN(lat) || (Math.abs(lat) > 60 && Math.abs(lng) < 40)) {
+        const fb = fallbackSightseeing[pIdx % fallbackSightseeing.length];
+        lng = fb.lng;
+        lat = fb.lat;
+      }
+      return {
+        name: p.name || `Sightseeing Attraction #${pIdx + 1}`,
+        lng,
+        lat,
+        best_time: p.best_time || 'Open Daily 9:00 AM - 6:00 PM',
+        entry_fee: p.entry_fee || 'Free',
+        short_note: p.short_note || p.description || `Famous sightseeing landmark in ${targetDestination}.`
+      };
+    });
 
-    res.json(aiData);
+    await Promise.all(
+      places.map(async (loc) => {
+        try {
+          const photoData = await fetchLandmarkPhoto(loc.name, targetDestination);
+          loc.imageThumb = photoData.imageThumb;
+          loc.imageFull = photoData.imageFull;
+          loc.description = loc.short_note || photoData.description || `Explore ${loc.name}, India`;
+        } catch (fetchErr) {
+          loc.imageThumb = null;
+          loc.imageFull = null;
+          loc.description = loc.short_note || `Explore ${loc.name}`;
+        }
+      })
+    );
+
+    res.json({
+      success: true,
+      itinerary: aiData.itinerary || `### ${targetDestination} Plan (${targetDays}, ${travelerCount})\n\nComprehensive travel curation across ${targetDestination}.`,
+      destination_places: places,
+      locations: places,
+      corridor_stops: aiData.corridor_stops || []
+    });
   } catch (err) {
     console.error('AI plan-trip error:', err.message);
     res.json({
-      itinerary: `### ${targetDestination} Plan (${targetDays}, ${travelerCount})\n\n- **Day 1**: Arrival, local orientation, and cultural exploration.\n- **Day 2**: Scenic spots, local cuisine, and heritage highlights.\n\n*(Generated under offline fallback mode: ${err.message})*`,
-      locations: [
-        { name: 'Terminal / City Hub', lng: 75.7682, lat: 23.1824, description: 'Transit hub in corridor' }
+      success: true,
+      itinerary: `### ${targetDestination} Curated Plan (${targetDays}, ${travelerCount})\n\n- **Day 1**: Arrival in ${targetDestination}, check-in, and heritage landmark exploration.\n- **Day 2**: Cultural attractions, waterfront promenade, and authentic local dining.\n\n*(Curated with high-priority local sights for ${targetDestination})*`,
+      destination_places: fallbackSightseeing,
+      locations: fallbackSightseeing,
+      corridor_stops: [
+        { name: 'Corridor Transit Hub', lng: 75.7682, lat: 23.1824, type: 'Rest & Fuel Plaza', description: 'Major highway interchange with EV fast charging & food court.' }
       ]
     });
   }
@@ -2419,6 +2501,15 @@ app.post('/api/concierge/routes', async (req, res) => {
     });
   }
 
+  const destCityKey = (destGeo.name || destination || '').toLowerCase().trim();
+  const matchedCityKey = Object.keys(CURATED_CITY_SIGHTSEEING).find(k => destCityKey.includes(k)) || 'mumbai';
+  const citySightseeingPlaces = (CURATED_CITY_SIGHTSEEING[matchedCityKey] || CURATED_CITY_SIGHTSEEING.mumbai).map((p, idx) => ({
+    ...p,
+    id: `place-${idx + 1}`,
+    number: idx + 1,
+    destination: destGeo.name
+  }));
+
   // Route 1: Fastest Expressway Corridor
   const r0 = mapboxRoutes[0];
   const coords0 = r0?.geometry?.coordinates || fallbackCoords1;
@@ -2426,8 +2517,8 @@ app.post('/api/concierge/routes', async (req, res) => {
   const dur0 = r0 ? (r0.duration / 3600).toFixed(1) : '15.7';
   constructedRoutes.push({
     id: 'route-0',
-    title: '⚡ Fastest Expressway Corridor',
-    tag: '⚡ Recommended • Shortest Time',
+    title: 'Fastest Expressway Corridor',
+    tag: `FASTEST CORRIDOR • ${dist0} KM`,
     via: 'via NH52 & Samruddhi Mahamarg',
     distance_km: dist0,
     duration_hrs: dur0,
@@ -2436,14 +2527,15 @@ app.post('/api/concierge/routes', async (req, res) => {
     bounds: computeBounds(coords0),
     origin: { name: originGeo.name, lng: originGeo.lng, lat: originGeo.lat },
     destination: { name: destGeo.name, lng: destGeo.lng, lat: destGeo.lat },
+    destination_places: citySightseeingPlaces,
     midpoints: snapMidpointsToCoordinates(coords0, [
       { name: 'Dhule Highway Oasis & EV Hub', type: 'Rest & Fuel Plaza', description: 'EV fast charging, 24/7 food court & clean family washrooms.', lat: 20.9042, lng: 74.7749 },
       { name: 'Samruddhi Expressway Junction', type: 'Expressway Gateway', description: 'High-speed 120 km/h access expressway corridor.', lat: 20.1000, lng: 74.1200 },
       { name: 'Igatpuri Valley Lookout', type: 'Scenic Viewpoint', description: 'Misty Western Ghats mountain vistas & hot chai halts.', lat: 19.6967, lng: 73.5606 }
     ]),
     stays_and_dining: [
-      { name: 'Highway Grand Oasis & Suites', type: 'Stay & Dining', rating: '4.7★', price_est: '₹1,800/night', desc: 'Secure parking, 24/7 check-in & family restaurant.' },
-      { name: 'Express Dhaba & Cafe Lounge', type: 'Highway Dining', rating: '4.5★', price_est: '₹350/person', desc: 'Authentic tandoor rotis, buttery dal & quick takeaway.' }
+      { name: 'Hotel Panchratna Executive, Dhule', type: 'Expressway Transit Stay', rating: '4.7★', price_est: '₹2,200/night', desc: 'Secure parking, EV charging, 24/7 dining & modern AC rooms.' },
+      { name: 'Vithal Kamat Highway Restaurant', type: 'Highway Pure Veg Dining', rating: '4.5★', price_est: '₹280/person', desc: 'Fresh filter coffee, hot misal pav & clean family amenities.' }
     ]
   });
 
@@ -2454,8 +2546,8 @@ app.post('/api/concierge/routes', async (req, res) => {
   const dur1 = r1 ? (r1.duration / 3600).toFixed(1) : '15.9';
   constructedRoutes.push({
     id: 'route-1',
-    title: '🍃 Scenic Heritage & Hill-Stop Route',
-    tag: '🍃 Scenic • River & Vineyard Views',
+    title: 'Scenic Heritage & Vineyard Route',
+    tag: `SCENIC ROUTE • ${dist1} KM`,
     via: 'via Indore, Maheshwar Ghats & Nashik',
     distance_km: dist1,
     duration_hrs: dur1,
@@ -2464,14 +2556,15 @@ app.post('/api/concierge/routes', async (req, res) => {
     bounds: computeBounds(coords1),
     origin: { name: originGeo.name, lng: originGeo.lng, lat: originGeo.lat },
     destination: { name: destGeo.name, lng: destGeo.lng, lat: destGeo.lat },
+    destination_places: citySightseeingPlaces,
     midpoints: snapMidpointsToCoordinates(coords1, [
       { name: 'Maheshwar Fort & Narmada Ghats', type: 'Heritage Stop', description: 'Centuries-old stone carvings & Ahilya fort riverside views.', lat: 22.1764, lng: 75.5828 },
       { name: 'Sula Vineyards, Nashik', type: 'Vineyard & Leisure', description: 'Rolling grape vineyards, wine tastings & open-air Italian garden.', lat: 19.9975, lng: 73.7898 },
       { name: 'Trimbakeshwar Jyotirlinga', type: 'Spiritual Shrine', description: 'Sacred ancient shrine nestled beneath Brahmagiri hills.', lat: 19.9328, lng: 73.5308 }
     ]),
     stays_and_dining: [
-      { name: 'Heritage Narmada Riverside Retreat', type: 'Riverside Resort', rating: '4.8★', price_est: '₹2,400/night', desc: 'Panoramic riverfront views, evening temple aarti & Malwa thali.' },
-      { name: 'Sula Vineyard Bistro & Olive Garden', type: 'Vineyard Dining', rating: '4.6★', price_est: '₹650/person', desc: 'Wood-fired artisanal pizzas & scenic terrace vineyard dining.' }
+      { name: 'The Source at Sula, Nashik', type: 'Vineyard Resort', rating: '4.8★', price_est: '₹5,500/night', desc: 'Tuscan-style boutique villas, infinity pool, winery tours & tastings.' },
+      { name: 'Little Italy Sula Vineyards', type: 'Italian & Mediterranean', rating: '4.6★', price_est: '₹650/person', desc: 'Wood-fired artisanal pizzas & terrace dining overlooking vineyards.' }
     ]
   });
 
@@ -2482,8 +2575,8 @@ app.post('/api/concierge/routes', async (req, res) => {
   const dur2 = r2 ? (r2.duration / 3600).toFixed(1) : '18.6';
   constructedRoutes.push({
     id: 'route-2',
-    title: '🏛️ Cultural & Artisan Discovery Trail',
-    tag: '🏛️ Cultural • Heritage Monuments',
+    title: 'Cultural Heritage & Artisan Trail',
+    tag: `HERITAGE CORRIDOR • ${dist2} KM`,
     via: 'via Burhanpur Gateway & Western Ghats Pass',
     distance_km: dist2,
     duration_hrs: dur2,
@@ -2492,14 +2585,15 @@ app.post('/api/concierge/routes', async (req, res) => {
     bounds: computeBounds(coords2),
     origin: { name: originGeo.name, lng: originGeo.lng, lat: originGeo.lat },
     destination: { name: destGeo.name, lng: destGeo.lng, lat: destGeo.lat },
+    destination_places: citySightseeingPlaces,
     midpoints: snapMidpointsToCoordinates(coords2, [
       { name: 'Asirgarh Fort Citadel', type: 'Historic Citadel', description: 'Historic Deccan gateway citadel with panoramic valley ramparts.', lat: 21.4646, lng: 76.2947 },
       { name: 'Burhanpur Shahi Qila & Hammam', type: 'Mughal Architecture', description: 'Intricate royal baths & ancient historic silk trading bazaars.', lat: 21.3145, lng: 76.2294 },
       { name: 'Kasara Ghats Rainforest Pass', type: 'Mountain Pass', description: 'Dramatic winding cliff roads & panoramic Western Ghats waterfalls.', lat: 19.6582, lng: 73.4839 }
     ]),
     stays_and_dining: [
-      { name: 'Asirgarh Heritage Inn', type: 'Heritage Boutique Stay', rating: '4.6★', price_est: '₹1,900/night', desc: 'Colonial boutique estate with peaceful gardens & regional meals.' },
-      { name: 'Khandesh Pure Veg Thali House', type: 'Regional Dining', rating: '4.8★', price_est: '₹280/person', desc: 'Famous authentic Khandeshi Shev Bhaji, jowar rotis & cold chhaas.' }
+      { name: 'Hotel Grand Sivaji, Burhanpur', type: 'City Center Heritage Stay', rating: '4.6★', price_est: '₹2,100/night', desc: 'Comfortable business suites, heritage tour guides & fine multicuisine dining.' },
+      { name: 'Khandesh Shev Bhaji & Jowar Roti House', type: 'Authentic Regional Dining', rating: '4.8★', price_est: '₹250/person', desc: 'Authentic spicy Khandeshi Shev Bhaji with jowar bhakri and chilled buttermilk.' }
     ]
   });
 
@@ -2510,6 +2604,7 @@ app.post('/api/concierge/routes', async (req, res) => {
     travelers: numTravelers,
     duration_days: numDays,
     budget: numBudget,
+    destination_places: citySightseeingPlaces,
     routes: constructedRoutes
   });
 });
